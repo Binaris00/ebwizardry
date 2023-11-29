@@ -1,39 +1,36 @@
 package binaris.ebwizardry.config;
 
-import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Element;
 import binaris.ebwizardry.constant.SpellType;
 import binaris.ebwizardry.constant.Tier;
 import binaris.ebwizardry.spell.Spell;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.WorldSavePath;
-import net.minecraft.world.World;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class SpellProperties {
 
-    private static final Gson gson = new Gson();
-
     /** Set of enum constants representing contexts in which a spell can be enabled/disabled. */
     public enum Context {
 
-        /** Disabling this context will make a spell's book unobtainable and unusable. */			BOOK("book"),
-        /** Disabling this context will make a spell's scroll unobtainable and unusable. */			SCROLL("scroll"),
-        /** Disabling this context will prevent a spell from being cast using a wand. */			WANDS("wands"),
-        /** Disabling this context will prevent NPCs from casting or dropping a spell. */			NPCS("npcs"),
-        /** Disabling this context will prevent dispensers from casting a spell. */					DISPENSERS("dispensers"),
-        /** Disabling this context will prevent a spell from being cast using commands. */			COMMANDS("commands"),
-        /** Disabling this context will prevent a spell's book or scroll generating in chests. */ 	TREASURE("treasure"),
-        /** Disabling this context will prevent a spell's book or scroll from being sold by NPCs.*/ TRADES("trades"),
-        /** Disabling this context will prevent a spell's book or scroll being dropped by mobs. */	LOOTING("looting");
+        /** Disabling this context will make a spell's book unobtainable and unusable. */			book("book"),
+        /** Disabling this context will make a spell's scroll unobtainable and unusable. */			scroll("scroll"),
+        /** Disabling this context will prevent a spell from being cast using a wand. */			wands("wands"),
+        /** Disabling this context will prevent NPCs from casting or dropping a spell. */			npcs("npcs"),
+        /** Disabling this context will prevent dispensers from casting a spell. */					dispensers("dispensers"),
+        /** Disabling this context will prevent a spell from being cast using commands. */			commands("commands"),
+        /** Disabling this context will prevent a spell's book or scroll generating in chests. */ 	treasure("treasure"),
+        /** Disabling this context will prevent a spell's book or scroll from being sold by NPCs.*/ trades("trades"),
+        /** Disabling this context will prevent a spell's book or scroll being dropped by mobs. */	looting("looting");
 
         /** The JSON identifier for this context. */
         public final String name;
@@ -45,13 +42,9 @@ public class SpellProperties {
 
     /** A map storing whether each context is enabled for this spell. */
     private final Map<Context, Boolean> enabledContexts;
-    /** A map storing the base values for this spell. These values are defined by the spell class and cannot be
-     * changed. */
-    // We're using Number here because it makes implementors think about what they convert it to.
-    // If we did what attributes do and just use doubles, people (myself included!) might plug them into calculations
-    // without thinking. However, with Number you can't just do that, you have to convert and therefore you have to
-    // decide how to do the conversion. Internally they're handled as floats though.
-    private final Map<String, Number> baseValues;
+
+    /** A map storing the base values for this spell. */
+    private final Map<String, Object> properties;
 
     /** The tier this spell belongs to. */
     public final Tier tier;
@@ -66,108 +59,6 @@ public class SpellProperties {
     /** The cooldown time of the spell, in ticks. */
     public final int cooldown;
 
-
-    // Sometimes it just makes more sense to do the JSON parsing in the constructor
-    // It's the only way we're gonna keep the fields final!
-    /**
-     * Parses the given JSON object and constructs a new {@code SpellProperties} from it, setting all the relevant
-     * fields and references.
-     *
-     * @param json A JSON object representing the spell properties to be constructed.
-     * @param spell The spell that this {@code SpellProperties} object is for.
-     * @throws JsonSyntaxException if at any point the JSON object is found to be invalid.
-     */
-    private SpellProperties(JsonObject json, Spell spell){
-        String[] baseValueNames = spell.getPropertyKeys();
-
-        enabledContexts = new EnumMap<>(Context.class);
-        baseValues = new HashMap<>();
-
-        JsonObject enabled = JsonHelper.getObject(json, "enabled");
-
-
-        // This time we know the exact set of properties so we can iterate over them instead of the json object
-        // In fact, we actually want to throw an exception if any of them are missing
-        for(Context context : Context.values()){
-            enabledContexts.put(context, JsonHelper.getBoolean(enabled, context.name));
-        }
-
-        try {
-            tier = Tier.fromName(JsonHelper.getString(json, "tier"));
-            element = Element.fromName(JsonHelper.getString(json, "element"));
-            type = SpellType.fromName(JsonHelper.getString(json, "type"));
-        }catch(IllegalArgumentException e){
-            throw new JsonSyntaxException("Incorrect spell property value", e);
-        }
-
-        cost = JsonHelper.getInt(json, "cost");
-        chargeup = JsonHelper.getInt(json, "chargeup");
-        cooldown = JsonHelper.getInt(json, "cooldown");
-
-        // There's not much point specifying the classes of the numbers here because the json getter methods just
-        // perform conversion to the requested type anyway. It therefore makes very little difference whether the
-        // conversion is done during JSON parsing or when we actually use the value - and at least in the latter case,
-        // individual subclasses have control over how it is converted.
-
-        // My case in point: summoning 2.5 spiders is obviously nonsense, but what happens when we cast that with a
-        // modifier of 2? Should we round the base value down to 2 and then apply the x2 modifier to get 4 spiders?
-        // Should we round it up instead? Or should we apply the modifier first and then do the rounding, so with no
-        // modifier we still get 2 spiders but with the x2 modifier we get 5?
-        // The most pragmatic solution is to let the spell class decide for itself.
-        // (Of course, we can only hope that the users aren't jerks and don't try to summon 2 and a half spiders...)
-
-        JsonObject baseValueObject = JsonHelper.getObject(json, "base_properties");
-
-        // If the code requests more values than the JSON file contains, that will cause a JsonSyntaxException here anyway.
-        // If there are redundant values in the JSON file, chances are that a user has misunderstood the system and tried
-        // to add properties that aren't implemented. However, redundant values will also be found if a programmer has
-        // forgotten to call addProperties in their spell constructor (I know I have!), potentially causing a crash at
-        // some random point in the future. Since redundant values aren't a problem by themselves, we shouldn't throw an
-        // exception, but a warning is appropriate.
-
-        int redundantKeys = baseValueObject.size() - baseValueNames.length;
-        if(redundantKeys > 0) Wizardry.LOGGER.warn("Spell " + spell.getName() + " has " + redundantKeys +
-                " redundant spell property key(s) defined in its JSON file. Extra values will have no effect! (Modders:" +
-                " make sure you have called addProperties(...) during spell construction)");
-
-        if(baseValueNames.length > 0){
-
-            for(String baseValueName : baseValueNames){
-                baseValues.put(baseValueName, JsonHelper.getFloat(baseValueObject, baseValueName));
-            }
-        }
-
-    }
-
-
-
-    /** Constructs a new SpellProperties object for the given spell, reading its values from the given ByteBuf. */
-    public SpellProperties(Spell spell, ByteBuf buf){
-
-        enabledContexts = new EnumMap<>(Context.class);
-        baseValues = new HashMap<>();
-
-        for(Context context : Context.values()){
-            // Enum maps have a guaranteed iteration order so this works fine
-            enabledContexts.put(context, buf.readBoolean());
-        }
-
-        tier = Tier.values()[buf.readShort()];
-        element = Element.values()[buf.readShort()];
-        type = SpellType.values()[buf.readShort()];
-
-        cost = buf.readInt();
-        chargeup = buf.readInt();
-        cooldown = buf.readInt();
-
-        List<String> keys = Arrays.asList(spell.getPropertyKeys());
-        Collections.sort(keys); // Should be the same list of keys in the same order they were written to the ByteBuf
-
-        for(String key : keys){
-            baseValues.put(key, buf.readFloat());
-        }
-    }
-
     /**
      * Returns whether the spell is enabled in any of the given contexts.
      * @param contexts The context in which to check if the spell is enabled.
@@ -177,53 +68,116 @@ public class SpellProperties {
         return enabledContexts.entrySet().stream().anyMatch(e -> e.getValue() && Arrays.asList(contexts).contains(e.getKey()));
     }
 
-    /**
-     * Returns whether a base value was defined with the given identifier.
-     * @param identifier The string identifier to check for.
-     * @return True if a base value was defined with the given identifier, false otherwise.
-     */
-    public boolean hasBaseValue(String identifier){
-        return baseValues.containsKey(identifier);
-    }
+
+
+
+
+
 
     /**
-     * Returns the base value for this spell that corresponds to the given identifier. To check whether an identifier
-     * exists, use {@link SpellProperties#hasBaseValue(String)}.
-     * @param identifier The string identifier to fetch the base value for.
-     * @return The base value, as a {@code Number}.
-     * @throws IllegalArgumentException if no base value was defined with the given identifier.
-     */
-    // Better to throw an exception than make this nullable because the vast majority of uses are for retrieving
-    // specific spells' properties that are known to exist, and IntelliJ would scream at us for not checking
-    public Number getBaseValue(String identifier){
-        if(!baseValues.containsKey(identifier)){
-            throw new IllegalArgumentException("Base value with identifier '" + identifier + "' is not defined.");
+     * This creates a JSON file for the spell if it doesn't already exist.
+     * Also creates a SpellProperties object for the spell.
+     *
+     * @param spell The spell this SpellProperties object is for.
+     *              This is needed to get the name of the spell, which is used to create the JSON file.
+     * @param tier The tier of the spell.
+     * @param element The element of the spell.
+     * @param type The type of the spell.
+     * @param cost The mana cost of the spell.
+     * @param chargeup The chargeup time of the spell.
+     * @param cooldown The cooldown time of the spell.
+     * **/
+    public SpellProperties(Spell spell, Tier tier, Element element, SpellType type, int cost, int chargeup, int cooldown) {
+        this.tier = tier;
+        this.element = element;
+        this.type = type;
+        this.cost = cost;
+        this.chargeup = chargeup;
+        this.cooldown = cooldown;
+        this.enabledContexts = new EnumMap<>(Context.class);
+        this.properties = new HashMap<>();
+
+        // Create the directory if it doesn't already exist
+        File path = new File("config/ebwizardry/spells/");
+        if (!path.exists()) {
+            path.mkdirs();
         }
-        return baseValues.get(identifier);
-    }
 
-
-
-
-
-
-
-
-
-
-    public void setBaseValues(Spell spell, MinecraftServer server, World world){
-        File file = new File(getPropertiesFile(spell, server));
+        // Create the JSON file if it doesn't already exist
+        File file = new File("config/ebwizardry/spells/" + spell.getName() + ".json");
         try {
-            if(!file.exists()) {
+            if (!file.exists()) {
                 file.createNewFile();
+                JsonObject json = new JsonObject();
+                json.addProperty("tier", tier.name());
+                json.addProperty("element", element.name());
+                json.addProperty("type", type.name());
+                json.addProperty("cost", cost);
+                json.addProperty("chargeup", chargeup);
+                json.addProperty("cooldown", cooldown);
+
+                for (Context context : Context.values()) {
+                    json.addProperty(context.name(), true);
+                }
+
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
+                FileWriter writer = new FileWriter(file);
+                writer.write(gson.toJson(json));
+                writer.close();
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        // Read the JSON and put all the values into the maps
+        for (Context context : Context.values()) {
+            enabledContexts.put(context, true);
+        }
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(new FileReader(file));
+
+            for (Context context : Context.values()) {
+                enabledContexts.put(context, (boolean) json.get(context.name()));
+            }
+
+            this.properties.put("tier", json.get("tier"));
+            this.properties.put("element", json.get("element"));
+            this.properties.put("type", json.get("type"));
+            this.properties.put("cost", json.get("cost"));
+            this.properties.put("chargeup", json.get("chargeup"));
+            this.properties.put("cooldown", json.get("cooldown"));
+
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String getPropertiesFile(Spell spell, MinecraftServer server){
-        return "%s./data/spells/%s.json".formatted(server.getSavePath(WorldSavePath.ROOT).toString(), spell.getName());
+    /**
+     * * Returns the base value for this spell that corresponds to the given key. To check whether an key
+     * exists, use {@link SpellProperties#hasProperties(String)} (String)}.
+     *
+     * @param key The string key to fetch the base value for.
+     * @return The base value, as a {@code String}.
+     * @throws IllegalArgumentException if no base value was defined with the given key.
+     */
+    public Object getProperties(String key){
+        if(!properties.containsKey(key)){
+            throw new IllegalArgumentException("Base value with key '" + key + "' is not defined.");
+        }
+        return properties.get(key);
+    }
+
+    /**
+     * Returns whether a base value was defined with the given identifier.
+     * @param key The string identifier to check for.
+     * @return True if a base value was defined with the given identifier, false otherwise.
+     */
+    public boolean hasProperties(String key){
+            return properties.containsKey(key);
     }
 }

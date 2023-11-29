@@ -2,7 +2,9 @@ package binaris.ebwizardry.spell;
 
 import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.config.SpellProperties;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import binaris.ebwizardry.constant.Element;
+import binaris.ebwizardry.constant.SpellType;
+import binaris.ebwizardry.constant.Tier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 
@@ -63,11 +65,7 @@ public class Spell {
         this.icon = new Identifier(modId, "textures/spells/" + name + ".png");
         this.id = nextSpellId++;
         Wizardry.LOGGER.debug("Spells: Loading %s With ID: %d".formatted(name, id));
-
-        ServerWorldEvents.LOAD.register(((server, world) -> properties.setBaseValues(this, server, world)));
-
     }
-
 
     /** Returns the {@code Identifier} for this spell's icon. */
     public final Identifier getIcon(){
@@ -119,6 +117,23 @@ public class Spell {
     /** Internal, do not use. */
     public final String[] getPropertyKeys(){
         return propertyKeys.toArray(new String[0]);
+    }
+
+    // ============================================= Spell properties ===============================================
+    public void createProperties(Spell spell, Tier tier, Element element, SpellType type, int cost, int chargeup, int cooldown){
+        this.properties = new SpellProperties(spell, tier, element, type, cost, chargeup, cooldown);
+    }
+
+
+    public String getStringProperty(String key){
+        return (String) properties.getProperties(key);
+    }
+
+    public Integer getIntProperty(String key){
+        return (Integer) properties.getProperties(key);
+    }
+    public boolean getBooleanProperty(String key){
+        return (Boolean) properties.getProperties(key);
     }
 
 

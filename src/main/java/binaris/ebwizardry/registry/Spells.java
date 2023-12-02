@@ -1,6 +1,9 @@
 package binaris.ebwizardry.registry;
 
 import binaris.ebwizardry.Wizardry;
+import binaris.ebwizardry.constant.Element;
+import binaris.ebwizardry.constant.SpellType;
+import binaris.ebwizardry.constant.Tier;
 import binaris.ebwizardry.spell.None;
 import binaris.ebwizardry.spell.Spell;
 import net.minecraft.registry.Registry;
@@ -14,10 +17,16 @@ import static binaris.ebwizardry.Wizardry.REGISTRIES_SPELL;
 public abstract class Spells {
 
     public static Spell NONE;
+    public static Spell SPARK_BOMB;
     public static Spell TEST;
 
+
     public static void registry(){
-        NONE = registrySpell("none", new None());
+        NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
+        // Temporally spells for testing
+        SPARK_BOMB = registrySpell("spark_bomb" , new Spell("spark_bomb", UseAction.NONE, false).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 25)
+                .addProperties(Spell.DIRECT_DAMAGE, 10));
+
         TEST = registrySpell("test", new Spell("test", UseAction.NONE, false));
     }
 

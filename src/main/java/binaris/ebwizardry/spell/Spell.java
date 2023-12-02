@@ -14,6 +14,11 @@ import java.util.Set;
 
 
 public class Spell {
+    // ========================================= Spell properties Keys ===============================================
+    // Spell property keys. These are public constants so that they can be accessed from anywhere, they are
+    // effectively immutable and should not be changed.
+    public static final String DIRECT_DAMAGE = "direct_damage";
+    public static final String EFFECT_RADIUS = "effect_radius";
     private final String name;
     /** The action the player does when this spell is cast. */
     public final UseAction action;
@@ -37,8 +42,7 @@ public class Spell {
     // Yes, *technically* this is reaching across sides but the fields are effectively immutable so it doesn't matter.
     /** This spell's associated SpellProperties object. */
     private SpellProperties properties;
-    /** A reference to the global spell properties for this spell, so they are only loaded once. */
-    private SpellProperties globalProperties;
+
     /** Used in initialisation. */
     private Set<String> propertyKeys = new HashSet<>();
 
@@ -120,8 +124,14 @@ public class Spell {
     }
 
     // ============================================= Spell properties ===============================================
-    public void createProperties(Spell spell, Tier tier, Element element, SpellType type, int cost, int chargeup, int cooldown){
-        this.properties = new SpellProperties(spell, tier, element, type, cost, chargeup, cooldown);
+    public Spell createProperties(Tier tier, Element element, SpellType type, int cost, int chargeup, int cooldown){
+        this.properties = new SpellProperties(this, tier, element, type, cost, chargeup, cooldown);
+        return this;
+    }
+
+    public Spell addProperties(String key, Object value){
+        this.properties.addMoreProperties(this, key, value);
+        return this;
     }
 
 

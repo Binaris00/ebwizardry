@@ -133,10 +133,6 @@ public class SpellProperties {
         }
 
         // Read the JSON and put all the values into the maps
-        for (Context context : Context.values()) {
-            enabledContexts.put(context, true);
-        }
-
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(new FileReader(file));
@@ -158,7 +154,7 @@ public class SpellProperties {
     }
 
     /**
-     * * Returns the base value for this spell that corresponds to the given key. To check whether an key
+     * Returns the base value for this spell that corresponds to the given key. To check whether an key
      * exists, use {@link SpellProperties#hasProperties(String)} (String)}.
      *
      * @param key The string key to fetch the base value for.
@@ -179,5 +175,33 @@ public class SpellProperties {
      */
     public boolean hasProperties(String key){
             return properties.containsKey(key);
+    }
+
+
+    public void addMoreProperties(Spell spell, String key, Object value){
+        File file = new File("config/ebwizardry/spells/" + spell.getName() + ".json");
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(new FileReader(file));
+
+            // If the key already exists, don't do anything
+            if(!json.containsKey(key)){
+                json.put(key, value);
+
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
+                FileWriter writer = new FileWriter(file);
+                writer.write(gson.toJson(json));
+                writer.close();
+            }
+
+            // Add the key to the map from the json file
+            properties.put(key, json.get(key));
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException("Failed to add custom property '" + key + "' to spell " + spell.getName());
+        }
+
+
     }
 }

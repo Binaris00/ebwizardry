@@ -34,6 +34,7 @@ public class Wizardry implements ModInitializer {
 		Spells.registry();
 		WizardryTabs.use();
 		WizardrySounds.register();
+		WizardryParticles.registry();
 	}
 
 }

@@ -29,6 +29,7 @@ public class ItemSparkBomb extends Item {
 
             world.spawnEntity(sparkBomb);
         }
+
         if(!user.isCreative()){
             stack.decrement(1);
         }

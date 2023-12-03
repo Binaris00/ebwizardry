@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 public class WizardryEntities {
     public static final EntityType<EntitySparkBomb> entitySparkBomb = Registry.register(
             Registries.ENTITY_TYPE,
-            new Identifier(Wizardry.MODID, "packed_snowball"),
+            new Identifier(Wizardry.MODID, "spark_bomb"),
             FabricEntityTypeBuilder.<EntitySparkBomb>create(SpawnGroup.MISC, EntitySparkBomb::new)
                     .build());
 }

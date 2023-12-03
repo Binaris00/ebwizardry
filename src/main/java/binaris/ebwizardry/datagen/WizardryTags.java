@@ -32,7 +32,6 @@ public class WizardryTags extends FabricTagProvider {
     @Override
     protected void configure(RegistryWrapper.WrapperLookup arg) {
         getOrCreateTagBuilder(SPELL_TAG_KEY)
-                .add(Spells.TEST)
                 .add(Spells.NONE);
     }
 }

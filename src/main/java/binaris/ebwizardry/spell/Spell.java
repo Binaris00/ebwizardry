@@ -8,7 +8,6 @@ import binaris.ebwizardry.constant.Tier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +18,7 @@ public class Spell {
     // effectively immutable and should not be changed.
     public static final String DIRECT_DAMAGE = "direct_damage";
     public static final String EFFECT_RADIUS = "effect_radius";
+    public static final String SPLASH_DAMAGE = "splash_damage";
     private final String name;
     /** The action the player does when this spell is cast. */
     public final UseAction action;
@@ -82,33 +82,6 @@ public class Spell {
      * other things being registered (e.g. potions). <i>Always initialise things in the constructor wherever possible.</i> */
     public void init(){}
 
-    /**
-     * Adds the given JSON identifiers to the configurable base properties of this spell. This should be called from
-     * the constructor or {@link Spell#init()}. <i>It is highly recommended that property keys be defined as constants,
-     * as they will be needed later to retrieve the properties during the casting methods.</i>
-     * <p></p>
-     * General spell classes will call this method to set any properties they require in order to work properly, and
-     * the relevant keys will be public constants.
-     * @param keys One or more spell property keys to add to the spell. By convention, these are lowercase_with_underscores.
-     *             If any of these already exists, a warning will be printed to the console.
-     * @return The spell instance, allowing this method to be chained onto the constructor.
-     * @throws IllegalStateException if this method is called after the spell properties have been initialised.
-     */
-    // Nobody can remove property keys, which guarantees that spell classes always have the properties they need.
-    // It also means that subclasses need not worry about properties already defined and used in their superclass.
-    // Conversely, general spell classes ONLY EVER define the properties they ACTUALLY USE.
-    public final Spell addProperties(String... keys){
-
-        if(arePropertiesInitialised()) throw new IllegalStateException("Tried to add spell properties after they were initialised");
-
-        for(String key : keys) if(propertyKeys.contains(key)) Wizardry.LOGGER.warn("Tried to add a duplicate property key '"
-                + key + "' to spell " + this.name);
-
-        Collections.addAll(propertyKeys, keys);
-
-        return this;
-    }
-
 
 
 
@@ -136,13 +109,27 @@ public class Spell {
 
 
     public String getStringProperty(String key){
+        if(!properties.hasProperties(key)){
+            throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
+        }
         return (String) properties.getProperties(key);
     }
 
-    public Integer getIntProperty(String key){
-        return (Integer) properties.getProperties(key);
+    public void test(){
+        Wizardry.LOGGER.info("A: " +properties.getProperties("direct_damage"));
+    }
+
+    public int getIntProperty(String key){
+        if(!properties.hasProperties(key)){
+            throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
+        }
+        return Integer.parseInt(properties.getProperties(key).toString());
+
     }
     public boolean getBooleanProperty(String key){
+        if(!properties.hasProperties(key)){
+            throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
+        }
         return (Boolean) properties.getProperties(key);
     }
 

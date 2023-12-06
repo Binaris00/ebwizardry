@@ -49,12 +49,12 @@ public class ParticleBuilder {
             px = x + world.random.nextDouble() - 0.5;
             py = y + world.random.nextDouble() - 0.5;
             pz = z + world.random.nextDouble() - 0.5;
-            world.addParticle(WizardryParticles.LIGHTNING, px, py, pz, 0, 0, 0);
+            ParticleBuilder.instance.create(WizardryParticles.LIGHTNING).pos(px, py, pz).spawn(world);
 
             px = x + world.random.nextDouble() - 0.5;
             py = y + world.random.nextDouble() - 0.5;
             pz = z + world.random.nextDouble() - 0.5;
-            world.addParticle(ParticleTypes.LARGE_SMOKE, px, py, pz, 0, 0, 0);
+            ParticleBuilder.instance.create(ParticleTypes.LARGE_SMOKE).pos(px, py, pz).spawn(world);
         }
     }
 

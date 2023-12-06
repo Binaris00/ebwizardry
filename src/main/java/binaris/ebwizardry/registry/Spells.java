@@ -18,17 +18,25 @@ public abstract class Spells {
 
     public static Spell NONE;
     public static Spell SPARK_BOMB;
+    public static Spell FIRE_BOMB;
 
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
-        // Temporally spells for testing
         SPARK_BOMB = registrySpell("spark_bomb" , new Spell("spark_bomb", UseAction.NONE, false).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 25)
                 // Temporal properties for testing
                 .addProperties(Spell.DIRECT_DAMAGE, 6)
                 .addProperties(Spell.EFFECT_RADIUS, 5)
                 .addProperties(Spell.SPLASH_DAMAGE, 4));
+        FIRE_BOMB = registrySpell("fire_bomb", new Spell("fire_bomb", UseAction.NONE, false).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 15, 0, 25)
+                // Temporal properties for testing
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DIRECT_DAMAGE, 5)
+                .addProperties(Spell.SPLASH_DAMAGE, 3)
+                .addProperties(Spell.BLAST_RADIUS, 3)
+                .addProperties(Spell.BURN_DURATION, 7));
     }
+
 
     private static Spell registrySpell(String name, Spell spell){
         return Registry.register(REGISTRIES_SPELL, new Identifier(Wizardry.MODID, name), spell);

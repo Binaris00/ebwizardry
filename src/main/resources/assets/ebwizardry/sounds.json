@@ -2,5 +2,8 @@
   "entity.spark_bomb.throw": 			{"category": "spells", "sounds": ["random/bow"]},
   "entity.spark_bomb.hit": 			{"category": "spells", "sounds": ["damage/hit1", "damage/hit2", "damage/hit3"]},
   "entity.spark_bomb.hit_block": 		{"category": "spells", "sounds": ["fireworks/blast_far1"]},
-  "entity.spark_bomb.chain": 			{"category": "spells", "sounds": ["ebwizardry:arc1", "ebwizardry:arc2", "ebwizardry:arc3"]}
+  "entity.spark_bomb.chain": 			{"category": "spells", "sounds": ["ebwizardry:arc1", "ebwizardry:arc2", "ebwizardry:arc3"]},
+  "entity.firebomb.throw": 			{"category": "spells", "sounds": ["random/bow"]},
+  "entity.firebomb.smash": 			{"category": "spells", "sounds": ["random/glass1", "random/glass2", "random/glass3"]},
+  "entity.firebomb.fire": 			{"category": "spells", "sounds": ["ebwizardry:combust"]}
 }

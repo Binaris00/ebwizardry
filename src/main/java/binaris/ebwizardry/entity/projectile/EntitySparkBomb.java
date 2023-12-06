@@ -25,7 +25,7 @@ public class EntitySparkBomb extends EntityBomb{
     }
 
     public EntitySparkBomb(LivingEntity livingEntity, World world) {
-        super(WizardryEntities.entitySparkBomb, livingEntity, world);
+        super(WizardryEntities.ENTITY_SPARK_BOMB, livingEntity, world);
     }
 
     @Override

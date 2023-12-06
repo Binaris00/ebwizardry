@@ -22,6 +22,7 @@ public abstract class WizardryTabs {
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.gears"))
                     .icon(() -> new ItemStack(WizardryItems.SPARK_BOMB)).entries((displayContext, entries) -> {
                         entries.add(WizardryItems.SPARK_BOMB);
+                        entries.add(WizardryItems.FIRE_BOMB);
                     }).build());
 
 

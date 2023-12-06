@@ -16,9 +16,38 @@ public class Spell {
     // ========================================= Spell properties Keys ===============================================
     // Spell property keys. These are public constants so that they can be accessed from anywhere, they are
     // effectively immutable and should not be changed.
-    public static final String DIRECT_DAMAGE = "direct_damage";
+    public static final String DAMAGE = "damage";
+    public static final String RANGE = "range";
+    public static final String DURATION = "duration";
     public static final String EFFECT_RADIUS = "effect_radius";
+    public static final String BLAST_RADIUS = "blast_radius";
+    public static final String EFFECT_DURATION = "effect_duration";
+    public static final String EFFECT_STRENGTH = "effect_strength";
+    public static final String BURN_DURATION = "burn_duration";
+    public static final String DIRECT_DAMAGE = "direct_damage";
     public static final String SPLASH_DAMAGE = "splash_damage";
+    public static final String HEALTH = "health";
+    public static final String SEEKING_STRENGTH = "seeking_strength";
+    public static final String DIRECT_EFFECT_DURATION = "direct_effect_duration";
+    public static final String DIRECT_EFFECT_STRENGTH = "direct_effect_strength";
+    public static final String SPLASH_EFFECT_DURATION = "splash_effect_duration";
+    public static final String SPLASH_EFFECT_STRENGTH = "splash_effect_strength";
+
+    public static final String TIER_MATCH_PREFIX = "tier";
+    public static final String ELEMENT_MATCH_PREFIX = "element";
+    public static final String TYPE_MATCH_PREFIX = "type";
+    public static final String DISCOVERED_MATCH_PREFIX = "discovered";
+    public static final String MODID_MATCH_PREFIX = "modid";
+
+    public static final String TIER_MATCH_ALIAS = "t";
+    public static final String ELEMENT_MATCH_ALIAS = "e";
+    public static final String TYPE_MATCH_ALIAS = "p";
+    public static final String DISCOVERED_MATCH_ALIAS = "d";
+    public static final String MODID_MATCH_ALIAS = "m";
+
+    public static final String MATCH_CONDITION_SEPARATOR = ";";
+    public static final String MATCH_KEY_VALUE_SEPARATOR = "=";
+    public static final String MATCH_VALUE_SEPARATOR = ",";
     private final String name;
     /** The action the player does when this spell is cast. */
     public final UseAction action;
@@ -115,10 +144,6 @@ public class Spell {
         return (String) properties.getProperties(key);
     }
 
-    public void test(){
-        Wizardry.LOGGER.info("A: " +properties.getProperties("direct_damage"));
-    }
-
     public int getIntProperty(String key){
         if(!properties.hasProperties(key)){
             throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
@@ -133,6 +158,12 @@ public class Spell {
         return (Boolean) properties.getProperties(key);
     }
 
+    public float getFloatProperty(String key){
+        if(!properties.hasProperties(key)){
+            throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
+        }
+        return Float.parseFloat(properties.getProperties(key).toString());
+    }
 
 
     // ============================================= Misc methods ===============================================

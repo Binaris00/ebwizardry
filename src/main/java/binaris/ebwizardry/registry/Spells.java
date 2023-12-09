@@ -19,6 +19,8 @@ public abstract class Spells {
     public static Spell NONE;
     public static Spell SPARK_BOMB;
     public static Spell FIRE_BOMB;
+    public static Spell POISON_BOMB;
+    public static Spell SMOKE_BOMB;
 
 
     public static void registry(){
@@ -35,6 +37,20 @@ public abstract class Spells {
                 .addProperties(Spell.SPLASH_DAMAGE, 3)
                 .addProperties(Spell.BLAST_RADIUS, 3)
                 .addProperties(Spell.BURN_DURATION, 7));
+        POISON_BOMB = registrySpell("poison_bomb", new Spell("poison_bomb", UseAction.NONE, false).createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.PROJECTILE, 15, 0, 25)
+                // Temporal properties for testing
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DIRECT_DAMAGE, 5)
+                .addProperties(Spell.SPLASH_DAMAGE, 3)
+                .addProperties(Spell.EFFECT_RADIUS, 3)
+                .addProperties(Spell.DIRECT_EFFECT_DURATION, 120)
+                .addProperties(Spell.DIRECT_EFFECT_STRENGTH, 1)
+                .addProperties(Spell.SPLASH_EFFECT_DURATION, 100)
+                .addProperties(Spell.SPLASH_EFFECT_STRENGTH, 1));
+        SMOKE_BOMB = registrySpell("smoke_bomb", new Spell("smoke_bomb", UseAction.NONE, false).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 15, 0, 25)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.EFFECT_RADIUS, 3)
+                .addProperties(Spell.EFFECT_DURATION, 120));
     }
 
 

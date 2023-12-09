@@ -23,6 +23,8 @@ public abstract class WizardryTabs {
                     .icon(() -> new ItemStack(WizardryItems.SPARK_BOMB)).entries((displayContext, entries) -> {
                         entries.add(WizardryItems.SPARK_BOMB);
                         entries.add(WizardryItems.FIRE_BOMB);
+                        entries.add(WizardryItems.POISON_BOMB);
+                        entries.add(WizardryItems.SMOKE_BOMB);
                     }).build());
 
 

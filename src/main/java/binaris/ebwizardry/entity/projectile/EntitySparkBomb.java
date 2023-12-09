@@ -44,7 +44,6 @@ public class EntitySparkBomb extends EntityBomb{
         ParticleBuilder.spawnShockParticles(this.getWorld(), this.getX(), this.getY() + this.getHeight()/2, this.getZ());
 
 
-
     }
 
 
@@ -55,7 +54,6 @@ public class EntitySparkBomb extends EntityBomb{
         entityHitResult.getEntity().damage(entityHitResult.getEntity().getDamageSources().indirectMagic(this, this.getOwner()), damage);
         this.playSound(WizardrySounds.ENTITY_SPARK_BOMB_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         ParticleBuilder.spawnShockParticles(this.getWorld(), this.getX(), this.getY() + this.getHeight()/2, this.getZ());
-
         super.onEntityHit(entityHitResult);
 
 

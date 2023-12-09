@@ -11,10 +11,15 @@ public abstract class WizardrySounds {
     public static final SoundEvent ENTITY_SPARK_BOMB_HIT = registerSound("entity.spark_bomb.hit");
     public static final SoundEvent ENTITY_SPARK_BOMB_HIT_BLOCK = registerSound("entity.spark_bomb.hit_block");
     public static final SoundEvent ENTITY_SPARK_BOMB_CHAIN = registerSound("entity.spark_bomb.chain");
-
     public static final SoundEvent ENTITY_FIREBOMB_THROW = registerSound("entity.firebomb.throw");
     public static final SoundEvent ENTITY_FIREBOMB_SMASH = registerSound("entity.firebomb.smash");
     public static final SoundEvent ENTITY_FIREBOMB_FIRE = registerSound("entity.firebomb.fire");
+    public static final SoundEvent ENTITY_POISON_BOMB_THROW = registerSound("entity.poison_bomb.throw");
+    public static final SoundEvent ENTITY_POISON_BOMB_SMASH = registerSound("entity.poison_bomb.smash");
+    public static final SoundEvent ENTITY_POISON_BOMB_POISON = registerSound("entity.poison_bomb.poison");
+    public static final SoundEvent ENTITY_SMOKE_BOMB_THROW = registerSound("entity.smoke_bomb.throw");
+    public static final SoundEvent ENTITY_SMOKE_BOMB_SMASH = registerSound("entity.smoke_bomb.smash");
+    public static final SoundEvent ENTITY_SMOKE_BOMB_SMOKE = registerSound("entity.smoke_bomb.smoke");
 
     private static SoundEvent registerSound(String name){
         Identifier temp = new Identifier("%s:%s".formatted(Wizardry.MODID, name));

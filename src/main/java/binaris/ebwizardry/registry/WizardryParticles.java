@@ -9,9 +9,11 @@ import net.minecraft.util.Identifier;
 
 public abstract class WizardryParticles {
     public static DefaultParticleType LIGHTNING = FabricParticleTypes.simple();
+    public static DefaultParticleType MAGIC_FIRE = FabricParticleTypes.simple();
 
     public static void registry(){
         LIGHTNING = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "lightning"), LIGHTNING);
+        MAGIC_FIRE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "magic_fire"), MAGIC_FIRE);
     }
 
 }

@@ -15,5 +15,6 @@ public class WizardryClient implements ClientModInitializer {
 
         WizardryEntities.registerClient();
         ParticleFactoryRegistry.getInstance().register(WizardryParticles.LIGHTNING, ExplosionSmokeParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(WizardryParticles.MAGIC_FIRE, ExplosionSmokeParticle.Factory::new);
     }
 }

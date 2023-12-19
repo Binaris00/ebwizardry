@@ -1,14 +1,12 @@
 package binaris.ebwizardry.entity.projectile;
 
-import binaris.ebwizardry.registry.Spells;
-import binaris.ebwizardry.registry.WizardryEntities;
-import binaris.ebwizardry.registry.WizardryItems;
-import binaris.ebwizardry.registry.WizardrySounds;
+import binaris.ebwizardry.registry.*;
 import binaris.ebwizardry.spell.Spell;
+import binaris.ebwizardry.util.EntityUtil;
+import binaris.ebwizardry.util.ParticleBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
@@ -17,6 +15,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class EntityPoisonBomb extends EntityBomb {
     public EntityPoisonBomb(EntityType<? extends ThrownItemEntity> entityType, World world) {
@@ -71,16 +71,27 @@ public class EntityPoisonBomb extends EntityBomb {
 			this.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.posX, this.posY, this.posZ, 0, 0, 0);
 		}
         * */
+
+        // Particles
+        for(int i = 0; i < 60 * blastMultiplier; i++){
+            ParticleBuilder.create(WizardryParticles.SPARKLE, random, getX(), getY(), getZ(), 2*blastMultiplier).spawn(getWorld());
+        }
+
+
         if(!getWorld().isClient){
             this.playSound(WizardrySounds.ENTITY_POISON_BOMB_SMASH, 1.5F, random.nextFloat() * 0.4F + 0.6F);
             this.playSound(WizardrySounds.ENTITY_POISON_BOMB_POISON, 1.2F, 1.0f);
         }
 
         if (hitResult instanceof BlockHitResult) {
-            LivingEntity entity = getWorld().getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT, this.getControllingPassenger(), this.getX(), this.getY(), this.getZ(), this.getBoundingBox().expand(Spells.SPARK_BOMB.getIntProperty(Spell.EFFECT_RADIUS)));
-            if(entity != null) {
-                entity.damage(entity.getDamageSources().indirectMagic(this, this.getOwner()), Spells.POISON_BOMB.getFloatProperty(Spell.SPLASH_DAMAGE) * damageMultiplier);
-                entity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, Spells.POISON_BOMB.getIntProperty(Spell.SPLASH_EFFECT_DURATION), Spells.POISON_BOMB.getIntProperty(Spell.SPLASH_EFFECT_STRENGTH)));
+            double range = Spells.POISON_BOMB.getIntProperty(Spell.EFFECT_RADIUS);
+
+            List<LivingEntity> livingEntities = EntityUtil.getLivingEntitiesInRange(getWorld(), getX(), getY(), getZ(), range);
+            for(LivingEntity entity: livingEntities){
+                if(entity != null && entity != this.getOwner()){
+                    entity.damage(entity.getDamageSources().indirectMagic(this, this.getOwner()), Spells.POISON_BOMB.getFloatProperty(Spell.SPLASH_DAMAGE) * damageMultiplier);
+                    entity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, Spells.POISON_BOMB.getIntProperty(Spell.SPLASH_EFFECT_DURATION), Spells.POISON_BOMB.getIntProperty(Spell.SPLASH_EFFECT_STRENGTH)));
+                }
             }
         }
 

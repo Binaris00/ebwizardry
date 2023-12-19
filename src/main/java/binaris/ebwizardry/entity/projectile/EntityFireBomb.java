@@ -48,7 +48,7 @@ public class EntityFireBomb extends EntityBomb{
 
         // Spawn particles
         for(int i = 0; i < 60; i++){
-            ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, getX(), getY(), getZ(), 2*blastMultiplier, false).spawn(getWorld());
+            ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, getX(), getY(), getZ(), 2*blastMultiplier).spawn(getWorld());
         }
 
         getWorld().addParticle(ParticleTypes.EXPLOSION, getX(), getY(), getZ(), 0, 0, 0);
@@ -70,6 +70,7 @@ public class EntityFireBomb extends EntityBomb{
         }
 
         // Schedule a task to remove the entity after a delay
+        // TODO: This is a hacky way to do this, but it works for now, so I'll leave it
         if(this.age > 40){
             this.discard();
         }

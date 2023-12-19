@@ -41,7 +41,7 @@ public class EntitySparkBomb extends EntityBomb{
 
         if(entity != null){entity.damage(entity.getDamageSources().indirectMagic(this, this.getOwner()), Spells.SPARK_BOMB.getIntProperty(Spell.SPLASH_DAMAGE));}
 
-        ParticleBuilder.spawnShockParticles(this.getWorld(), this.getX(), this.getY() + this.getHeight()/2, this.getZ());
+        ParticleBuilder.spawnShockParticles(this.getWorld(), this.getX(), this.getY() + this.getHeight(), this.getZ());
 
 
     }

@@ -62,13 +62,6 @@ public class Spell {
      * being fiddled with. */
     private boolean enabled = true;
 
-    // The spell properties system turned out to be a bit of a pain. Ideally I'd attach them to a world or whatever, but
-    // often we're accessing spell properties from places where a world is not available (and besides, I don't want to
-    // change the API now). Since spell properties are immutable and don't get reassigned while a world is loaded, in
-    // theory that makes them thread-safe (at least while the world is open, and they get wiped after that anyway).
-    // We still need to send them to clients in multiplayer (and LAN guests) so the simplest thing to do is send them
-    // to players' clients and only assign them if they haven't already been assigned, but without printing a warning.
-    // Yes, *technically* this is reaching across sides but the fields are effectively immutable so it doesn't matter.
     /** This spell's associated SpellProperties object. */
     private SpellProperties properties;
 

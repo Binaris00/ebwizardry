@@ -53,10 +53,6 @@ public abstract class WizardryTabs {
                         entries.add(WizardryItems.WIZARD_ROBE_LIGHTNING);
                         entries.add(WizardryItems.WIZARD_LEGGINGS_LIGHTNING);
                         entries.add(WizardryItems.WIZARD_BOOTS_LIGHTNING);
-                        entries.add(WizardryItems.WIZARD_HAT_POISON);
-                        entries.add(WizardryItems.WIZARD_ROBE_POISON);
-                        entries.add(WizardryItems.WIZARD_LEGGINGS_POISON);
-                        entries.add(WizardryItems.WIZARD_BOOTS_POISON);
                         entries.add(WizardryItems.WIZARD_HAT_EARTH);
                         entries.add(WizardryItems.WIZARD_ROBE_EARTH);
                         entries.add(WizardryItems.WIZARD_LEGGINGS_EARTH);

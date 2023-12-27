@@ -34,10 +34,6 @@ public abstract class WizardryItems {
     public static Item WIZARD_ROBE_LIGHTNING;
     public static Item WIZARD_LEGGINGS_LIGHTNING;
     public static Item WIZARD_BOOTS_LIGHTNING;
-    public static Item WIZARD_HAT_POISON;
-    public static Item WIZARD_ROBE_POISON;
-    public static Item WIZARD_LEGGINGS_POISON;
-    public static Item WIZARD_BOOTS_POISON;
     public static Item WIZARD_HAT_EARTH;
     public static Item WIZARD_ROBE_EARTH;
     public static Item WIZARD_LEGGINGS_EARTH;
@@ -87,11 +83,6 @@ public abstract class WizardryItems {
         WIZARD_ROBE_LIGHTNING = registerItem("wizard_robe_lightning", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.CHESTPLATE, new FabricItemSettings(), Element.LIGHTNING));
         WIZARD_LEGGINGS_LIGHTNING = registerItem("wizard_leggings_lightning", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.LEGGINGS, new FabricItemSettings(), Element.LIGHTNING));
         WIZARD_BOOTS_LIGHTNING = registerItem("wizard_boots_lightning", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.BOOTS, new FabricItemSettings(), Element.LIGHTNING));
-
-        WIZARD_HAT_POISON = registerItem("wizard_hat_poison", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.HELMET, new FabricItemSettings(), Element.NECROMANCY));
-        WIZARD_ROBE_POISON = registerItem("wizard_robe_poison", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.CHESTPLATE, new FabricItemSettings(), Element.NECROMANCY));
-        WIZARD_LEGGINGS_POISON = registerItem("wizard_leggings_poison", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.LEGGINGS, new FabricItemSettings(), Element.NECROMANCY));
-        WIZARD_BOOTS_POISON = registerItem("wizard_boots_poison", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.BOOTS, new FabricItemSettings(), Element.NECROMANCY));
 
         WIZARD_HAT_EARTH = registerItem("wizard_hat_earth", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.HELMET, new FabricItemSettings(), Element.EARTH));
         WIZARD_ROBE_EARTH = registerItem("wizard_robe_earth", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.CHESTPLATE, new FabricItemSettings(), Element.EARTH));

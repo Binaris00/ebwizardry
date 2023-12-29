@@ -13,18 +13,22 @@ public class WizardryParticles {
     public static DefaultParticleType LIGHTNING = FabricParticleTypes.simple();
     public static DefaultParticleType MAGIC_FIRE = FabricParticleTypes.simple();
     public static DefaultParticleType SPARKLE = FabricParticleTypes.simple();
+    public static DefaultParticleType DARK_MAGIC = FabricParticleTypes.simple();
 
     public static void registryParticleTypes(){
         LIGHTNING = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "lightning"), LIGHTNING);
         MAGIC_FIRE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "magic_fire"), MAGIC_FIRE);
         SPARKLE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "sparkle"), SPARKLE);
+        DARK_MAGIC = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "dark_magic"), DARK_MAGIC);
     }
 
     public static void registryParticlesClient(){
         ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
-        registry.register(LIGHTNING, ParticleWizardry.Factory::new);
-        registry.register(MAGIC_FIRE, ParticleWizardry.Factory::new);
-        registry.register(SPARKLE, ParticleWizardry.Factory::new);
+        registry.register(LIGHTNING, ParticleWizardry.WizardryFactory::new);
+        registry.register(MAGIC_FIRE, ParticleWizardry.WizardryFactory::new);
+        registry.register(SPARKLE, ParticleWizardry.WizardryFactory::new);
+        registry.register(DARK_MAGIC, ParticleWizardry.WizardryFactory::new);
+
     }
 
 }

@@ -8,14 +8,26 @@ import net.minecraft.entity.Entity;
 import net.minecraft.particle.DefaultParticleType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
 public class ParticleWizardry extends SpriteBillboardParticle {
     SpriteProvider spriteProvider;
-    protected ParticleWizardry(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
+    ParticleProperties properties;
+    public ParticleWizardry(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
         super(world, x, y, z);
         this.spriteProvider = spriteProvider;
         this.setSprite(spriteProvider);
+    }
+
+    public void setProperties(ParticleProperties properties){
+        this.properties = properties;
+        this.setColor(properties.getRed(), properties.getGreen(), properties.getBlue());
+        this.setMaxAge(properties.getMaxAge());
+        this.scale(properties.getScale());
+        this.setPos(properties.getX(), properties.getY(), properties.getZ());
+    }
+
+    @Override
+    public void setPos(double x, double y, double z) {
+        super.setPos(x, y, z);
     }
 
     @Override
@@ -47,12 +59,16 @@ public class ParticleWizardry extends SpriteBillboardParticle {
 
     @Override
     public void setMaxAge(int maxAge) {
-        super.setMaxAge(maxAge);
+        if (properties != null && maxAge >= 0) {
+            super.setMaxAge(maxAge);
+        } else {
+            super.setMaxAge(maxAge);
+        }
     }
 
     @Override
     public Particle scale(float scale) {
-        return super.scale(scale);
+        return properties != null ? super.scale(properties.getScale()) : super.scale(scale);
     }
 
     @Override
@@ -61,15 +77,23 @@ public class ParticleWizardry extends SpriteBillboardParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType>{
+    public static class WizardryFactory implements ParticleFactory<DefaultParticleType>{
         private final SpriteProvider spriteProvider;
+        private static ParticleProperties properties;
 
-        public Factory(SpriteProvider spriteProvider) {
+        public WizardryFactory(SpriteProvider spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
         public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new ParticleWizardry(world, x, y, z, spriteProvider);
+            ParticleWizardry particle = new ParticleWizardry(world, x, y, z, spriteProvider);
+            if(properties != null){particle.setProperties(properties);}
+            return particle;
         }
+        public static void setProperties(ParticleProperties propertiesV){
+            properties = propertiesV;
+        }
+
+
     }
 }

@@ -46,17 +46,6 @@ public class EntityFireBomb extends EntityBomb{
             entity.damage(entity.getDamageSources().indirectMagic(this, this.getOwner()), damage);
         }
 
-        // Spawn particles
-        for(int i = 0; i < 60; i++){
-            ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, getX(), getY(), getZ(), 2*blastMultiplier).spawn(getWorld());
-        }
-
-        getWorld().addParticle(ParticleTypes.EXPLOSION, getX(), getY(), getZ(), 0, 0, 0);
-
-        // Play sounds
-        this.playSound(WizardrySounds.ENTITY_FIREBOMB_SMASH, 1.5F, random.nextFloat() * 0.4F + 0.6F);
-        this.playSound(WizardrySounds.ENTITY_FIREBOMB_FIRE, 1, 1);
-
         // Splash damage
         if(hitResult instanceof BlockHitResult){
             List<LivingEntity> livingEntities = EntityUtil.getLivingEntitiesInRange(getWorld(), getX(), getY(), getZ(), Spells.FIRE_BOMB.getFloatProperty(Spell.RANGE));
@@ -69,10 +58,28 @@ public class EntityFireBomb extends EntityBomb{
             }
         }
 
-        // Schedule a task to remove the entity after a delay
-        // TODO: This is a hacky way to do this, but it works for now, so I'll leave it
-        if(this.age > 40){
+        if(!getWorld().isClient()){
+            // Sound
+            this.playSound(WizardrySounds.ENTITY_FIREBOMB_SMASH, 1.5F, random.nextFloat() * 0.4F + 0.6F);
+            this.playSound(WizardrySounds.ENTITY_FIREBOMB_FIRE, 1, 1);
+
+            // Spawn particles
+            this.getWorld().sendEntityStatus(this, (byte) 3);
             this.discard();
+        }
+    }
+    @Override
+    public void handleStatus(byte status) {
+        if(status == 3){
+            for (int i = 0; i < 60 * blastMultiplier; i++) {
+
+                ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, prevX, prevY, prevZ, 2 * blastMultiplier, false)
+                        .time(10 + random.nextInt(4)).scale(2 + random.nextFloat()).spawn(getWorld());
+
+                ParticleBuilder.create(WizardryParticles.DARK_MAGIC, random, prevX, prevY, prevZ, 2 * blastMultiplier, false)
+                        .color(1.0f, 0.2f + random.nextFloat() * 0.4f, 0.0f).spawn(getWorld());
+            }
+            getWorld().addParticle(ParticleTypes.EXPLOSION, prevX, prevY, prevZ, 0, 0, 0);
         }
     }
 }

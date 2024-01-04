@@ -1,3 +1,7 @@
 {
+  "itemgroup.ebwizardry.wizardry": "Wizardry",
+  "itemgroup.ebwizardry.spells": "Spells",
+  "itemgroup.ebwizardry.gears": "Gears",
+
   "block.ebwizardry.snare": "Snare"
 }

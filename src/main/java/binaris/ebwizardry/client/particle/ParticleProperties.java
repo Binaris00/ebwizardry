@@ -18,6 +18,7 @@ public class ParticleProperties {
     double x;
     double y;
     double z;
+    boolean shaded;
     // ------------------------- Getters -------------------------------- //
     public double getVelocityX() {
         return velocityX;
@@ -60,6 +61,9 @@ public class ParticleProperties {
     public int getMaxAge() {
         return maxAge;
     }
+    public boolean getShaded() {
+        return shaded;
+    }
 
     // ------------------------- Setters -------------------------------- //
     public void setVelocity(double velocityX, double velocityY, double velocityZ) {
@@ -83,5 +87,8 @@ public class ParticleProperties {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    public void setShaded(boolean shaded) {
+        this.shaded = shaded;
     }
 }

@@ -37,6 +37,7 @@ public final class ParticleBuilder {
     public double velocityX;
     public double velocityY;
     public double velocityZ;
+    public boolean shaded;
     // ------------------------- Core methods -------------------------------- //
 
     /**
@@ -155,6 +156,17 @@ public final class ParticleBuilder {
         return this;
     }
     /**
+     * Set the shaded property of the particle.
+     * @param value The value
+     * @throws IllegalStateException If not building yet
+     * **/
+    public ParticleBuilder shaded(boolean value){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.shaded = value;
+        return this;
+    }
+
+    /**
      * Spawn the particle in the world.
      * Create a new particle properties {@link ParticleProperties} object and set the properties.
      * Call the ParticleWizardry factory to set this property and call the reset method.
@@ -172,10 +184,10 @@ public final class ParticleBuilder {
         properties.setVelocity(velocityX, velocityY, velocityZ);
         properties.setColor(red, green, blue);
         properties.setScale(scale);
+        properties.setShaded(shaded);
 
-        // Set the properties into the factory and spawn the particle
         ParticleWizardry.WizardryFactory.setProperties(properties);
-        world.addParticle(particle, x, y, z, velocityX, velocityY, velocityZ);
+        this.world.addParticle(particle, x, y, z, velocityX, velocityY, velocityZ);
 
         // Reset the builder
         this.reset();

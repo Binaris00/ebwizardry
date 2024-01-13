@@ -21,7 +21,7 @@ public class WizardryParticles {
     public static DefaultParticleType PATH = FabricParticleTypes.simple();
     public static DefaultParticleType LEAF = FabricParticleTypes.simple();
     public static DefaultParticleType ICE = FabricParticleTypes.simple();
-
+    public static DefaultParticleType CLOUD = FabricParticleTypes.simple();
     public static void registryParticleTypes(){
         LIGHTNING = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "lightning"), LIGHTNING);
         MAGIC_FIRE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "magic_fire"), MAGIC_FIRE);
@@ -34,6 +34,7 @@ public class WizardryParticles {
         PATH = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "path"), PATH);
         LEAF = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "leaf"), LEAF);
         ICE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "ice"), ICE);
+        CLOUD = Registry.register(Registries.PARTICLE_TYPE, new Identifier(Wizardry.MODID, "cloud"), CLOUD);
     }
 
     public static void registryParticlesClient(){
@@ -49,6 +50,6 @@ public class WizardryParticles {
         registry.register(PATH, ParticleWizardry.WizardryFactory::new);
         registry.register(LEAF, ParticleWizardry.WizardryFactory::new);
         registry.register(ICE, ParticleWizardry.WizardryFactory::new);
+        registry.register(CLOUD, ParticleWizardry.WizardryFactory::new);
     }
-
 }

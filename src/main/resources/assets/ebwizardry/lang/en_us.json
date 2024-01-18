@@ -3,5 +3,7 @@
   "itemgroup.ebwizardry.spells": "Spells",
   "itemgroup.ebwizardry.gears": "Gears",
 
-  "block.ebwizardry.snare": "Snare"
+  "block.ebwizardry.snare": "Snare",
+
+  "spell.ebwizardry.poison_bomb": "Poison Bomb"
 }

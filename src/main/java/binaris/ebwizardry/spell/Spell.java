@@ -5,17 +5,18 @@ import binaris.ebwizardry.config.SpellProperties;
 import binaris.ebwizardry.constant.Element;
 import binaris.ebwizardry.constant.SpellType;
 import binaris.ebwizardry.constant.Tier;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraft.util.Util;
+import org.jetbrains.annotations.Nullable;
 
 
 public class Spell {
     // ========================================= Spell properties Keys ===============================================
     // Spell property keys. These are public constants so that they can be accessed from anywhere, they are
     // effectively immutable and should not be changed.
+    // ================================================================================================================
     public static final String DAMAGE = "damage";
     public static final String RANGE = "range";
     public static final String DURATION = "duration";
@@ -65,8 +66,8 @@ public class Spell {
     /** This spell's associated SpellProperties object. */
     private SpellProperties properties;
 
-    /** Used in initialisation. */
-    private Set<String> propertyKeys = new HashSet<>();
+    @Nullable
+    private String translationKey;
 
     /**
      * This constructor should be called from any subclasses, either feeding in the constants directly or through their
@@ -74,7 +75,7 @@ public class Spell {
      * added by other mods should use
      * {@link Spell#Spell(String, String, UseAction, boolean)}.
      * @param name The <i>registry name</i> of the spell. This will also be the name of the icon file. The spell's
-     *        unlocalised name will be a resource location with the format [modid]:[name].
+     *        localized name will be a resource location with the format [modid]:[name].
      * @param action The vanilla usage action to be displayed when casting this spell.
      * @param isContinuous Whether this spell is continuous, meaning you cast it for a length of time by holding the
      *                     use item button.
@@ -97,52 +98,56 @@ public class Spell {
     public final Identifier getIcon(){
         return icon;
     }
-    public String getName(){return name;}
+    public String getSpellName(){return name;}
 
     public int getId() {return id;}
-    /** Called from {@code init()} in the main mod class. Used to initialise spell fields and properties that depend on
+
+    /** Returns the {@code SpellProperties} object for this spell.
+     * @throws IllegalStateException if the properties have not been initialized yet. */
+    public final SpellProperties getProperties(){
+        return properties;
+    }
+
+    /** Called from {@code init()} in the main mod class. Used to initialize spell fields and properties that depend on
      * other things being registered (e.g. potions). <i>Always initialise things in the constructor wherever possible.</i> */
+    @Deprecated
     public void init(){}
 
 
-
-
-    /** Returns true if this spell's properties have been initialised, false if not. Check this if you're attempting
+    /** Returns true if this spell's properties have been initialized, false if not. Check this if you're attempting
      * to access them from code that could be called before wizardry's {@code init()} method (e.g. item attributes). */
     public final boolean arePropertiesInitialised(){
         return properties != null;
     }
 
-    /** Internal, do not use. */
-    public final String[] getPropertyKeys(){
-        return propertyKeys.toArray(new String[0]);
-    }
-
     // ============================================= Spell properties ===============================================
+    /** Creates a {@link SpellProperties} object for this spell, which is used to store all the spell's properties.
+     * This should be called from the constructor of any subclasses, after the spell's tier, element and type have been
+     * set, these are just specific and not changeable values, if you want to add more properties to the spell, use the
+     * {@link Spell#addProperties(String, Object)} method.
+     * */
     public Spell createProperties(Tier tier, Element element, SpellType type, int cost, int chargeup, int cooldown){
         this.properties = new SpellProperties(this, tier, element, type, cost, chargeup, cooldown);
         return this;
     }
 
+    /** Adds a property to this spell. This should be called from the constructor of any subclasses, after the spell's
+     * tier, element and type have been set. */
     public Spell addProperties(String key, Object value){
         this.properties.addMoreProperties(this, key, value);
         return this;
     }
-
-
     public String getStringProperty(String key){
         if(!properties.hasProperties(key)){
             throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
         }
         return (String) properties.getProperties(key);
     }
-
     public int getIntProperty(String key){
         if(!properties.hasProperties(key)){
             throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
         }
         return Integer.parseInt(properties.getProperties(key).toString());
-
     }
     public boolean getBooleanProperty(String key){
         if(!properties.hasProperties(key)){
@@ -150,14 +155,12 @@ public class Spell {
         }
         return (Boolean) properties.getProperties(key);
     }
-
     public float getFloatProperty(String key){
         if(!properties.hasProperties(key)){
             throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
         }
         return Float.parseFloat(properties.getProperties(key).toString());
     }
-
 
     // ============================================= Misc methods ===============================================
     /** Returns whether the spell is enabled in any of the given {@link SpellProperties.Context Context}s.
@@ -172,4 +175,52 @@ public class Spell {
     public final void setEnabled(boolean isEnabled){
         this.enabled = isEnabled;
     }
+
+
+    // ============================================= Translation ===============================================
+    // Most of this is copied from Item.java, but it's not worth making a superclass just for this...
+    // Methods for getting the localized name of the spell. This is done by creating a resource location with the
+    // format spell.[modid].spellName and translating it in the lang files. The translation key is cached for efficiency.
+    // =========================================================================================================
+
+    /**
+     * Returns the localized name of this spell <i>without formatting</i>.
+     * For the formatted version, see {@link Spell#getNameWithFormatting()}.
+     * @return The localized name of this spell.
+     * */
+    public Text getName() {
+        return Text.translatable(this.getOrCreateTranslationKey());
+    }
+
+    /**
+     * Return the string name for translation lookup of this spell.
+     * @return The unlocalized name of this spell.
+     * **/
+    protected String getOrCreateTranslationKey() {
+        if (this.translationKey == null) {
+            this.translationKey = Util.createTranslationKey("spell", Wizardry.REGISTRIES_SPELL.getId(this));
+        }
+        return this.translationKey;
+    }
+
+    /**
+     * Gets the translation key for the given spell.
+     * @return The translation key for this spell.
+     * **/
+    public String getTranslationKey() {
+        return this.getOrCreateTranslationKey();
+    }
+
+    /**
+     * Returns the localized name of this spell <i>with formatting</i>.
+     * For the unformatted version, see {@link Spell#getName()}.
+     * @return The localized name of this spell with formatting.
+     * */
+    public Text getNameWithFormatting() {
+        return Text.translatable(this.getOrCreateTranslationKey()).formatted(this.properties.getElement().getColour());
+    }
+
+
+
+
 }

@@ -47,17 +47,17 @@ public class SpellProperties {
     private final Map<String, Object> properties;
 
     /** The tier this spell belongs to. */
-    public final Tier tier;
+    private final Tier tier;
     /** The element this spell belongs to. */
-    public final Element element;
+    private final Element element;
     /** The type of spell this is classified as. */
-    public final SpellType type;
+    private final SpellType type;
     /** Mana cost of the spell. If it is a continuous spell the cost is per second. */
-    public final int cost;
+    private final int cost;
     /** The charge-up time of the spell, in ticks. */
-    public final int chargeup;
+    private final int chargeup;
     /** The cooldown time of the spell, in ticks. */
-    public final int cooldown;
+    private final int cooldown;
 
     /**
      * Returns whether the spell is enabled in any of the given contexts.
@@ -104,7 +104,7 @@ public class SpellProperties {
         }
 
         // Create the JSON file if it doesn't already exist
-        File file = new File("config/ebwizardry/spells/" + spell.getName() + ".json");
+        File file = new File("config/ebwizardry/spells/" + spell.getSpellName() + ".json");
         try {
             if (!file.exists()) {
                 file.createNewFile();
@@ -179,7 +179,7 @@ public class SpellProperties {
 
 
     public void addMoreProperties(Spell spell, String key, Object value){
-        File file = new File("config/ebwizardry/spells/" + spell.getName() + ".json");
+        File file = new File("config/ebwizardry/spells/" + spell.getSpellName() + ".json");
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(new FileReader(file));
@@ -199,9 +199,32 @@ public class SpellProperties {
             // Add the key to the map from the json file
             properties.put(key, json.get(key));
         } catch (IOException | ParseException e) {
-            throw new RuntimeException("Failed to add custom property '" + key + "' to spell " + spell.getName());
+            throw new RuntimeException("Failed to add custom property '" + key + "' to spell " + spell.getSpellName());
         }
+    }
 
+    // -------------------------------- Getters --------------------------------
+    public Tier getTier() {
+        return tier;
+    }
 
+    public Element getElement() {
+        return element;
+    }
+
+    public SpellType getType() {
+        return type;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public int getChargeup() {
+        return chargeup;
+    }
+
+    public int getCooldown() {
+        return cooldown;
     }
 }

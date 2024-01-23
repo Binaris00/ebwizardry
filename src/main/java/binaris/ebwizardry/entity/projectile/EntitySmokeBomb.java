@@ -26,6 +26,10 @@ public class EntitySmokeBomb extends EntityBomb {
         super(WizardryEntities.ENTITY_SMOKE_BOMB, livingEntity, world);
     }
 
+    public EntitySmokeBomb(World world) {
+        super(WizardryEntities.ENTITY_SMOKE_BOMB, world);
+    }
+
     @Override
     protected Item getDefaultItem() {
         return WizardryItems.SMOKE_BOMB;

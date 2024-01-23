@@ -61,20 +61,4 @@ public class ItemSpellBook extends Item {
 
         super.appendTooltip(stack, world, tooltip, context);
     }
-
-
-
-
-    // -------------------------------- NBT --------------------------------
-    // All the methods below are used to store the spell in the item's NBT.
-    // ---------------------------------------------------------------------
-
-    /**
-     * Gets a spell from the given id.
-     * @param id The id of the spell.
-     * @return The spell with the given id.
-     * */
-    public static Spell byId(String id) {
-        return Wizardry.REGISTRIES_SPELL.get(Identifier.tryParse(id));
-    }
 }

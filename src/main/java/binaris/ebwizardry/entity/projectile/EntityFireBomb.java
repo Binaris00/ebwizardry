@@ -26,6 +26,10 @@ public class EntityFireBomb extends EntityBomb{
         super(WizardryEntities.ENTITY_FIRE_BOMB, livingEntity, world);
     }
 
+    public EntityFireBomb(World world) {
+        super(WizardryEntities.ENTITY_FIRE_BOMB, world);
+    }
+
     @Override
     public int getFireTicks() {
         return -1;

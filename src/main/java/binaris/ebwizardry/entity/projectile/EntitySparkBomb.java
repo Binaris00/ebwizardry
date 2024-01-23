@@ -19,6 +19,10 @@ public class EntitySparkBomb extends EntityBomb{
         super(entityType, world);
     }
 
+    public EntitySparkBomb(World world) {
+        super(WizardryEntities.ENTITY_SPARK_BOMB, world);
+    }
+
     @Override
     public int getFireTicks() {
         return -1;

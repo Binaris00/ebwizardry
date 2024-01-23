@@ -28,6 +28,10 @@ public class EntityPoisonBomb extends EntityBomb {
         super(WizardryEntities.ENTITY_POISON_BOMB, livingEntity, world);
     }
 
+    public EntityPoisonBomb(World world) {
+        super(WizardryEntities.ENTITY_POISON_BOMB, world);
+    }
+
     @Override
     protected Item getDefaultItem() {
         return WizardryItems.POISON_BOMB;

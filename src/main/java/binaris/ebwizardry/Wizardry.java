@@ -25,7 +25,7 @@ public class Wizardry implements ModInitializer {
 			.attribute(RegistryAttribute.SYNCED)
 			.buildAndRegister();
 	public static final RegistryKey<Registry<Spell>> REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier(Wizardry.MODID, "spell"));
-    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 	public static final Random random = new Random();
 
 	@Override

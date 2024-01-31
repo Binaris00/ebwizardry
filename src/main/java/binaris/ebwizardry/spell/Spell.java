@@ -42,6 +42,7 @@ public abstract class Spell {
     public static final String DIRECT_EFFECT_STRENGTH = "direct_effect_strength";
     public static final String SPLASH_EFFECT_DURATION = "splash_effect_duration";
     public static final String SPLASH_EFFECT_STRENGTH = "splash_effect_strength";
+    public static final String KNOCKBACK_STRENGTH = "knockback_strength";
 
     public static final String TIER_MATCH_PREFIX = "tier";
     public static final String ELEMENT_MATCH_PREFIX = "element";

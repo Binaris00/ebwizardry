@@ -20,7 +20,8 @@ public abstract class WizardrySounds {
     public static final SoundEvent ENTITY_SMOKE_BOMB_THROW = registerSound("entity.smoke_bomb.throw");
     public static final SoundEvent ENTITY_SMOKE_BOMB_SMASH = registerSound("entity.smoke_bomb.smash");
     public static final SoundEvent ENTITY_SMOKE_BOMB_SMOKE = registerSound("entity.smoke_bomb.smoke");
-
+    public static final SoundEvent ENTITY_THUNDERBOLT_HIT = registerSound("entity.thunderbolt.hit");
+    public static final SoundEvent ENTITY_MAGIC_MISSILE_HIT = registerSound("entity.magic_missile.hit");
     private static SoundEvent registerSound(String name){
         Identifier temp = new Identifier("%s:%s".formatted(Wizardry.MODID, name));
         return Registry.register(Registries.SOUND_EVENT, temp, SoundEvent.of(temp));

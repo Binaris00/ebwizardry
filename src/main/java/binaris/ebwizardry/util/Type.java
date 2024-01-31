@@ -80,11 +80,11 @@ public class Type {
      */
     public static final Identifier SPARK = new Identifier(Wizardry.MODID, "spark");
     /**
-     * Animated sparkle particle.<p></p><b>Defaults:</b><<br>Lifetime: 48-60 ticks<br>Colour: white
+     * Animated sparkle particle.<p></p><b>Defaults:</b><br>Lifetime: 48-60 ticks<br>Colour: white
      */
     public static final Identifier SPARKLE = new Identifier(Wizardry.MODID, "sparkle");
     /**
-     * 3D-rendered expanding sphere.<p></p><b>Defaults:</b><<br>Lifetime: 6 ticks<br>Colour: white
+     * 3D-rendered expanding sphere.<p></p><b>Defaults:</b><br>Lifetime: 6 ticks<br>Colour: white
      */
     public static final Identifier SPHERE = new Identifier(Wizardry.MODID, "sphere");
     /**

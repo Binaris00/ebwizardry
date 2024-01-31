@@ -5,6 +5,8 @@ import binaris.ebwizardry.client.particle.ParticleWizardry;
 import binaris.ebwizardry.registry.WizardryParticles;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
@@ -108,6 +110,24 @@ public final class ParticleBuilder {
 
         return this;
     }
+    /**
+     * Sets the position of the particle.
+     * @param pos The position
+     * @throws IllegalStateException If not building yet
+     * */
+    public ParticleBuilder pos(BlockPos pos){
+        return this.pos(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
+     * Sets the position of the particle.
+     * @param vec3d The position
+     * @throws IllegalStateException If not building yet
+     * */
+    public ParticleBuilder ve3d(Vec3d vec3d){
+        return this.pos(vec3d.getX(), vec3d.getY(), vec3d.getZ());
+    }
+
     /**
      * Set the max age of the particle.
      * @param lifetime The lifetime

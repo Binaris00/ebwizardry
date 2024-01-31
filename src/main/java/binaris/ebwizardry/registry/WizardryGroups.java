@@ -42,6 +42,8 @@ public abstract class WizardryGroups {
 
 
     private static void addToItem(ItemGroup.Entries entries, RegistryWrapper<Spell> registryWrapper, Item item){
-        registryWrapper.streamEntries().map((entry) -> SpellUtils.setSpell(new ItemStack(item), entry.value())).forEach(entries::add);
+        registryWrapper.streamEntries().filter((entry) -> {
+            return !(entry.value() == Spells.NONE);
+                }).map((entry) -> SpellUtils.setSpell(new ItemStack(item), entry.value())).forEach(entries::add);
     }
 }

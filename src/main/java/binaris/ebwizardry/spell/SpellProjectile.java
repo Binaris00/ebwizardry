@@ -129,5 +129,4 @@ public class SpellProjectile<T extends EntityMagicProjectile> extends Spell {
     public boolean canBeCastBy(DoubleBlockProperties dispenser) {
         return true;
     }
-
 }

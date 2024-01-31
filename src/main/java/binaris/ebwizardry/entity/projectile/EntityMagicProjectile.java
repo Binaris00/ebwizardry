@@ -22,6 +22,15 @@ public abstract class EntityMagicProjectile extends ThrownItemEntity {
         super(entityType, livingEntity, world);
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+
+        if(this.getLifeTime() >= 0 && this.age > this.getLifeTime()){
+            this.discard();
+        }
+    }
+
 
     // Initialiser methods
 
@@ -93,6 +102,9 @@ public abstract class EntityMagicProjectile extends ThrownItemEntity {
     public NbtCompound writeNbt(NbtCompound nbt) {
         nbt.putFloat("damageMultiplier", damageMultiplier);
         return super.writeNbt(nbt);
+    }
 
+    public int getLifeTime() {
+        return -1;
     }
 }

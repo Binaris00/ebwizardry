@@ -33,10 +33,7 @@ public class ItemWizardArmor extends ArmorItem {
         return DrawingUtils.mix(0xff8bfe, 0x8e2ee4, (float)getItemBarStep(stack));
     }
 
-    /**
-     * We don't like the anvils repairing our items, so we're going to override this method to prevent it.
-     * If you want to allow an item to be repaired in an anvil, just override this method and return true.
-     * */
+    // We don't like the anvils repairing our items, so we're going to override this method to prevent it..
     @Override
     public boolean canRepair(ItemStack stack, ItemStack ingredient) {
         return false;

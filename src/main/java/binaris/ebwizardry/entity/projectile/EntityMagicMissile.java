@@ -1,6 +1,5 @@
 package binaris.ebwizardry.entity.projectile;
 
-import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.registry.Spells;
 import binaris.ebwizardry.registry.WizardryEntities;
 import binaris.ebwizardry.registry.WizardryParticles;
@@ -8,13 +7,12 @@ import binaris.ebwizardry.registry.WizardrySounds;
 import binaris.ebwizardry.spell.Spell;
 import binaris.ebwizardry.util.ParticleBuilder;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
 public class EntityMagicMissile extends EntityMagicArrow{
     public EntityMagicMissile(World world) {
         super(WizardryEntities.ENTITY_MAGIC_MISSILE, world);
@@ -40,6 +38,11 @@ public class EntityMagicMissile extends EntityMagicArrow{
     }
 
     @Override
+    public Identifier getTexture() {
+        return new Identifier("ebwizardry", "textures/entity/magic_missile.png");
+    }
+
+    @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
         this.playSound(WizardrySounds.ENTITY_MAGIC_MISSILE_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         // TODO: FLASH PARTICLE
@@ -58,32 +61,19 @@ public class EntityMagicMissile extends EntityMagicArrow{
 
     @Override
     public void tick() {
-        Wizardry.LOGGER.info("EntityMagicMissile tick");
         if(!this.inGround){
-            getWorld().sendEntityStatus(this, (byte) 3);
-            ParticleBuilder.create(WizardryParticles.SPARKLE, random, prevX, prevY, prevZ, 0.03, true).color(1, 1, 0.65f).time(20 + random.nextInt(10)).spawn(getWorld());
-            Wizardry.LOGGER.info("EntityMagicMissile not in ground");
+            if(this.age > 1) {
+                ParticleBuilder.create(WizardryParticles.SPARKLE, random, prevX, prevY, prevZ, 0.03, true).color(1, 1, 0.65f)
+                        .time(20 + random.nextInt(10)).fade(0.7f, 0, 1).spawn(getWorld());
 
-            if(this.getFireTicks() > 1){ // Don't spawn particles behind where it started!
-                double x = prevX - getX() / 2;
-                double y = prevY - getY() / 2;
-                double z = prevZ - getZ() / 2;
-                ParticleBuilder.create(WizardryParticles.SPARKLE, random, x, y, z, 0.03, true).color(1, 1, 0.65f).time(20 + random.nextInt(10)).spawn(getWorld());
+                double x = prevX - getVelocity().getX() / 2;
+                double y = prevY - getVelocity().getY() / 2;
+                double z = prevZ - getVelocity().getZ() / 2;
+
+                ParticleBuilder.create(WizardryParticles.SPARKLE, random, x, y, z, 0.03, true).color(1, 1, 0.65f)
+                        .time(20 + random.nextInt(10)).fade(0.7f, 0, 1).spawn(getWorld());
             }
         }
-        aim((LivingEntity) getOwner(), 1.5f);
         super.tick();
-    }
-
-    @Override
-    public void handleStatus(byte status) {
-        if(status == 3){
-            ParticleBuilder.create(WizardryParticles.SPARKLE, random, prevX, prevY, prevZ, 0.03, true).color(1, 1, 0.65f).time(20 + random.nextInt(10)).spawn(getWorld());
-            double x = prevX - getX() / 2;
-            double y = prevY - getY() / 2;
-            double z = prevZ - getZ() / 2;
-            ParticleBuilder.create(WizardryParticles.SPARKLE, random, x, y, z, 0.03, true).color(1, 1, 0.65f).time(20 + random.nextInt(10)).spawn(getWorld());
-        }
-        super.handleStatus(status);
     }
 }

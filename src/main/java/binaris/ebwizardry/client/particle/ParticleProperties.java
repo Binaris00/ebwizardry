@@ -19,6 +19,9 @@ public class ParticleProperties {
     double y;
     double z;
     boolean shaded;
+    float fadeRed;
+    float fadeGreen;
+    float fadeBlue;
     // ------------------------- Getters -------------------------------- //
     public double getVelocityX() {
         return velocityX;
@@ -61,8 +64,21 @@ public class ParticleProperties {
     public int getMaxAge() {
         return maxAge;
     }
+
     public boolean getShaded() {
         return shaded;
+    }
+
+    public float getFadeRed() {
+        return fadeRed;
+    }
+
+    public float getFadeGreen() {
+        return fadeGreen;
+    }
+
+    public float getFadeBlue() {
+        return fadeBlue;
     }
 
     // ------------------------- Setters -------------------------------- //
@@ -75,6 +91,12 @@ public class ParticleProperties {
         this.red = red;
         this.green = green;
         this.blue = blue;
+    }
+
+    public void setFade(float fadeRed, float fadeGreen, float fadeBlue) {
+        this.fadeRed = fadeRed;
+        this.fadeGreen = fadeGreen;
+        this.fadeBlue = fadeBlue;
     }
     public void setScale(float scale) {
         this.scale = scale;

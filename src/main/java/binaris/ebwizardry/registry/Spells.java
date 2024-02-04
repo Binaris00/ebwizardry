@@ -21,6 +21,7 @@ public abstract class Spells {
     public static Spell NONE;
     public static Spell MAGIC_MISSILE;
     public static Spell THUNDERBOLT;
+    public static Spell DART;
     public static Spell SPARK_BOMB;
     public static Spell FIRE_BOMB;
     public static Spell POISON_BOMB;
@@ -30,15 +31,19 @@ public abstract class Spells {
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
         MAGIC_MISSILE = registrySpell("magic_missile", new SpellArrow<>("magic_missile", EntityMagicMissile::new).createProperties(Tier.NOVICE, Element.MAGIC, SpellType.PROJECTILE, 5, 0, 5)
-                // Temporal properties for testing
                 .addProperties(Spell.RANGE, 18)
                 .addProperties(Spell.DAMAGE, 3));
 
         THUNDERBOLT = registrySpell("thunderbolt", new SpellProjectile<>("thunderbolt", EntityThunderbolt::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 10, 0, 15)
-                // Temporal properties for testing
                 .addProperties(Spell.RANGE, 12)
                 .addProperties(Spell.DAMAGE, 3)
                 .addProperties(Spell.KNOCKBACK_STRENGTH, 0.2));
+
+        DART = registrySpell("dart", new SpellArrow<>("dart", EntityDart::new).createProperties(Tier.NOVICE, Element.EARTH, SpellType.PROJECTILE, 5, 0, 10)
+                .addProperties(Spell.RANGE, 15)
+                .addProperties(Spell.DAMAGE, 4)
+                .addProperties(Spell.EFFECT_STRENGTH, 1)
+                .addProperties(Spell.EFFECT_DURATION, 200));
 
         SPARK_BOMB = registrySpell("spark_bomb" , new SpellProjectile<>("spark_bomb", EntitySparkBomb::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 25)
                 // Temporal properties for testing

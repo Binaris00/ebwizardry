@@ -60,21 +60,6 @@ public class SpellProperties {
     private final int cooldown;
 
     /**
-     * Returns whether the spell is enabled in any of the given contexts.
-     * @param contexts The context in which to check if the spell is enabled.
-     * @return True if the spell is enabled in any of the given contexts, false if not.
-     */
-    public boolean isEnabled(Context... contexts){
-        return enabledContexts.entrySet().stream().anyMatch(e -> e.getValue() && Arrays.asList(contexts).contains(e.getKey()));
-    }
-
-
-
-
-
-
-
-    /**
      * This creates a JSON file for the spell if it doesn't already exist.
      * Also creates a SpellProperties object for the spell.
      *
@@ -201,6 +186,15 @@ public class SpellProperties {
         } catch (IOException | ParseException e) {
             throw new RuntimeException("Failed to add custom property '" + key + "' to spell " + spell.getSpellName());
         }
+    }
+
+    /**
+     * Returns whether the spell is enabled in any of the given contexts.
+     * @param contexts The context in which to check if the spell is enabled.
+     * @return True if the spell is enabled in any of the given contexts, false if not.
+     */
+    public boolean isEnabled(Context... contexts){
+        return enabledContexts.entrySet().stream().anyMatch(e -> e.getValue() && Arrays.asList(contexts).contains(e.getKey()));
     }
 
     // -------------------------------- Getters --------------------------------

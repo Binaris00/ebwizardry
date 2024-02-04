@@ -1,23 +1,33 @@
 package binaris.ebwizardry.entity.projectile;
 
+import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import binaris.ebwizardry.spell.SpellArrow;
 
 /**
  * Originally copied from EntityArrow in 1.7.10 and updated to be more clean and efficient.
- *
- *
+ * <p>
+ * Now this class uses the base code from {@link PersistentProjectileEntity}
+ * and adds some methods to make it easier to use with the mod.
+ * This is used as a base class for all the magic arrows spelled by the {@link SpellArrow} class.
+ * <p>
+ * The methods {@link #aim(LivingEntity, float)} and {@link #aim(LivingEntity, Entity, float, float)} are used
+ * to set the shooter of the projectile and aim it in the direction they are looking.
+ * (Originally copied from Ebwizardry 1.12.2)
+ * <p>
+ * To register the renderer for this entity,
+ * use {@link MagicArrowRenderer} and register the respective texture in {@link  EntityMagicArrow#getTexture()}.
  * */
 public abstract class EntityMagicArrow extends PersistentProjectileEntity {
     public static final double LAUNCH_Y_OFFSET = 0.1;
-    public static final int SEEKING_TIME = 15;
-    private int blockX = -1;
-    private int blockY = -1;
-    private int blockZ = -1;
+    int ticksInGround;
+    int ticksInAir;
     public EntityMagicArrow(EntityType<? extends PersistentProjectileEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -27,14 +37,22 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
     public void aim(LivingEntity caster, float speed){
         this.setOwner(caster);
 
-        this.setPosition(caster.getX(), caster.getY() + caster.getStandingEyeHeight() - LAUNCH_Y_OFFSET, caster.getZ());
-        this.setRotation(caster.getPitch(), caster.getYaw());
+        this.updatePositionAndAngles(caster.getX(), caster.getY() + caster.getStandingEyeHeight() - LAUNCH_Y_OFFSET, caster.getZ()
+                , caster.getYaw(), caster.getPitch());
 
         this.prevX -= MathHelper.cos(this.getYaw() / 180.0F * (float)Math.PI) * 0.16F;
         this.prevY -= 0.10000000149011612D;
         this.prevZ -= MathHelper.cos(this.getYaw() / 180.0F * (float)Math.PI) * 0.16F;
 
-        this.setPosition(this.getX(), this.getY(), this.getZ());
+        this.setPosition(prevX, prevY, prevZ);
+
+        double motionX = -MathHelper.sin(this.getYaw() / 180.0F * (float)Math.PI)
+                * MathHelper.cos(this.getPitch() / 180.0F * (float)Math.PI);
+        double motionY = -MathHelper.sin(this.getPitch() / 180.0F * (float)Math.PI);
+        double motionZ = MathHelper.cos(this.getYaw() / 180.0F * (float)Math.PI)
+                * MathHelper.cos(this.getPitch() / 180.0F * (float)Math.PI);
+
+        this.setVelocity(motionX, motionY, motionZ, speed * 1.5F, 1.0F);
 
     }
 
@@ -47,7 +65,8 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
 
         this.prevY = caster.prevY + (double)caster.getStandingEyeHeight() - LAUNCH_Y_OFFSET;
         double dx = target.prevX - caster.prevX;
-        double dy = this.doGravity() ? target.prevY + (double)(target.getHeight() / 3.0f) - this.prevY
+        double dy = !this.hasNoGravity() ?
+                target.prevY + (double)(target.getHeight() / 3.0f) - this.prevY
                 : target.prevY + (double)(target.getHeight() / 2.0f) - this.prevY;
         double dz = target.prevZ - caster.prevZ;
         double horizontalDistance = MathHelper.sqrt((float) (dx * dx + dz * dz));
@@ -57,9 +76,10 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
             float pitch = (float)(-(Math.atan2(dy, horizontalDistance) * 180.0d / Math.PI));
             double dxNormalised = dx / horizontalDistance;
             double dzNormalised = dz / horizontalDistance;
+            this.updatePositionAndAngles(caster.prevX + dxNormalised, this.prevY, caster.prevZ + dzNormalised, yaw, pitch);
 
-            this.setPosition(this.prevX + dxNormalised, this.prevY, this.prevZ + dzNormalised);
-            this.setRotation(yaw, pitch);
+            float bulletDropCompensation = !this.hasNoGravity() ? (float)horizontalDistance * 0.2f : 0;
+            this.setVelocity(dx, dy + (double)bulletDropCompensation, dz, speed, aimingError);
         }
     }
 
@@ -73,15 +93,20 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
      * indefinitely until it hits something. This should be constant. */
     public abstract int getLifetime();
 
-    /** Override this to disable gravity. Returns true by default. */
-    public boolean doGravity(){
-        return true;
-    }
+    /**
+     * This method is used to get the texture for the magic arrow.
+     * The texture is represented by an Identifier object.
+     * Subclasses of EntityMagicArrow must override this method to provide their own texture.
+     *
+     * @return Identifier object representing the texture of the magic arrow.
+     */
+    public abstract Identifier getTexture();
 
     /**
      * Override this to disable deceleration (generally speaking, this isn't noticeable unless gravity is turned off).
      * Returns true by default.
      */
+    @Deprecated
     public boolean doDeceleration(){
         return true;
     }
@@ -90,6 +115,7 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
      * Override this to allow the projectile to pass through mobs intact (the onEntityHit method will still be called
      * and damage will still be applied). Returns false by default.
      */
+    @Deprecated
     public boolean doOverpenetration(){
         return false;
     }
@@ -113,10 +139,16 @@ public abstract class EntityMagicArrow extends PersistentProjectileEntity {
         if(getLifetime() >= 0 && this.age >= getLifetime()){
             this.discard();
         }
+
+        if(inGround){
+            ticksInGround++;
+            tickInGround();
+        } else {
+            ticksInAir++;
+            ticksInAir();
+        }
     }
 
-    @Override
-    public void setVelocity(double x, double y, double z, float speed, float divergence) {
-        super.setVelocity(x, y, z, speed, divergence);
-    }
+    public void tickInGround(){}
+    public void ticksInAir(){}
 }

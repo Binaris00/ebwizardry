@@ -18,6 +18,9 @@ public class ParticleWizardry extends SpriteBillboardParticle {
     ParticleProperties properties;
     // ------------------------- Some field properties -------------------------------- //
     boolean shaded = false;
+    float fadeRed = 0;
+    float fadeGreen = 0;
+    float fadeBlue = 0;
 
     public ParticleWizardry(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
         super(world, x, y, z);
@@ -36,13 +39,24 @@ public class ParticleWizardry extends SpriteBillboardParticle {
         this.scale(properties.getScale());
         this.setPos(properties.getX(), properties.getY(), properties.getZ());
         this.shaded = properties.getShaded();
+        if(properties.getFadeRed() != 0 || properties.getFadeGreen() != 0 || properties.getFadeBlue() != 0){
+            setFade(properties.getFadeRed(), properties.getFadeGreen(), properties.getFadeBlue());
+        }
+        this.setVelocity(properties.getVelocityX(), properties.getVelocityY(), properties.getVelocityZ());
 
+    }
+
+    public void setFade(float fadeRed, float fadeGreen, float fadeBlue){
+        this.fadeRed = fadeRed;
+        this.fadeGreen = fadeGreen;
+        this.fadeBlue = fadeBlue;
     }
 
     // ------------------- Methods override from Particle -------------------
     // These methods are overridden so that the properties can be used to set the values of the particle.
     // If you use any particle from the mod without setting the properties, it will use the default values.
     // ----------------------------------------------------------------------
+
     @Override
     public void setPos(double x, double y, double z) {
         super.setPos(x, y, z);
@@ -50,13 +64,15 @@ public class ParticleWizardry extends SpriteBillboardParticle {
     @Override
     public void tick() {
         super.tick();
+        float ageFraction = (float)this.age / (float)this.maxAge;
+        if(this.fadeRed != 0 || this.fadeGreen != 0 || this.fadeBlue != 0){
+            red = this.red + (this.fadeRed - this.red) * ageFraction;
+            green = this.green + (this.fadeGreen - this.green) * ageFraction;
+            blue = this.blue + (this.fadeBlue - this.blue) * ageFraction;
+        }
         this.setSpriteForAge(spriteProvider);
     }
-    public void setVelocity(double vx, double vy, double vz){
-        this.velocityX = vx;
-        this.velocityY = vy;
-        this.velocityZ = vz;
-    }
+
     @Override
     public ParticleTextureSheet getType() {
         return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
@@ -72,10 +88,6 @@ public class ParticleWizardry extends SpriteBillboardParticle {
     @Override
     public Particle scale(float scale) {
         return properties != null ? super.scale(properties.getScale()) : super.scale(scale);
-    }
-    @Override
-    public void setColor(float red, float green, float blue) {
-        super.setColor(red, green, blue);
     }
     @Override
     protected int getBrightness(float tint) {

@@ -1,22 +1,19 @@
 package binaris.ebwizardry.registry;
 
 import binaris.ebwizardry.Wizardry;
-import binaris.ebwizardry.client.renderer.ArrowRenderer;
+import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import binaris.ebwizardry.client.renderer.BlankRender;
 import binaris.ebwizardry.entity.projectile.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.client.render.entity.ArrowEntityRenderer;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class WizardryEntities {
+public final class WizardryEntities {
     public static final EntityType<EntitySparkBomb> ENTITY_SPARK_BOMB = Registry.register(
             Registries.ENTITY_TYPE,
             new Identifier(Wizardry.MODID, "spark_bomb"),
@@ -49,6 +46,11 @@ public class WizardryEntities {
             new Identifier(Wizardry.MODID, "magic_missile"),
             FabricEntityTypeBuilder.<EntityMagicMissile>create(SpawnGroup.MISC, EntityMagicMissile::new)
                     .build());
+    public static final EntityType<EntityDart> ENTITY_DART = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "dart"),
+            FabricEntityTypeBuilder.<EntityDart>create(SpawnGroup.MISC, EntityDart::new)
+                    .build());
 
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
@@ -56,6 +58,7 @@ public class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_POISON_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SMOKE_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_THUNDERBOLT, BlankRender::new);
-        EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_MISSILE, ArrowRenderer::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_MISSILE, MagicArrowRenderer<EntityMagicMissile>::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_DART, MagicArrowRenderer<EntityDart>::new);
     }
 }

@@ -3,6 +3,7 @@ package binaris.ebwizardry.util;
 import binaris.ebwizardry.client.particle.ParticleProperties;
 import binaris.ebwizardry.client.particle.ParticleWizardry;
 import binaris.ebwizardry.registry.WizardryParticles;
+import net.minecraft.entity.Entity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +41,9 @@ public final class ParticleBuilder {
     public double velocityY;
     public double velocityZ;
     public boolean shaded;
+    public float fadeRed;
+    public float fadeGreen;
+    public float fadeBlue;
     // ------------------------- Core methods -------------------------------- //
 
     /**
@@ -64,6 +68,28 @@ public final class ParticleBuilder {
     public static ParticleBuilder create(DefaultParticleType particle){
         return ParticleBuilder.instance.particle(particle);
     }
+
+    /**
+     * Starts building a particle of the given type and positions it randomly within the given entity's bounding box.
+     * Equivalent to calling {@code ParticleBuilder.create(type).pos(...)}; users should chain any additional builder
+     * methods onto this one and finish with {@code .spawn(world)} as normal.
+     * Used extensively with summoned creatures; makes code much neater and more concise.
+     * <p></p>
+     * <i>N.B. this does <b>not</b> cause the particle to move with the given entity.</i>
+     * @param type The type of particle to build
+     * @param entity The entity to position the particle at
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is already building.
+     */
+    public static ParticleBuilder create(DefaultParticleType type, Entity entity){
+
+        double x = entity.prevX + (entity.getWorld().random.nextDouble() - 0.5D) * (double)entity.getWidth();
+        double y = entity.prevY + entity.getWorld().random.nextDouble() * (double)entity.getHeight();
+        double z = entity.prevZ + (entity.getWorld().random.nextDouble() - 0.5D) * (double)entity.getWidth();
+
+        return ParticleBuilder.instance.particle(type).pos(x, y, z);
+    }
+
     /**
      * Creates a particle at a random position within a radius of the given position.
      * Just in case if you need to spawn random particles in a radius.
@@ -82,7 +108,22 @@ public final class ParticleBuilder {
 
         return ParticleBuilder.create(type).pos(px, py, pz);
     }
-
+    /**
+     * Starts building a particle of the given type and positions it randomly within the given radius of the given position,
+     * with velocity proportional to distance from the given position if move is true. Good for making explosion-type effects.
+     * Equivalent to calling {@code ParticleBuilder.create(type).pos(...).vel(...)}; users should chain any additional builder
+     * methods onto this one and finish with {@code .spawn(world)} as normal.
+     * @param type The type of particle to build
+     * @param random An RNG instance
+     * @param x The x coordinate of the centre of the region in which to position the particle
+     * @param y The y coordinate of the centre of the region in which to position the particle
+     * @param z The z coordinate of the centre of the region in which to position the particle
+     * @param radius The radius of the region in which to position the particle
+     * @param move Whether the particle should move outwards from the centre (note that if this is false, the particle's
+     * default velocity will apply)
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is already building.
+     */
     public static ParticleBuilder create(DefaultParticleType type, Random random, double x, double y, double z, double radius, boolean move){
         double px = x + (random.nextDouble()*2 - 1) * radius;
         double py = y + (random.nextDouble()*2 - 1) * radius;
@@ -186,6 +227,14 @@ public final class ParticleBuilder {
         return this;
     }
 
+    public ParticleBuilder fade(float fadeRed, float fadeGreen, float fadeBlue){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.fadeRed = fadeRed;
+        this.fadeGreen = fadeGreen;
+        this.fadeBlue = fadeBlue;
+        return this;
+    }
+
     /**
      * Spawn the particle in the world.
      * Create a new particle properties {@link ParticleProperties} object and set the properties.
@@ -205,6 +254,7 @@ public final class ParticleBuilder {
         properties.setColor(red, green, blue);
         properties.setScale(scale);
         properties.setShaded(shaded);
+        properties.setFade(fadeRed, fadeGreen, fadeBlue);
 
         ParticleWizardry.WizardryFactory.setProperties(properties);
         this.world.addParticle(particle, x, y, z, velocityX, velocityY, velocityZ);
@@ -233,6 +283,11 @@ public final class ParticleBuilder {
         this.velocityX = 0;
         this.velocityY = 0;
         this.velocityZ = 0;
+
+        this.shaded = false;
+        this.fadeRed = 0;
+        this.fadeGreen = 0;
+        this.fadeBlue = 0;
     }
 
 

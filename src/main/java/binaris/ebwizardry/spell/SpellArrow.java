@@ -11,7 +11,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +69,7 @@ public class SpellArrow<T extends EntityMagicArrow> extends Spell{
         // TODO: RANGE UPDATE
         float range = getFloatProperty(RANGE); // * modifiers.get(WizardryItems.range_upgrade);
 
-        if(!projectile.doGravity()){
+        if(projectile.hasNoGravity()){
             // No sensible spell will do this - range is meaningless if the particle has no gravity or lifetime
             if(projectile.getLifetime() <= 0) return FALLBACK_VELOCITY;
             // Speed = distance/time (trivial, I know, but I've put it here for the sake of completeness)
@@ -91,12 +90,13 @@ public class SpellArrow<T extends EntityMagicArrow> extends Spell{
             // Creates a projectile from the supplied factory
             T projectile = arrowFactory.apply(world);
             // Sets the necessary parameters
-            //projectile.aim(caster, calculateVelocity(projectile, modifiers, caster.getStandingEyeHeight()
-            //        - (float)EntityMagicArrow.LAUNCH_Y_OFFSET));
+            projectile.aim(caster, calculateVelocity(projectile, modifiers, caster.getStandingEyeHeight()
+                    - (float)EntityMagicArrow.LAUNCH_Y_OFFSET));
 
             // TODO: Spell Modifiers...
             // projectile.damageMultiplier = modifiers.get(SpellModifiers.POTENCY);
             // addArrowExtras(projectile, caster, modifiers);
+
             world.spawnEntity(projectile);
         }
         // TODO: Spell sound
@@ -108,13 +108,8 @@ public class SpellArrow<T extends EntityMagicArrow> extends Spell{
     @Override
     public boolean cast(World world, double x, double y, double z, Direction direction, int ticksInUse, int duration, SpellProperties properties) {
         if(!world.isClient){
-            // Creates a projectile from the supplied factory
             T projectile = arrowFactory.apply(world);
-            // Sets the necessary parameters
-            projectile.setPosition(x, y, z);
-            projectile.setVelocity(projectile.getOwner(), (float) x, (float) y, (float) z, projectile.getOwner().getPitch(), projectile.getOwner().getYaw());
-            projectile.aim((LivingEntity) projectile.getOwner(), calculateVelocity(projectile, new SpellModifiers(), projectile.getOwner().getStandingEyeHeight() - (float)EntityMagicArrow.LAUNCH_Y_OFFSET));
-            Vec3i vec = direction.getVector();
+            if(projectile.getOwner() instanceof LivingEntity caster){projectile.aim(caster, calculateVelocity(projectile, new SpellModifiers(), projectile.getOwner().getStandingEyeHeight() - (float)EntityMagicArrow.LAUNCH_Y_OFFSET));}
 
             // TODO: Spell Modifiers...
             //projectile.damageMultiplier = modifiers.get(SpellModifiers.POTENCY);

@@ -354,6 +354,13 @@ public abstract class Spell {
         return Float.parseFloat(properties.getProperties(key).toString());
     }
 
+    public double getDoubleProperty(String key){
+        if(!properties.hasProperties(key)){
+            throw new IllegalArgumentException("Error getting property with key '" + key + "' from spell '" + this.name + "': No such property exists.");
+        }
+        return Double.parseDouble(properties.getProperties(key).toString());
+    }
+
     // ============================================= Misc methods ===============================================
     /** Returns whether the spell is enabled in any of the given {@link SpellProperties.Context Context}s.
      * A spell may be disabled globally in the config, or it may be disabled for one or more specific contexts in

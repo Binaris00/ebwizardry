@@ -65,7 +65,7 @@ public class EntityDart extends EntityMagicArrow{
 
     @Override
     protected void onBlockHit(BlockHitResult blockHitResult) {
-        this.playSound(WizardrySounds.ENTITY_DART_BLOCK, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+        this.playSound(WizardrySounds.ENTITY_DART_HIT_BLOCK, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         super.onBlockHit(blockHitResult);
     }
 

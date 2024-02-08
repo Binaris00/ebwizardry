@@ -44,6 +44,7 @@ public final class ParticleBuilder {
     public float fadeRed;
     public float fadeGreen;
     public float fadeBlue;
+    public boolean gravity;
     // ------------------------- Core methods -------------------------------- //
 
     /**
@@ -226,12 +227,29 @@ public final class ParticleBuilder {
         this.shaded = value;
         return this;
     }
-
+    /**
+     * Set the fade property of the particle.
+     * @param fadeRed The red value
+     * @param fadeGreen The green value
+     * @param fadeBlue The blue value
+     * @throws IllegalStateException If not building yet
+     * **/
     public ParticleBuilder fade(float fadeRed, float fadeGreen, float fadeBlue){
         if(!building) throw new IllegalStateException("Not building yet!");
         this.fadeRed = fadeRed;
         this.fadeGreen = fadeGreen;
         this.fadeBlue = fadeBlue;
+        return this;
+    }
+
+    /**
+     * Set the gravity property of the particle.
+     * @param value The value
+     * @throws IllegalStateException If not building yet
+     * **/
+    public ParticleBuilder gravity(boolean value){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.gravity = value;
         return this;
     }
 
@@ -255,6 +273,7 @@ public final class ParticleBuilder {
         properties.setScale(scale);
         properties.setShaded(shaded);
         properties.setFade(fadeRed, fadeGreen, fadeBlue);
+        properties.setGravity(gravity);
 
         ParticleWizardry.WizardryFactory.setProperties(properties);
         this.world.addParticle(particle, x, y, z, velocityX, velocityY, velocityZ);
@@ -288,6 +307,7 @@ public final class ParticleBuilder {
         this.fadeRed = 0;
         this.fadeGreen = 0;
         this.fadeBlue = 0;
+        this.gravity = false;
     }
 
 

@@ -43,19 +43,17 @@ public abstract class Spell {
     public static final String SPLASH_EFFECT_DURATION = "splash_effect_duration";
     public static final String SPLASH_EFFECT_STRENGTH = "splash_effect_strength";
     public static final String KNOCKBACK_STRENGTH = "knockback_strength";
-
     public static final String TIER_MATCH_PREFIX = "tier";
     public static final String ELEMENT_MATCH_PREFIX = "element";
     public static final String TYPE_MATCH_PREFIX = "type";
     public static final String DISCOVERED_MATCH_PREFIX = "discovered";
     public static final String MODID_MATCH_PREFIX = "modid";
-
     public static final String TIER_MATCH_ALIAS = "t";
     public static final String ELEMENT_MATCH_ALIAS = "e";
     public static final String TYPE_MATCH_ALIAS = "p";
     public static final String DISCOVERED_MATCH_ALIAS = "d";
     public static final String MODID_MATCH_ALIAS = "m";
-
+    public static final String MAX_SECONDARY_TARGETS = "max_secondary_targets";
     public static final String MATCH_CONDITION_SEPARATOR = ";";
     public static final String MATCH_KEY_VALUE_SEPARATOR = "=";
     public static final String MATCH_VALUE_SEPARATOR = ",";
@@ -418,8 +416,4 @@ public abstract class Spell {
     public Text getNameWithFormatting() {
         return Text.translatable(this.getOrCreateTranslationKey()).formatted(this.properties.getElement().getColour());
     }
-
-
-
-
 }

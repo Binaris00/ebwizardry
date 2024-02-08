@@ -43,6 +43,7 @@ public class ParticleWizardry extends SpriteBillboardParticle {
             setFade(properties.getFadeRed(), properties.getFadeGreen(), properties.getFadeBlue());
         }
         this.setVelocity(properties.getVelocityX(), properties.getVelocityY(), properties.getVelocityZ());
+        this.setGravity(properties.getGravity());
 
     }
 
@@ -94,7 +95,10 @@ public class ParticleWizardry extends SpriteBillboardParticle {
         return shaded ? super.getBrightness(tint) : 15728880;
     }
 
-
+    /** Sets this particle's gravity. True to enable gravity, false to disable. Defaults to false.*/
+    public void setGravity(boolean gravity){
+        this.gravityStrength = gravity ? 1 : 0;
+    }
 
     /**
      * Factory for the particle, used to create the particle.

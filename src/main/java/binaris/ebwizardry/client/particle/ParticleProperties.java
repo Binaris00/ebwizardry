@@ -22,6 +22,7 @@ public class ParticleProperties {
     float fadeRed;
     float fadeGreen;
     float fadeBlue;
+    boolean gravity;
     // ------------------------- Getters -------------------------------- //
     public double getVelocityX() {
         return velocityX;
@@ -112,5 +113,11 @@ public class ParticleProperties {
     }
     public void setShaded(boolean shaded) {
         this.shaded = shaded;
+    }
+    public void setGravity(boolean gravity) {
+        this.gravity = gravity;
+    }
+    public boolean getGravity() {
+        return gravity;
     }
 }

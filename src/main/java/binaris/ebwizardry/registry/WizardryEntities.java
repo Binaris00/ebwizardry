@@ -13,6 +13,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
+/**Class used to register all the entities from the Electroblob's Wizardry mod*/
 public final class WizardryEntities {
     public static final EntityType<EntitySparkBomb> ENTITY_SPARK_BOMB = Registry.register(
             Registries.ENTITY_TYPE,
@@ -52,6 +53,27 @@ public final class WizardryEntities {
             FabricEntityTypeBuilder.<EntityDart>create(SpawnGroup.MISC, EntityDart::new)
                     .build());
 
+    @Deprecated
+    // FIXME: Render
+    public static final EntityType<EntityMagicFireball> ENTITY_MAGIC_FIREBALL = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "magic_fireball"),
+            FabricEntityTypeBuilder.<EntityMagicFireball>create(SpawnGroup.MISC, EntityMagicFireball::new)
+                    .build());
+    @Deprecated
+    // FIXME: Render
+    public static final EntityType<EntityFireBolt> ENTITY_FIRE_BOLT = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "fire_bolt"),
+            FabricEntityTypeBuilder.<EntityFireBolt>create(SpawnGroup.MISC, EntityFireBolt::new)
+                    .build());
+
+    public static final EntityType<EntityIceShard> ENTITY_ICE_SHARD = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "ice_shard"),
+            FabricEntityTypeBuilder.<EntityIceShard>create(SpawnGroup.MISC, EntityIceShard::new)
+                    .build());
+
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOMB, FlyingItemEntityRenderer::new);
@@ -60,5 +82,8 @@ public final class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_THUNDERBOLT, BlankRender::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_MISSILE, MagicArrowRenderer<EntityMagicMissile>::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_DART, MagicArrowRenderer<EntityDart>::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_FIREBALL, BlankRender::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOLT, BlankRender::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_SHARD, MagicArrowRenderer<EntityIceShard>::new);
     }
 }

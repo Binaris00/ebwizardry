@@ -5,9 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 
-// TODO : I just copy past this, maybe this could work? I don't know, I'm not a java dev
-// Deprecated because I don't know if this is the right way to do it
-@Deprecated
 public interface WorkbenchItem {
 
     /**

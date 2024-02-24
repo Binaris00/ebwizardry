@@ -3,6 +3,7 @@ package binaris.ebwizardry.registry;
 import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import binaris.ebwizardry.client.renderer.BlankRender;
+import binaris.ebwizardry.client.renderer.MagicProjectileRenderer;
 import binaris.ebwizardry.entity.projectile.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -73,6 +74,28 @@ public final class WizardryEntities {
             new Identifier(Wizardry.MODID, "ice_shard"),
             FabricEntityTypeBuilder.<EntityIceShard>create(SpawnGroup.MISC, EntityIceShard::new)
                     .build());
+    @Deprecated
+    // FIXME: Render
+    public static final EntityType<EntitySpark> ENTITY_SPARK = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "spark"),
+            FabricEntityTypeBuilder.<EntitySpark>create(SpawnGroup.MISC, EntitySpark::new)
+                    .build());
+    public static final EntityType<EntityLightningArrow> ENTITY_LIGHTNING_ARROW = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "lightning_arrow"),
+            FabricEntityTypeBuilder.<EntityLightningArrow>create(SpawnGroup.MISC, EntityLightningArrow::new)
+                    .build());
+    public static final EntityType<EntityIceCharge> ENTITY_ICE_CHARGE = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "ice_charge"),
+            FabricEntityTypeBuilder.<EntityIceCharge>create(SpawnGroup.MISC, EntityIceCharge::new)
+                    .build());
+    public static final EntityType<EntityIceLance> ENTITY_ICE_LANCE = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "ice_lance"),
+            FabricEntityTypeBuilder.<EntityIceLance>create(SpawnGroup.MISC, EntityIceLance::new)
+                    .build());
 
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
@@ -82,8 +105,12 @@ public final class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_THUNDERBOLT, BlankRender::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_MISSILE, MagicArrowRenderer<EntityMagicMissile>::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_DART, MagicArrowRenderer<EntityDart>::new);
-        EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_FIREBALL, BlankRender::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_MAGIC_FIREBALL, MagicProjectileRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOLT, BlankRender::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_SHARD, MagicArrowRenderer<EntityIceShard>::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK, BlankRender::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_LIGHTNING_ARROW, MagicArrowRenderer<EntityLightningArrow>::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_CHARGE, MagicProjectileRenderer::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_LANCE, MagicArrowRenderer<EntityIceLance>::new);
     }
 }

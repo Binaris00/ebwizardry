@@ -1,7 +1,6 @@
 package binaris.ebwizardry.spell;
 
 import binaris.ebwizardry.Wizardry;
-import binaris.ebwizardry.config.SpellProperties;
 import binaris.ebwizardry.entity.projectile.EntityMagicArrow;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.block.DoubleBlockProperties;
@@ -106,7 +105,7 @@ public class SpellArrow<T extends EntityMagicArrow> extends Spell{
     }
 
     @Override
-    public boolean cast(World world, double x, double y, double z, Direction direction, int ticksInUse, int duration, SpellProperties properties) {
+    public boolean cast(World world, double x, double y, double z, Direction direction, int ticksInUse, int duration, SpellModifiers modifiers) {
         if(!world.isClient){
             T projectile = arrowFactory.apply(world);
             if(projectile.getOwner() instanceof LivingEntity caster){projectile.aim(caster, calculateVelocity(projectile, new SpellModifiers(), projectile.getOwner().getStandingEyeHeight() - (float)EntityMagicArrow.LAUNCH_Y_OFFSET));}

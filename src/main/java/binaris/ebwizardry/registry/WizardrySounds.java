@@ -3,10 +3,14 @@ package binaris.ebwizardry.registry;
 import binaris.ebwizardry.Wizardry;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public abstract class WizardrySounds {
+    @Deprecated
+    public static final SoundCategory SPELLS = SoundCategory.MASTER;
+
     public static final SoundEvent BLOCK_ARCANE_WORKBENCH_SPELLBIND = registerSound("block.arcane_workbench.bind_spell");
     public static final SoundEvent BLOCK_PEDESTAL_ACTIVATE = 		registerSound("block.pedestal.activate");
     public static final SoundEvent BLOCK_PEDESTAL_CONQUER = 		registerSound("block.pedestal.conquer");

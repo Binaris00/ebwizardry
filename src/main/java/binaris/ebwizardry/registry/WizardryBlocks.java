@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
  * @author Originaly by Electroblob, ported by Binaris
  * @since Wizardry ???
  */
-public abstract class WizardryBlocks {
+public final class WizardryBlocks {
 
     public static Block BLOCK_SNARE;
 

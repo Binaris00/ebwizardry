@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
  * This class is used to render entities that don't have a texture,
  * such as {@link binaris.ebwizardry.registry.Spells#THUNDERBOLT}
  * */
-public class BlankRender extends EntityRenderer {
+public class BlankRender extends EntityRenderer<Entity> {
     public BlankRender(EntityRendererFactory.Context ctx) {
         super(ctx);
     }

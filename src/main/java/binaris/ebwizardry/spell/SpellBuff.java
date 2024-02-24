@@ -1,12 +1,10 @@
 package binaris.ebwizardry.spell;
 
 import binaris.ebwizardry.Wizardry;
-import binaris.ebwizardry.config.SpellProperties;
 import binaris.ebwizardry.registry.WizardryParticles;
 import binaris.ebwizardry.util.ParticleBuilder;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.block.DoubleBlockProperties;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -51,7 +49,7 @@ public class SpellBuff extends Spell{
     protected final Supplier<StatusEffect>[] effects;
     /** A set of all the different potions (status effects) that this spell applies to its caster. Loaded during
      * init(). */
-    protected Set<StatusEffect> potionSet;
+    protected Set<StatusEffect> potionSet = new java.util.HashSet<>();
     /** The RGB colour values of the particles spawned when this spell is cast. */
     protected final float r, g, b;
 
@@ -69,6 +67,11 @@ public class SpellBuff extends Spell{
         this.r = r;
         this.g = g;
         this.b = b;
+        // add all effects to potionSet
+        for(Supplier<StatusEffect> effect : effects){
+            potionSet.add(effect.get());
+        }
+
         // TODO: NPC STUFF
         //this.npcSelector((e, o) -> true);
     }
@@ -125,7 +128,7 @@ public class SpellBuff extends Spell{
     }
 
     @Override
-    public boolean cast(World world, double x, double y, double z, Direction direction, int ticksInUse, int duration, SpellProperties properties) {
+    public boolean cast(World world, double x, double y, double z, Direction direction, int ticksInUse, int duration, SpellModifiers modifiers) {
 // Gets a 1x1x1 bounding box corresponding to the block in front of the dispenser
         Box boundingBox = new Box(new BlockPos((int) x, (int) y, (int) z));
         List<LivingEntity> entities = world.getEntitiesByType(TypeFilter.instanceOf(LivingEntity.class), boundingBox, EntityPredicates.VALID_LIVING_ENTITY);
@@ -142,8 +145,6 @@ public class SpellBuff extends Spell{
         }
 
         if(nearestEntity == null) return false;
-        // FIXME: MODIFIERS
-        SpellModifiers modifiers = new SpellModifiers();
 
         // Only return on the server side or the client probably won't spawn particles
         if(!this.applyEffects(nearestEntity, modifiers) && !world.isClient) return false;

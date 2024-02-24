@@ -2,6 +2,7 @@ package binaris.ebwizardry;
 
 import binaris.ebwizardry.registry.*;
 import binaris.ebwizardry.spell.Spell;
+import binaris.ebwizardry.util.WandHelper;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -35,9 +36,12 @@ public class Wizardry implements ModInitializer {
 		WizardryItems.register();
 		WizardryBlocks.register();
 		Spells.registry();
+		WizardryEffects.registerEffects();
 		WizardryGroups.use();
 		WizardrySounds.register();
 		WizardryParticles.registryParticleTypes();
+
+		WandHelper.populateUpgradeMap();
 	}
 
 }

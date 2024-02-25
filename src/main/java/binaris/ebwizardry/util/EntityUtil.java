@@ -3,22 +3,26 @@ package binaris.ebwizardry.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public final class EntityUtil {
-
-    public static List<LivingEntity> getLivingEntitiesInRange(World world, double x, double y, double z, double range){
+    public static List<LivingEntity> getLivingEntitiesInRange(World world, double x, double y, double z, double range) {
+        return getEntitiesInRange(world, x, y, z, range, LivingEntity.class);
+    }
+    public static <T extends Entity> List<T> getEntitiesInRange(World world, double x, double y, double z, double range, Class<T> entityClass){
         Box boundingBox = new Box(x - range, y - range, z - range, x + range, y + range, z + range);
-        Predicate<LivingEntity> alwaysTrue = entity -> true;
+        Predicate<T> alwaysTrue = entity -> true;
 
-
-        List<LivingEntity> livingEntities = world.getEntitiesByClass(LivingEntity.class, boundingBox, alwaysTrue);
-        livingEntities.removeIf(livingEntity -> livingEntity.squaredDistanceTo(x, y, z) > range);
-        return livingEntities;
+        List<T> entities = world.getEntitiesByClass(entityClass, boundingBox, alwaysTrue);
+        entities.removeIf(livingEntity -> livingEntity.squaredDistanceTo(x, y, z) > range);
+        return entities;
     }
 
     /**
@@ -32,5 +36,25 @@ public final class EntityUtil {
     // the code required by both.
     public static boolean isLiving(Entity entity){
         return entity instanceof LivingEntity && !(entity instanceof ArmorStandEntity);
+    }
+
+    /**
+     * Gets an entity from its UUID. If the UUID is known to belong to an {@code PlayerEntity}, use the more efficient
+     * {@link World#getPlayerByUuid(UUID)} instead.
+     *
+     * @param world The world the entity is in
+     * @param id The entity's UUID
+     * @return The Entity that has the given UUID or null if no such entity exists in the specified world.
+     */
+    @Nullable
+    public static Entity getEntityByUUID(World world, @Nullable UUID id){
+        if(id == null) return null; // It would return null eventually, but there's no point even looking
+
+        if(world instanceof ServerWorld serverWorld){
+            for (Entity entity : serverWorld.iterateEntities()) {
+                if(entity.getUuid().equals(id)) return entity;
+            }
+        }
+        return null;
     }
 }

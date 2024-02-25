@@ -4,10 +4,13 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import binaris.ebwizardry.client.renderer.BlankRender;
 import binaris.ebwizardry.client.renderer.MagicProjectileRenderer;
+import binaris.ebwizardry.entity.living.ZombieMinionEntity;
 import binaris.ebwizardry.entity.projectile.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
+import net.minecraft.client.render.entity.ZombieEntityRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -97,6 +100,13 @@ public final class WizardryEntities {
             FabricEntityTypeBuilder.<EntityIceLance>create(SpawnGroup.MISC, EntityIceLance::new)
                     .build());
 
+
+    public static final EntityType<ZombieMinionEntity> ENTITY_ZOMBIE_MINION = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "zombie_minion"),
+            FabricEntityTypeBuilder.<ZombieMinionEntity>create(SpawnGroup.MISC, ZombieMinionEntity::new).dimensions(EntityType.ZOMBIE.getDimensions())
+                    .build());
+
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOMB, FlyingItemEntityRenderer::new);
@@ -112,5 +122,8 @@ public final class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_LIGHTNING_ARROW, MagicArrowRenderer<EntityLightningArrow>::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_CHARGE, MagicProjectileRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_LANCE, MagicArrowRenderer<EntityIceLance>::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_ZOMBIE_MINION, ZombieEntityRenderer::new);
+
+        FabricDefaultAttributeRegistry.register(ENTITY_ZOMBIE_MINION, ZombieMinionEntity.createZombieAttributes());
     }
 }

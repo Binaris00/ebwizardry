@@ -4,6 +4,7 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Element;
 import binaris.ebwizardry.constant.SpellType;
 import binaris.ebwizardry.constant.Tier;
+import binaris.ebwizardry.entity.living.ZombieMinionEntity;
 import binaris.ebwizardry.entity.projectile.*;
 import binaris.ebwizardry.spell.*;
 import net.minecraft.entity.effect.StatusEffects;
@@ -45,6 +46,7 @@ public abstract class Spells {
     public static Spell INVISIBILITY;
     public static Spell FONT_OF_VITALITY;
     public static Spell DARK_VISION;
+    public static Spell SUMMON_ZOMBIE;
 
 
     public static void registry(){
@@ -207,6 +209,10 @@ public abstract class Spells {
                 .createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.BUFF, 20, 0, 40)
                 .addProperties(SpellBuff.getDurationKey("night_vision"), 900)
                 .addProperties(SpellBuff.getStrengthKey("night_vision"), 0));
+        SUMMON_ZOMBIE = registrySpell("summon_zombie", new SpellMinion<>("summon_vision", ZombieMinionEntity::new).createProperties(Tier.NOVICE, Element.NECROMANCY, SpellType.MINION, 10, 0, 40))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
     }
 
 

@@ -5,5 +5,7 @@
 
   "block.ebwizardry.snare": "Snare",
 
-  "spell.ebwizardry.poison_bomb": "Poison Bomb"
+  "spell.ebwizardry.poison_bomb": "Poison Bomb",
+  "entity.ebwizardry.summonedcreature.nameplate": "%1$s's %2$s",
+  "entity.ebwizardry.zombie_minion": "Zombie Minion"
 }

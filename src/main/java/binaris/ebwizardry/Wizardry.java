@@ -33,13 +33,13 @@ public class Wizardry implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Electroblob's Wizardry!");
 
+		WizardryParticles.registryParticleTypes();
 		WizardryItems.register();
 		WizardryBlocks.register();
 		Spells.registry();
 		WizardryEffects.registerEffects();
 		WizardryGroups.use();
 		WizardrySounds.register();
-		WizardryParticles.registryParticleTypes();
 
 		WandHelper.populateUpgradeMap();
 	}

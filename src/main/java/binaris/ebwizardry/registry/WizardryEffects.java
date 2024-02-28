@@ -18,6 +18,7 @@ public final class WizardryEffects {
     public static StatusEffect FIRE_SKIN;
     public static StatusEffect ICE_SHROUD;
     public static StatusEffect STATIC_AURA;
+    public static StatusEffect MIND_CONTROL;
     public static void registerEffects() {
         FROST = registerEffect(new Frost(), "frost");
         FIRE_SKIN = registerEffect(new FireSkin(), "fire_skin");

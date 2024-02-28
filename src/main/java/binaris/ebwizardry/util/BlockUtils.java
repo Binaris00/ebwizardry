@@ -1,9 +1,9 @@
 package binaris.ebwizardry.util;
 
 import binaris.ebwizardry.Wizardry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CactusBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
@@ -100,6 +100,41 @@ public final class BlockUtils {
         } else {
             return possibleLocations.get(world.random.nextInt(possibleLocations.size()));
         }
+    }
+
+    public static boolean canBlockBeReplaced(World world, BlockPos pos, boolean excludeLiquids) {
+        return (world.isAir(new BlockPos(pos)) || world.getBlockState(pos).isReplaceable()) && (!excludeLiquids || !world.getBlockState(pos).isLiquid());
+    }
+
+    public static boolean canBlockBeReplaced(World world, BlockPos pos) {
+        return canBlockBeReplaced(world, pos, false);
+    }
+
+    public static boolean isWaterSource(BlockState state) {
+        return state.getBlock() == Blocks.WATER && (state.getBlock() == Blocks.WATER) && state.get(FluidBlock.LEVEL) == 0;
+    }
+
+    public static boolean isLavaSource(BlockState state) {
+        return state.getBlock() == Blocks.LAVA && (state.getBlock() == Blocks.LAVA) && state.get(FluidBlock.LEVEL) == 0;
+    }
+
+    public static boolean freeze(World world, BlockPos pos, boolean freezeLava) {
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
+
+        if (isWaterSource(state)) {
+            world.setBlockState(pos, Blocks.ICE.getDefaultState());
+        } else if (freezeLava && isLavaSource(state)) {
+            world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
+        } else if (freezeLava && (block == Blocks.LAVA)) {
+            world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
+        } else if (canBlockBeReplaced(world, pos.up()) && Blocks.SNOW.getDefaultState().canPlaceAt(world, pos.up())) {
+            world.setBlockState(pos.up(), Blocks.SNOW.getDefaultState());
+        } else {
+            return false;
+        }
+
+        return true;
     }
 
     @FunctionalInterface

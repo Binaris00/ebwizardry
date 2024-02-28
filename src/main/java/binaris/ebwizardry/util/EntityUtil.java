@@ -3,10 +3,12 @@ package binaris.ebwizardry.util;
 import binaris.ebwizardry.config.WizardryConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -60,6 +62,14 @@ public final class EntityUtil {
         }
         return null;
     }
+
+    public static boolean attackEntityWithoutKnockback(Entity entity, DamageSource source, float amount) {
+        Vec3d originalVec = entity.getVelocity();
+        boolean succeeded = entity.damage(source, amount);
+        entity.setVelocity(originalVec);
+        return succeeded;
+    }
+
 
     public static int getDefaultAimingError(Difficulty difficulty) {
         return switch (difficulty) {

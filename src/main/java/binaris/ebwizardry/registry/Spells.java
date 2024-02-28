@@ -51,6 +51,11 @@ public abstract class Spells {
     public static Spell SUMMON_ZOMBIE;
     public static Spell SUMMON_BLAZE;
     public static Spell SUMMON_ICE_WRAITH;
+    public static Spell FREEZE;
+    public static Spell FLAME_RAY;
+    public static Spell FROST_RAY;
+    public static Spell SUMMON_SNOW_GOLEM;
+    public static Spell LIFE_DRAIN;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -63,7 +68,11 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.BURN_DURATION, 10));
 
-        // TODO: freeze spell
+        FREEZE = registrySpell("freeze", new Freeze().createProperties(Tier.NOVICE, Element.ICE, SpellType.ATTACK, 5, 0, 10)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
 
         SNOWBALL = registrySpell("snowball", new SpellThrowable<>("snowball", SnowballEntity::new).createProperties(Tier.NOVICE, Element.ICE, SpellType.PROJECTILE, 1, 0, 1)
                 .addProperties(Spell.RANGE, 15));
@@ -90,7 +99,10 @@ public abstract class Spells {
         HEAL = registrySpell("heal", new Heal().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 5, 0, 20)
                 .addProperties(Spell.HEALTH, 4));
 
-        // TODO: FlameRay spell
+        FLAME_RAY = registrySpell("flame_ray", new FlameRay().createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.ATTACK, 5, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3)
+                .addProperties(Spell.BURN_DURATION, 10));
 
         FIRE_BALL = registrySpell("fire_ball", new SpellProjectile<>("fire_ball", EntityMagicFireball::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 10, 0, 15)
                 .addProperties(Spell.RANGE, 20)
@@ -224,6 +236,17 @@ public abstract class Spells {
                 .addProperties(SpellMinion.MINION_LIFETIME, 600)
                 .addProperties(SpellMinion.MINION_COUNT, 1)
                 .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+        FROST_RAY = registrySpell("frost_ray", new FrostRay().createProperties(Tier.APPRENTICE, Element.ICE, SpellType.ATTACK, 5, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 0));
+        SUMMON_SNOW_GOLEM = registrySpell("summon_snow_golem", new SummonSnowGolem().createProperties(Tier.NOVICE, Element.ICE, SpellType.MINION, 15, 0, 20)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2));
+        LIFE_DRAIN = registrySpell("life_drain", new LifeDrain().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 2)
+                .addProperties(LifeDrain.HEAL_FACTOR, 0.35F));
     }
 
 

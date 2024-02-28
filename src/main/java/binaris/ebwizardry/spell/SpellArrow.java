@@ -1,7 +1,10 @@
 package binaris.ebwizardry.spell;
 
 import binaris.ebwizardry.Wizardry;
+import binaris.ebwizardry.entity.living.SpellCaster;
 import binaris.ebwizardry.entity.projectile.EntityMagicArrow;
+import binaris.ebwizardry.entity.projectile.EntityMagicProjectile;
+import binaris.ebwizardry.util.EntityUtil;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.block.DoubleBlockProperties;
 import net.minecraft.entity.LivingEntity;
@@ -102,6 +105,29 @@ public class SpellArrow<T extends EntityMagicArrow> extends Spell{
         //this.playSound(world, caster, ticksInUse, -1, modifiers);
 
         return true;
+    }
+
+    @Override
+    public boolean cast(World world, LivingEntity caster, Hand hand, int ticksInUse, LivingEntity target, SpellModifiers modifiers) {
+        if (target != null) {
+            if (!world.isClient) {
+                T projectile = arrowFactory.apply(world);
+                int aimingError = caster instanceof SpellCaster ? ((SpellCaster) caster).getAimingError(world.getDifficulty()) : EntityUtil.getDefaultAimingError(world.getDifficulty());
+                projectile.aim(caster, target, calculateVelocity(projectile, modifiers, caster.getStandingEyeHeight() - (float) EntityMagicProjectile.LAUNCH_Y_OFFSET), aimingError);
+                // TODO: Modifiers
+                //projectile.damageMultiplier = modifiers.get(SpellModifiers.POTENCY);
+                addArrowExtras(projectile, caster, modifiers);
+                world.spawnEntity(projectile);
+            }
+
+            caster.swingHand(hand);
+
+            this.playSound(world, caster, ticksInUse, -1, modifiers);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

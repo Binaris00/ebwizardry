@@ -4,6 +4,8 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Element;
 import binaris.ebwizardry.constant.SpellType;
 import binaris.ebwizardry.constant.Tier;
+import binaris.ebwizardry.entity.living.BlazeMinionEntity;
+import binaris.ebwizardry.entity.living.IceWraithEntity;
 import binaris.ebwizardry.entity.living.ZombieMinionEntity;
 import binaris.ebwizardry.entity.projectile.*;
 import binaris.ebwizardry.spell.*;
@@ -47,7 +49,8 @@ public abstract class Spells {
     public static Spell FONT_OF_VITALITY;
     public static Spell DARK_VISION;
     public static Spell SUMMON_ZOMBIE;
-
+    public static Spell SUMMON_BLAZE;
+    public static Spell SUMMON_ICE_WRAITH;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -73,8 +76,6 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 12)
                 .addProperties(Spell.DAMAGE, 3)
                 .addProperties(Spell.KNOCKBACK_STRENGTH, 0.2));
-
-        // TODO: Summon Zombie
 
         //TODO: Snare spell
 
@@ -210,6 +211,16 @@ public abstract class Spells {
                 .addProperties(SpellBuff.getDurationKey("night_vision"), 900)
                 .addProperties(SpellBuff.getStrengthKey("night_vision"), 0));
         SUMMON_ZOMBIE = registrySpell("summon_zombie", new SpellMinion<>("summon_vision", ZombieMinionEntity::new).createProperties(Tier.NOVICE, Element.NECROMANCY, SpellType.MINION, 10, 0, 40))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+        SUMMON_BLAZE = registrySpell("summon_blaze", new SpellMinion<>("summon_blaze", BlazeMinionEntity::new).soundValues(1, 1.1f, 0.2f)
+                .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.MINION, 40, 10, 200))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+        SUMMON_ICE_WRAITH = registrySpell("summon_ice_wraith", new SpellMinion<>("summon_ice_wraith", IceWraithEntity::new)).soundValues(1, 1.1f, 0.2f)
+                .createProperties(Tier.ADVANCED, Element.ICE, SpellType.MINION, 40, 10, 200)
                 .addProperties(SpellMinion.MINION_LIFETIME, 600)
                 .addProperties(SpellMinion.MINION_COUNT, 1)
                 .addProperties(SpellMinion.SUMMON_RADIUS, 2);

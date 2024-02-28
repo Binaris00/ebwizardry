@@ -14,7 +14,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class WizardryItems {
+public final class WizardryItems {
     public static Item SPELL_BOOK;
     public static Item SCROLL;
     public static Item SPARK_BOMB;
@@ -54,6 +54,15 @@ public abstract class WizardryItems {
     public static Item WIZARD_ROBE_NECROMANCY;
     public static Item WIZARD_LEGGINGS_NECROMANCY;
     public static Item WIZARD_BOOTS_NECROMANCY;
+    public static Item STORE_UPGRADE;
+    public static Item SIPHON_UPGRADE;
+    public static Item CONDENSER_UPGRADE;
+    public static Item RANGE_UPGRADE;
+    public static Item DURATION_UPGRADE;
+    public static Item COOLDOWN_UPGRADE;
+    public static Item BLAST_UPGRADE;
+    public static Item ATTUNEMENT_UPGRADE;
+    public static Item MELEE_UPGRADE;
 
 
 
@@ -69,7 +78,20 @@ public abstract class WizardryItems {
 
         SILK = registerItem("magic_silk", new Item(new FabricItemSettings()), WizardryGroups.WIZARDRY);
 
-        // Armors
+        // ---------------- Wand Upgrades ----------------
+        STORE_UPGRADE = registerItem("store_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        SIPHON_UPGRADE = registerItem("siphon_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        CONDENSER_UPGRADE = registerItem("condenser_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        RANGE_UPGRADE = registerItem("range_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        DURATION_UPGRADE = registerItem("duration_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        COOLDOWN_UPGRADE = registerItem("cooldown_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        BLAST_UPGRADE = registerItem("blast_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        ATTUNEMENT_UPGRADE = registerItem("attunement_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        MELEE_UPGRADE = registerItem("melee_upgrade", new ItemWandUpgrade(), WizardryGroups.WIZARDRY);
+        // ------------------------------------------------
+
+
+        // ---------------- Wizard Armor ----------------
         WIZARD_HAT = registerItem("wizard_hat", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.HELMET, new FabricItemSettings(), null), WizardryGroups.GEARS);
         WIZARD_ROBE = registerItem("wizard_robe", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.CHESTPLATE, new FabricItemSettings(), null), WizardryGroups.GEARS);
         WIZARD_LEGGINGS = registerItem("wizard_leggings", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.LEGGINGS, new FabricItemSettings(), null), WizardryGroups.GEARS);
@@ -109,6 +131,8 @@ public abstract class WizardryItems {
         WIZARD_ROBE_NECROMANCY = registerItem("wizard_robe_necromancy", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.CHESTPLATE, new FabricItemSettings(), Element.NECROMANCY), WizardryGroups.GEARS);
         WIZARD_LEGGINGS_NECROMANCY = registerItem("wizard_leggings_necromancy", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.LEGGINGS, new FabricItemSettings(), Element.NECROMANCY), WizardryGroups.GEARS);
         WIZARD_BOOTS_NECROMANCY = registerItem("wizard_boots_necromancy", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.BOOTS, new FabricItemSettings(), Element.NECROMANCY), WizardryGroups.GEARS);
+        // ----------------------------------------------
+
     }
 
     private static Item registerItem(String name, Item item, @Nullable RegistryKey<ItemGroup> group) {

@@ -4,15 +4,19 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import binaris.ebwizardry.client.renderer.BlankRender;
 import binaris.ebwizardry.client.renderer.MagicProjectileRenderer;
+import binaris.ebwizardry.entity.living.BlazeMinionEntity;
+import binaris.ebwizardry.entity.living.IceWraithEntity;
 import binaris.ebwizardry.entity.living.ZombieMinionEntity;
 import binaris.ebwizardry.entity.projectile.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.client.render.entity.BlazeEntityRenderer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.client.render.entity.ZombieEntityRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -106,6 +110,16 @@ public final class WizardryEntities {
             new Identifier(Wizardry.MODID, "zombie_minion"),
             FabricEntityTypeBuilder.<ZombieMinionEntity>create(SpawnGroup.MISC, ZombieMinionEntity::new).dimensions(EntityType.ZOMBIE.getDimensions())
                     .build());
+    public static final EntityType<BlazeMinionEntity> ENTITY_BLAZE_MINION = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "blaze_minion"),
+            FabricEntityTypeBuilder.<BlazeMinionEntity>create(SpawnGroup.MISC, BlazeMinionEntity::new).dimensions(EntityType.BLAZE.getDimensions())
+                    .build());
+    public static final EntityType<IceWraithEntity> ENTITY_ICE_WRAITH = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "ice_wraith"),
+            FabricEntityTypeBuilder.<IceWraithEntity>create(SpawnGroup.MISC, IceWraithEntity::new).dimensions(EntityType.BLAZE.getDimensions())
+                    .build());
 
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
@@ -123,7 +137,16 @@ public final class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_CHARGE, MagicProjectileRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_LANCE, MagicArrowRenderer<EntityIceLance>::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ZOMBIE_MINION, ZombieEntityRenderer::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_BLAZE_MINION, BlazeEntityRenderer::new);
+        EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_WRAITH, (ctx -> new BlazeEntityRenderer(ctx){
+            @Override
+            public Identifier getTexture(BlazeEntity blazeEntity) {
+                return new Identifier(Wizardry.MODID, "textures/entity/ice_wraith.png");
+            }
+        }));
 
         FabricDefaultAttributeRegistry.register(ENTITY_ZOMBIE_MINION, ZombieMinionEntity.createZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ENTITY_BLAZE_MINION, BlazeMinionEntity.createBlazeAttributes());
+        FabricDefaultAttributeRegistry.register(ENTITY_ICE_WRAITH, IceWraithEntity.createBlazeAttributes());
     }
 }

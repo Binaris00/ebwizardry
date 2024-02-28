@@ -1,5 +1,6 @@
 package binaris.ebwizardry.entity.living;
 
+import binaris.ebwizardry.config.WizardryConfig;
 import binaris.ebwizardry.registry.WizardryEntities;
 import binaris.ebwizardry.util.EntityUtil;
 import net.minecraft.entity.Entity;
@@ -8,7 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.MoveThroughVillageGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.FlyingEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -54,6 +55,7 @@ public class ZombieMinionEntity extends ZombieEntity implements SummonedEntity{
     @Override
     protected void initGoals() {
         this.goalSelector.add(6, new MoveThroughVillageGoal(this, 1.0, false, 4, this::canBreakDoors));
+        this.goalSelector.add(1, new RevengeGoal(this));
         this.goalSelector.add(2, new ActiveTargetGoal<>(this, LivingEntity.class, 0, false, true, this.getTargetSelector()));
 
         super.initGoals();
@@ -98,11 +100,6 @@ public class ZombieMinionEntity extends ZombieEntity implements SummonedEntity{
     public void tick() {
         super.tick();
         this.updateDelegate();
-    }
-
-    @Override
-    public boolean canTarget(EntityType<?> type) {
-        return true;
     }
 
     private void spawnParticleEffect() {
@@ -152,12 +149,18 @@ public class ZombieMinionEntity extends ZombieEntity implements SummonedEntity{
         return getCaster() == null && getOwnerId() == null;
     }
 
-    // Name
+    @Override
+    public boolean canTarget(LivingEntity target) {
+        return !(target instanceof FlyingEntity)
+                // FIXME: Temporary fix for the issue that the minion can't attack the caster.
+                && !(target == getCaster());
+    }
 
+    // Name
     @Override
     public boolean shouldRenderName() {
         return true;
     }
-    @Override public boolean hasCustomName() { return true; }
+    @Override public boolean hasCustomName() { return WizardryConfig.summonedCreatureNames && getCaster() != null; }
 
 }

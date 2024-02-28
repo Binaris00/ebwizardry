@@ -7,5 +7,7 @@
 
   "spell.ebwizardry.poison_bomb": "Poison Bomb",
   "entity.ebwizardry.summonedcreature.nameplate": "%1$s's %2$s",
-  "entity.ebwizardry.zombie_minion": "Zombie Minion"
+  "entity.ebwizardry.zombie_minion": "Zombie Minion",
+  "entity.ebwizardry.blaze_minion": "Blaze Minion",
+    "entity.ebwizardry.ice_wraith": "Ice Wraith"
 }

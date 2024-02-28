@@ -1,10 +1,13 @@
 package binaris.ebwizardry.util;
 
+import binaris.ebwizardry.config.WizardryConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,5 +59,22 @@ public final class EntityUtil {
             }
         }
         return null;
+    }
+
+    public static int getDefaultAimingError(Difficulty difficulty) {
+        return switch (difficulty) {
+            case EASY -> 10;
+            case NORMAL -> 6;
+            case HARD -> 2;
+            default -> 10;
+        };
+    }
+
+    public static boolean canDamageBlocks(@Nullable Entity entity, World world) {
+        if (entity == null) return WizardryConfig.dispenserBlockDamage;
+        else if (entity instanceof PlayerEntity) return ((PlayerEntity) entity).canModifyBlocks() && WizardryConfig.playerBlockDamage;
+        // TODO: Forge Event Factory
+        //return ForgeEventFactory.getMobGriefingEvent(world, entity);
+        return false;
     }
 }

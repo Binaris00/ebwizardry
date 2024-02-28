@@ -1,14 +1,14 @@
 package binaris.ebwizardry.util;
 
+import binaris.ebwizardry.Wizardry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +62,19 @@ public final class BlockUtils {
     @Nullable
     public static BlockPos findNearbyFloorSpace(World world, BlockPos origin, int horizontalRange, int verticalRange) {
         return findNearbyFloorSpace(world, origin, horizontalRange, verticalRange, true);
+    }
+
+    public static boolean canPlaceBlock(@Nullable Entity placer, World world, BlockPos pos) {
+        if (world.isClient) {
+            Wizardry.LOGGER.warn("BlockUtils#canPlaceBlock called from the client side! Blocks should be modified server-side only");
+            return true;
+        }
+
+        if (!EntityUtil.canDamageBlocks(placer, world)) return false;
+
+        if (world.isOutOfHeightLimit(pos)) return false;
+
+        return !(placer instanceof PlayerEntity) || world.canPlayerModifyAt((PlayerEntity) placer, pos);
     }
 
     @Nullable

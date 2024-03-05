@@ -4,6 +4,7 @@ import binaris.ebwizardry.client.particle.ParticleProperties;
 import binaris.ebwizardry.client.particle.ParticleWizardry;
 import binaris.ebwizardry.registry.WizardryParticles;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -326,5 +327,16 @@ public final class ParticleBuilder {
             pz = z + world.random.nextDouble() - 0.5;
             world.addParticle(ParticleTypes.LARGE_SMOKE, px, py, pz, 0, 0, 0);
         }
+    }
+
+    public static void spawnHealParticles(World world, LivingEntity entity) {
+        for (int i = 0; i < 10; i++) {
+            double x = entity.getX() + world.random.nextDouble() * 2 - 1;
+            double y = entity.getX() + entity.getStandingEyeHeight() - 0.5 + world.random.nextDouble();
+            double z = entity.getX() + world.random.nextDouble() * 2 - 1;
+            ParticleBuilder.create(WizardryParticles.SPARKLE).pos(x, y, z).velocity(0, 0.1, 0).color(1, 1, 0.3f).spawn(world);
+        }
+        // TODO: Particle Buff
+        //ParticleBuilder.create(WizardryParticles.BUFF).entity(entity).clr(1, 1, 0.3f).spawn(world);
     }
 }

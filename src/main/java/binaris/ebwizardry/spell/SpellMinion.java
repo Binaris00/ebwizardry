@@ -4,7 +4,6 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.entity.living.SummonedEntity;
 import binaris.ebwizardry.registry.WizardryItems;
 import binaris.ebwizardry.util.BlockUtils;
-import binaris.ebwizardry.util.GeometryUtils;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.block.DoubleBlockProperties;
 import net.minecraft.entity.EntityData;
@@ -118,7 +117,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
 
                 minion.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                 minion.setLifetime((int) (getFloatProperty(MINION_LIFETIME) * modifiers.get(WizardryItems.DURATION_UPGRADE)));
-                this.addMinionExtras(minion, pos);
+                this.addMinionExtras(minion, pos, null, modifiers, i);
 
                 world.spawnEntity(minion);
             }
@@ -140,7 +139,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
      * @param modifiers The spell modifiers this spell was cast with.
      * @return False to cause the spell to fail, true to allow it to continue.
      *
-     * @see SpellMinion#addMinionExtras(MobEntity, BlockPos)
+     * @see SpellMinion#addMinionExtras(MobEntity, BlockPos, LivingEntity, SpellModifiers, int)
      */
     protected boolean spawnMinions(World world, LivingEntity caster, SpellModifiers modifiers) {
         if (!world.isClient) {
@@ -159,7 +158,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
                     if (pos == null) return false;
                 }
 
-                T minion = createMinion(world);
+                T minion = createMinion(world, caster, new SpellModifiers());
 
                 minion.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
                 minion.setCaster(caster);
@@ -172,7 +171,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
                 minion.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).addPersistentModifier(new EntityAttributeModifier(HEALTH_MODIFIER, modifiers.get(HEALTH_MODIFIER) - 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
                 minion.setHealth(minion.getMaxHealth());
 
-                this.addMinionExtras(minion, pos);
+                this.addMinionExtras(minion, pos, caster, modifiers, i);
 
                 world.spawnEntity(minion);
             }
@@ -187,7 +186,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
      * @param world The world in which to spawn the minion.
      * @return The resulting minion entity.
      */
-    protected T createMinion(World world) {
+    protected T createMinion(World world, LivingEntity caster, SpellModifiers modifiers) {
         return minionFactory.apply(world);
     }
 
@@ -199,7 +198,7 @@ public class SpellMinion<T extends MobEntity & SummonedEntity> extends Spell{
      * @param pos The position at which the entity was spawned.
      * {@link SpellMinion#MINION_COUNT}.
      */
-    protected void addMinionExtras(T minion, BlockPos pos) {
+    protected void addMinionExtras(T minion, BlockPos pos, LivingEntity caster, SpellModifiers modifiers, int alreadySpawned) {
         minion.initialize((ServerWorldAccess) minion.getWorld(), minion.getWorld().getLocalDifficulty(pos), null, null, null);
     }
 }

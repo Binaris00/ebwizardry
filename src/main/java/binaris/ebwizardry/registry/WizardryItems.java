@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -63,6 +64,13 @@ public final class WizardryItems {
     public static Item BLAST_UPGRADE;
     public static Item ATTUNEMENT_UPGRADE;
     public static Item MELEE_UPGRADE;
+    public static Item FLAMING_AXE;
+    public static Item FLAMECATCHER;
+    public static Item FROST_AXE;
+    public static Item SPECTRAL_SWORD;
+    public static Item SPECTRAL_PICKAXE;
+
+    public static ToolMaterial MAGICAL = new MaterialMagic();
 
 
 
@@ -133,6 +141,12 @@ public final class WizardryItems {
         WIZARD_BOOTS_NECROMANCY = registerItem("wizard_boots_necromancy", new ItemWizardArmor(ArmorType.WIZARD, ArmorItem.Type.BOOTS, new FabricItemSettings(), Element.NECROMANCY), WizardryGroups.GEARS);
         // ----------------------------------------------
 
+        // Conjured items
+        FLAMING_AXE = registerItem("flaming_axe", new ItemFlamingAxe(), WizardryGroups.GEARS);
+        FLAMECATCHER = registerItem("flamecatcher", new ItemFlamecatcher(), WizardryGroups.GEARS);
+        FROST_AXE = registerItem("frost_axe", new ItemFrostAxe(), WizardryGroups.GEARS);
+        SPECTRAL_SWORD = registerItem("spectral_sword", new ItemSpectralSword(), WizardryGroups.GEARS);
+        SPECTRAL_PICKAXE = registerItem("spectral_pickaxe", new ItemSpectralPickaxe(), WizardryGroups.GEARS);
     }
 
     private static Item registerItem(String name, Item item, @Nullable RegistryKey<ItemGroup> group) {

@@ -56,6 +56,16 @@ public abstract class Spells {
     public static Spell FROST_RAY;
     public static Spell SUMMON_SNOW_GOLEM;
     public static Spell LIFE_DRAIN;
+    public static Spell SUMMON_SKELETON;
+    public static Spell WITHER;
+    public static Spell POISON;
+    public static Spell HEAL_ALLY;
+    public static Spell CURE_EFFECTS;
+    public static Spell FLAMING_AXE;
+    public static Spell FLAMECATCHER;
+    public static Spell FROST_AXE;
+    public static Spell CONJURE_SWORD;
+    public static Spell CONJURE_PICKAXE;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -247,6 +257,47 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.DAMAGE, 2)
                 .addProperties(LifeDrain.HEAL_FACTOR, 0.35F));
+        SUMMON_SKELETON = registrySpell("summon_skeleton", new SummonSkeleton().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.MINION, 15, 0, 50))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+        WITHER = registrySpell("wither", new Wither().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 1)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
+        POISON = registrySpell("poison", new Poison().createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.ATTACK, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 1)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
+        HEAL_ALLY = registrySpell("heal_ally", new HealAlly().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.HEALTH, 5));
+        CURE_EFFECTS = registrySpell("cure_effects", new CureEffects().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 25, 10, 40));
+        FLAMING_AXE = registrySpell("flaming_axe", new FlamingAxe().createProperties(Tier.ADVANCED, Element.FIRE, SpellType.UTILITY, 45, 10, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
+                .addProperties(SpellConjuration.DAMAGE, 8)
+                .addProperties(SpellConjuration.BURN_DURATION, 8));
+
+        FLAMECATCHER = registrySpell("flamecatcher", new Flamecatcher().createProperties(Tier.MASTER, Element.FIRE, SpellType.UTILITY, 100, 20, 150)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 900)
+                .addProperties("shot_count", 5)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 16)
+                .addProperties(Spell.BURN_DURATION, 15));
+
+        FROST_AXE = registrySpell("frost_axe", new FrostAxe().createProperties(Tier.ADVANCED, Element.ICE, SpellType.UTILITY, 45, 10, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
+                .addProperties(SpellConjuration.DAMAGE, 8)
+                .addProperties(SpellConjuration.EFFECT_DURATION, 160)
+                .addProperties(SpellConjuration.EFFECT_STRENGTH, 1));
+
+        CONJURE_SWORD = registrySpell("conjure_sword", new SpellConjuration("conjure_sword", WizardryItems.SPECTRAL_SWORD).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
+
+        CONJURE_PICKAXE = registrySpell("conjure_pickaxe", new SpellConjuration("conjure_pickaxe", WizardryItems.SPECTRAL_PICKAXE).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
     }
 
 

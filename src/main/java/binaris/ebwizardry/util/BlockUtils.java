@@ -3,11 +3,12 @@ package binaris.ebwizardry.util;
 import binaris.ebwizardry.Wizardry;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -134,6 +135,38 @@ public final class BlockUtils {
             return false;
         }
 
+        return true;
+    }
+
+    public static boolean isBlockUnbreakable(World world, BlockPos pos) {
+        return !world.isAir(new BlockPos(pos)) && world.getBlockState(pos).getHardness(world, pos) == -1.0f;
+    }
+
+    public static List<BlockPos> getBlockSphere(BlockPos centre, double radius) {
+        List<BlockPos> sphere = new ArrayList<>((int) Math.pow(radius, 3));
+
+        for (int i = -(int) radius; i <= radius; i++) {
+            float r1 = MathHelper.sqrt((float) (radius * radius - i * i));
+
+            for (int j = -(int) r1; j <= r1; j++) {
+                float r2 = MathHelper.sqrt((float) (radius * radius - i * i - j * j));
+
+                for (int k = -(int) r2; k <= r2; k++) {
+                    sphere.add(centre.add(i, j, k));
+                }
+            }
+        }
+
+        if(sphere.isEmpty()){
+            Wizardry.LOGGER.warn("BlockUtils#getBlockSphere returned an empty list! This is likely a bug. Please report it on the mod's GitHub page.");
+            Wizardry.LOGGER.warn("Centre: " + centre + ", radius: " + radius);
+            sphere.add(centre);
+        }
+
+        return sphere;
+    }
+
+    public static boolean canBreakBlock(LivingEntity caster, World world, BlockPos pos) {
         return true;
     }
 

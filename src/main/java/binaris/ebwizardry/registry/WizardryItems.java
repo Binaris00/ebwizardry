@@ -2,6 +2,7 @@ package binaris.ebwizardry.registry;
 
 import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Element;
+import binaris.ebwizardry.constant.Tier;
 import binaris.ebwizardry.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -69,9 +70,42 @@ public final class WizardryItems {
     public static Item FROST_AXE;
     public static Item SPECTRAL_SWORD;
     public static Item SPECTRAL_PICKAXE;
+    public static Item SPECTRAL_BOW;
 
     public static ToolMaterial MAGICAL = new MaterialMagic();
 
+    public static Item MAGIC_WAND;
+    public static Item APPRENTICE_WAND;
+    public static Item ADVANCED_WAND;
+    public static Item MASTER_WAND;
+    public static Item NOVICE_FIRE_WAND;
+    public static Item APPRENTICE_FIRE_WAND;
+    public static Item ADVANCED_FIRE_WAND;
+    public static Item MASTER_FIRE_WAND;
+    public static Item NOVICE_ICE_WAND;
+    public static Item APPRENTICE_ICE_WAND;
+    public static Item ADVANCED_ICE_WAND;
+    public static Item MASTER_ICE_WAND;
+    public static Item NOVICE_LIGHTNING_WAND;
+    public static Item APPRENTICE_LIGHTNING_WAND;
+    public static Item ADVANCED_LIGHTNING_WAND;
+    public static Item MASTER_LIGHTNING_WAND;
+    public static Item NOVICE_NECROMANCY_WAND;
+    public static Item APPRENTICE_NECROMANCY_WAND;
+    public static Item ADVANCED_NECROMANCY_WAND;
+    public static Item MASTER_NECROMANCY_WAND;
+    public static Item NOVICE_EARTH_WAND;
+    public static Item APPRENTICE_EARTH_WAND;
+    public static Item ADVANCED_EARTH_WAND;
+    public static Item MASTER_EARTH_WAND;
+    public static Item NOVICE_SORCERY_WAND;
+    public static Item APPRENTICE_SORCERY_WAND;
+    public static Item ADVANCED_SORCERY_WAND;
+    public static Item MASTER_SORCERY_WAND;
+    public static Item NOVICE_HEALING_WAND;
+    public static Item APPRENTICE_HEALING_WAND;
+    public static Item ADVANCED_HEALING_WAND;
+    public static Item MASTER_HEALING_WAND;
 
 
     public static void register(){
@@ -142,11 +176,58 @@ public final class WizardryItems {
         // ----------------------------------------------
 
         // Conjured items
+        // ----------------------------------------------
         FLAMING_AXE = registerItem("flaming_axe", new ItemFlamingAxe(), WizardryGroups.GEARS);
         FLAMECATCHER = registerItem("flamecatcher", new ItemFlamecatcher(), WizardryGroups.GEARS);
         FROST_AXE = registerItem("frost_axe", new ItemFrostAxe(), WizardryGroups.GEARS);
         SPECTRAL_SWORD = registerItem("spectral_sword", new ItemSpectralSword(), WizardryGroups.GEARS);
         SPECTRAL_PICKAXE = registerItem("spectral_pickaxe", new ItemSpectralPickaxe(), WizardryGroups.GEARS);
+        SPECTRAL_BOW = registerItem("spectral_bow", new ItemSpectralBow(), WizardryGroups.GEARS);
+        // ----------------------------------------------
+
+        // ------------------- Wands --------------------
+        MAGIC_WAND = registerItem("magic_wand", new ItemWand(Tier.NOVICE, null), WizardryGroups.WIZARDRY);
+        APPRENTICE_WAND = registerItem("apprentice_wand", new ItemWand(Tier.APPRENTICE, null), WizardryGroups.WIZARDRY);
+        ADVANCED_WAND = registerItem("advanced_wand", new ItemWand(Tier.ADVANCED, null), WizardryGroups.WIZARDRY);
+        MASTER_WAND = registerItem("master_wand", new ItemWand(Tier.MASTER, null), WizardryGroups.WIZARDRY);
+
+        NOVICE_FIRE_WAND = registerItem("novice_fire_wand", new ItemWand(Tier.NOVICE, Element.FIRE), WizardryGroups.WIZARDRY);
+        APPRENTICE_FIRE_WAND = registerItem("apprentice_fire_wand", new ItemWand(Tier.APPRENTICE, Element.FIRE), WizardryGroups.WIZARDRY);
+        ADVANCED_FIRE_WAND = registerItem("advanced_fire_wand", new ItemWand(Tier.ADVANCED, Element.FIRE), WizardryGroups.WIZARDRY);
+        MASTER_FIRE_WAND = registerItem("master_fire_wand", new ItemWand(Tier.MASTER, Element.FIRE), WizardryGroups.WIZARDRY);
+
+        NOVICE_ICE_WAND = registerItem("novice_ice_wand", new ItemWand(Tier.NOVICE, Element.ICE), WizardryGroups.WIZARDRY);
+        APPRENTICE_ICE_WAND = registerItem("apprentice_ice_wand", new ItemWand(Tier.APPRENTICE, Element.ICE), WizardryGroups.WIZARDRY);
+        ADVANCED_ICE_WAND = registerItem("advanced_ice_wand", new ItemWand(Tier.ADVANCED, Element.ICE), WizardryGroups.WIZARDRY);
+        MASTER_ICE_WAND = registerItem("master_ice_wand", new ItemWand(Tier.MASTER, Element.ICE), WizardryGroups.WIZARDRY);
+
+        NOVICE_LIGHTNING_WAND = registerItem("novice_lightning_wand", new ItemWand(Tier.NOVICE, Element.LIGHTNING), WizardryGroups.WIZARDRY);
+        APPRENTICE_LIGHTNING_WAND = registerItem("apprentice_lightning_wand", new ItemWand(Tier.APPRENTICE, Element.LIGHTNING), WizardryGroups.WIZARDRY);
+        ADVANCED_LIGHTNING_WAND = registerItem("advanced_lightning_wand", new ItemWand(Tier.ADVANCED, Element.LIGHTNING), WizardryGroups.WIZARDRY);
+        MASTER_LIGHTNING_WAND = registerItem("master_lightning_wand", new ItemWand(Tier.MASTER, Element.LIGHTNING), WizardryGroups.WIZARDRY);
+
+        NOVICE_NECROMANCY_WAND = registerItem("novice_necromancy_wand", new ItemWand(Tier.NOVICE, Element.NECROMANCY), WizardryGroups.WIZARDRY);
+        APPRENTICE_NECROMANCY_WAND = registerItem("apprentice_necromancy_wand", new ItemWand(Tier.APPRENTICE, Element.NECROMANCY), WizardryGroups.WIZARDRY);
+        ADVANCED_NECROMANCY_WAND = registerItem("advanced_necromancy_wand", new ItemWand(Tier.ADVANCED, Element.NECROMANCY), WizardryGroups.WIZARDRY);
+        MASTER_NECROMANCY_WAND = registerItem("master_necromancy_wand", new ItemWand(Tier.MASTER, Element.NECROMANCY), WizardryGroups.WIZARDRY);
+
+        NOVICE_EARTH_WAND = registerItem("novice_earth_wand", new ItemWand(Tier.NOVICE, Element.EARTH), WizardryGroups.WIZARDRY);
+        APPRENTICE_EARTH_WAND = registerItem("apprentice_earth_wand", new ItemWand(Tier.APPRENTICE, Element.EARTH), WizardryGroups.WIZARDRY);
+        ADVANCED_EARTH_WAND = registerItem("advanced_earth_wand", new ItemWand(Tier.ADVANCED, Element.EARTH), WizardryGroups.WIZARDRY);
+        MASTER_EARTH_WAND = registerItem("master_earth_wand", new ItemWand(Tier.MASTER, Element.EARTH), WizardryGroups.WIZARDRY);
+
+        NOVICE_SORCERY_WAND = registerItem("novice_sorcery_wand", new ItemWand(Tier.NOVICE, Element.SORCERY), WizardryGroups.WIZARDRY);
+        APPRENTICE_SORCERY_WAND = registerItem("apprentice_sorcery_wand", new ItemWand(Tier.APPRENTICE, Element.SORCERY), WizardryGroups.WIZARDRY);
+        ADVANCED_SORCERY_WAND = registerItem("advanced_sorcery_wand", new ItemWand(Tier.ADVANCED, Element.SORCERY), WizardryGroups.WIZARDRY);
+        MASTER_SORCERY_WAND = registerItem("master_sorcery_wand", new ItemWand(Tier.MASTER, Element.SORCERY), WizardryGroups.WIZARDRY);
+
+        NOVICE_HEALING_WAND = registerItem("novice_healing_wand", new ItemWand(Tier.NOVICE, Element.HEALING), WizardryGroups.WIZARDRY);
+        APPRENTICE_HEALING_WAND = registerItem("apprentice_healing_wand", new ItemWand(Tier.APPRENTICE, Element.HEALING), WizardryGroups.WIZARDRY);
+        ADVANCED_HEALING_WAND = registerItem("advanced_healing_wand", new ItemWand(Tier.ADVANCED, Element.HEALING), WizardryGroups.WIZARDRY);
+        MASTER_HEALING_WAND = registerItem("master_healing_wand", new ItemWand(Tier.MASTER, Element.HEALING), WizardryGroups.WIZARDRY);
+        // ----------------------------------------------
+
+
     }
 
     private static Item registerItem(String name, Item item, @Nullable RegistryKey<ItemGroup> group) {

@@ -66,6 +66,10 @@ public abstract class Spells {
     public static Spell FROST_AXE;
     public static Spell CONJURE_SWORD;
     public static Spell CONJURE_PICKAXE;
+    public static Spell CONJURE_BOW;
+    public static Spell SNARE;
+    public static Spell LEAP;
+    public static Spell MINE;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -77,6 +81,11 @@ public abstract class Spells {
         IGNITE = registrySpell("ignite", new Ignite().createProperties(Tier.NOVICE, Element.FIRE, SpellType.PROJECTILE, 5, 0, 10)
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.BURN_DURATION, 10));
+
+        SMOKE_BOMB = registrySpell("smoke_bomb", new SpellProjectile<>("smoke_bomb", EntitySmokeBomb::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 15, 0, 25)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.EFFECT_RADIUS, 3)
+                .addProperties(Spell.EFFECT_DURATION, 120));
 
         FREEZE = registrySpell("freeze", new Freeze().createProperties(Tier.NOVICE, Element.ICE, SpellType.ATTACK, 5, 0, 10)
                 .addProperties(Spell.RANGE, 10)
@@ -96,6 +105,13 @@ public abstract class Spells {
                 .addProperties(Spell.DAMAGE, 3)
                 .addProperties(Spell.KNOCKBACK_STRENGTH, 0.2));
 
+        SUMMON_ZOMBIE = registrySpell("summon_zombie", new SpellMinion<>("summon_vision", ZombieMinionEntity::new).createProperties(Tier.NOVICE, Element.NECROMANCY, SpellType.MINION, 10, 0, 40))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+
+        // TODO: MIND TRICK
+
         //TODO: Snare spell
 
         DART = registrySpell("dart", new SpellArrow<>("dart", EntityDart::new).createProperties(Tier.NOVICE, Element.EARTH, SpellType.PROJECTILE, 5, 0, 10)
@@ -104,7 +120,19 @@ public abstract class Spells {
                 .addProperties(Spell.EFFECT_STRENGTH, 1)
                 .addProperties(Spell.EFFECT_DURATION, 200));
 
+        SNARE = registrySpell("snare", new Snare().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 10, 0, 10)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 6)
+                .addProperties(Spell.EFFECT_STRENGTH, 2)
+                .addProperties(Spell.EFFECT_DURATION, 100));
+
+        LEAP = registrySpell("leap", new Leap().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 10, 0, 20)
+                .addProperties(Leap.HORIZONTAL_SPEED, 0.3)
+                .addProperties(Leap.VERTICAL_SPEED, 0.65));
         // TODO: Light spell
+
+        MINE = registrySpell("mine", new Mine().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 5, 0, 5)
+                .addProperties(Spell.RANGE, 8));
 
         HEAL = registrySpell("heal", new Heal().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 5, 0, 20)
                 .addProperties(Spell.HEALTH, 4));
@@ -177,10 +205,7 @@ public abstract class Spells {
                 .addProperties(Spell.DIRECT_EFFECT_STRENGTH, 1)
                 .addProperties(Spell.SPLASH_EFFECT_DURATION, 100)
                 .addProperties(Spell.SPLASH_EFFECT_STRENGTH, 1));
-        SMOKE_BOMB = registrySpell("smoke_bomb", new SpellProjectile<>("smoke_bomb", EntitySmokeBomb::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 15, 0, 25)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.EFFECT_RADIUS, 3)
-                .addProperties(Spell.EFFECT_DURATION, 120));
+
         ICE_LANCE = registrySpell("ice_lance", new SpellArrow<>("ice_lance", EntityIceLance::new).createProperties(Tier.ADVANCED, Element.ICE, SpellType.PROJECTILE, 20, 5, 20)
                 .addProperties(Spell.RANGE, 15)
                 .addProperties(Spell.DAMAGE, 15)
@@ -232,10 +257,6 @@ public abstract class Spells {
                 .createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.BUFF, 20, 0, 40)
                 .addProperties(SpellBuff.getDurationKey("night_vision"), 900)
                 .addProperties(SpellBuff.getStrengthKey("night_vision"), 0));
-        SUMMON_ZOMBIE = registrySpell("summon_zombie", new SpellMinion<>("summon_vision", ZombieMinionEntity::new).createProperties(Tier.NOVICE, Element.NECROMANCY, SpellType.MINION, 10, 0, 40))
-                .addProperties(SpellMinion.MINION_LIFETIME, 600)
-                .addProperties(SpellMinion.MINION_COUNT, 1)
-                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
         SUMMON_BLAZE = registrySpell("summon_blaze", new SpellMinion<>("summon_blaze", BlazeMinionEntity::new).soundValues(1, 1.1f, 0.2f)
                 .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.MINION, 40, 10, 200))
                 .addProperties(SpellMinion.MINION_LIFETIME, 600)
@@ -297,6 +318,9 @@ public abstract class Spells {
                 .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
 
         CONJURE_PICKAXE = registrySpell("conjure_pickaxe", new SpellConjuration("conjure_pickaxe", WizardryItems.SPECTRAL_PICKAXE).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
+
+        CONJURE_BOW = registrySpell("conjure_bow", new SpellConjuration("conjure_bow", WizardryItems.SPECTRAL_BOW).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
                 .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
     }
 

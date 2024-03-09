@@ -1,5 +1,6 @@
 package binaris.ebwizardry.spell;
 
+import binaris.ebwizardry.util.EntityUtil;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -9,16 +10,27 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-@Deprecated
+@Deprecated // TODO: Missing Lightning particle
 public class Arc extends SpellRay{
     public Arc() {
         super("arc", UseAction.NONE, false);
+        this.aimAssist(0.6f);
         this.soundValues(1, 1.7f, 0.2f);
 
     }
 
     @Override
     protected boolean onEntityHit(World world, Entity target, Vec3d hit, @Nullable LivingEntity caster, Vec3d origin, int ticksInUse, SpellModifiers modifiers) {
+        if(EntityUtil.isLiving(target)){
+            if(world.isClient){
+                // ParticleBuilder.create(Type.LIGHTNING).entity(caster).pos(caster != null ? origin.subtract(caster.position()) : origin).target(target).spawn(world);
+                // ParticleBuilder.spawnShockParticles(world, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ());
+            }
+
+            target.damage(target.getDamageSources().indirectMagic(caster, target), getFloatProperty(DAMAGE) * modifiers.get(SpellModifiers.POTENCY));
+            return true;
+        }
+
         return false;
     }
 

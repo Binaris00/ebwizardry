@@ -50,7 +50,7 @@ public class ItemFlamecatcher extends BowItem implements IConjuredItem {
         return 0;
     }
     @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
+    public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 

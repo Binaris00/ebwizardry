@@ -1,6 +1,7 @@
 package binaris.ebwizardry.registry;
 
 import binaris.ebwizardry.Wizardry;
+import binaris.ebwizardry.client.renderer.ConjureArrowRenderer;
 import binaris.ebwizardry.client.renderer.MagicArrowRenderer;
 import binaris.ebwizardry.client.renderer.BlankRender;
 import binaris.ebwizardry.client.renderer.MagicProjectileRenderer;
@@ -12,10 +13,7 @@ import binaris.ebwizardry.entity.projectile.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.client.render.entity.BlazeEntityRenderer;
-import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
-import net.minecraft.client.render.entity.SkeletonEntityRenderer;
-import net.minecraft.client.render.entity.ZombieEntityRenderer;
+import net.minecraft.client.render.entity.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.BlazeEntity;
@@ -134,6 +132,12 @@ public final class WizardryEntities {
             FabricEntityTypeBuilder.<EntityFlamecatcherArrow>create(SpawnGroup.MISC, EntityFlamecatcherArrow::new)
                     .build());
 
+    public static final EntityType<EntityConjuredArrow> CONJURED_ARROW = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "conjured_arrow"),
+            FabricEntityTypeBuilder.<EntityConjuredArrow>create(SpawnGroup.MISC, EntityConjuredArrow::new)
+                    .build());
+
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOMB, FlyingItemEntityRenderer::new);
@@ -158,6 +162,7 @@ public final class WizardryEntities {
                 return new Identifier(Wizardry.MODID, "textures/entity/ice_wraith.png");
             }
         }));
+        EntityRendererRegistry.register(WizardryEntities.CONJURED_ARROW, ConjureArrowRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.FLAMECATCHER_ARROW, MagicArrowRenderer<EntityFlamecatcherArrow>::new);
         FabricDefaultAttributeRegistry.register(ENTITY_SKELETON_MINION, EntitySkeletonMinion.createAbstractSkeletonAttributes());
         FabricDefaultAttributeRegistry.register(ENTITY_ZOMBIE_MINION, ZombieMinionEntity.createZombieAttributes());

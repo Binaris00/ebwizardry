@@ -37,9 +37,10 @@ public class ItemSpectralPickaxe extends PickaxeItem implements IConjuredItem {
 
     @Override
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        // Reuses the standard bonus amplifier calculation from SpellBuff to increase the mining level at advanced and master tier
-        return super.getMiningSpeedMultiplier(stack, state) + (int)((IConjuredItem.getDamageMultiplier(stack) - 1) / 0.4);
+        float speed = super.getMiningSpeedMultiplier(stack, state);
+        return speed > 1 ? speed * IConjuredItem.getDamageMultiplier(stack) : speed;
     }
+
 
     @Override
     public boolean hasGlint(ItemStack stack) {

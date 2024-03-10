@@ -1,5 +1,6 @@
 package binaris.ebwizardry.util;
 
+import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.client.particle.ParticleProperties;
 import binaris.ebwizardry.client.particle.ParticleWizardry;
 import binaris.ebwizardry.registry.WizardryParticles;
@@ -8,52 +9,83 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 
+
 /**
- * Tired of creating particles without custom properties?
- * This is the solution!
- * ParticleBuilder is a class that allows you to create particles easily.
+ * <i>Tired of creating particles without custom properties?
+ * This is the solution!</i>
+ *
+ * <p>ParticleBuilder is a class that allows you to create particles easily.
  * You can set the position, velocity, color, scale, lifetime and more!
+ *
+ * <p>The real perfect solution for creating particles in Minecraft, chainable and easy to use, with a single line of code.
  * This only works on particles instance of {@link ParticleWizardry}
  *
- * You can use this class calling {@link ParticleBuilder#create(DefaultParticleType)} (Be sure to call this method first!)
- * Later, use {@link ParticleBuilder#pos(double, double, double)} to set the position of the particle, and if you want to set the velocity use {@link ParticleBuilder#velocity(double, double, double)}
- * And then you can set the other methods to set other specific things.
- * Finally, call {@link ParticleBuilder#spawn(World)} to spawn the particle in the world.
+ * You can use this class calling in this order:
+ * <p>- {@link ParticleBuilder#create(DefaultParticleType)} (Be sure to call this method first!)
+ *
+ * <p>- Use {@link ParticleBuilder#pos(double, double, double)} to set the position of the particle,
+ *
+ * <p>- If you want to set the velocity use {@link ParticleBuilder#velocity(double, double, double)}
+ *
+ * <p>- (And then you can set the other methods to set other specific things.)
+ *
+ * <p> - Finally, call {@link ParticleBuilder#spawn(World)} to spawn the particle in the world.
  * */
 public final class ParticleBuilder {
+    /** Singleton instance */
     private static final ParticleBuilder instance = new ParticleBuilder();
-    public DefaultParticleType particle;
-    public World world;
-    public boolean building;
-    public double x;
-    public double y;
-    public double z;
-    public int lifetime;
-    public float scale;
-    public float red;
-    public float green;
-    public float blue;
-    public double velocityX;
-    public double velocityY;
-    public double velocityZ;
-    public boolean shaded;
-    public float fadeRed;
-    public float fadeGreen;
-    public float fadeBlue;
-    public boolean gravity;
-    // ------------------------- Core methods -------------------------------- //
 
+    // ------------------------- Properties -------------------------------- //
+    /** The particle type */
+    private DefaultParticleType particle;
+    /** The world for spawning the particle*/
+    private World world;
+    /** If the particle is building, if not, always throw an error*/
+    private boolean building;
+    /** The lifetime of the particle */
+    private int lifetime;
+    /** The scale of the particle, perfect to set bigger particles... */
+    private float scale;
+    /** The position of the particle */
+    private double x, y, z;
+    /** The color of the particle */
+    private float red, green, blue;
+    /** The velocity of the particle */
+    private double velocityX, velocityY, velocityZ;
+    /** The fade color of the particle */
+    private float fadeRed, fadeGreen, fadeBlue;
+    /** The shaded property of the particle, false by default */
+    private boolean shaded;
+    /** The gravity property of the particle, false by default */
+    private boolean gravity;
+
+    private long seed;
+    private double length;
+    private Entity entity;
+    private float yaw, pitch;
+    private double radius;
+    private double rpt;
+    private boolean collide;
+    private double tx, ty, tz;
+    private double tvx, tvy, tvz;
+    private Entity target;
+
+
+    // ------------------------- Core methods -------------------------------- //
     /**
      * Start building a particle. For creating a particle in a static way use {@link #create(DefaultParticleType)}
      * @param particle The particle type
      * @return The ParticleBuilder instance
      * */
     private ParticleBuilder particle(DefaultParticleType particle){
+        if(instance.building) throw new IllegalStateException("Already building! Particle being built: " + this.getCurrentParticleString());
         this.particle = particle;
         this.building = true;
         return this;
@@ -136,6 +168,13 @@ public final class ParticleBuilder {
         return ParticleBuilder.create(type).pos(px, py, pz);
     }
 
+    /** Gets a readable string representation of the current builder parameters; used in error messages. */
+    private String getCurrentParticleString(){
+        return String.format("[ Type: %s, Position: (%s, %s, %s), Velocity: (%s, %s, %s), Colour: (%s, %s, %s), "
+                        + "Fade Colour: (%s, %s, %s), Radius: %s, Revs/tick: %s, Lifetime: %s, Gravity: %s, Shaded: %s, "
+                        + "Scale: %s, Entity: %s ]",
+                particle, x, y, z, velocityX, velocityY, velocityZ, red, green, blue, fadeRed, fadeGreen, fadeBlue, radius, rpt, lifetime, gravity, shaded, scale, entity);
+    }
 
     // ------------------------- Setters -------------------------------- //
     /**
@@ -167,7 +206,7 @@ public final class ParticleBuilder {
      * @param vec3d The position
      * @throws IllegalStateException If not building yet
      * */
-    public ParticleBuilder ve3d(Vec3d vec3d){
+    public ParticleBuilder pos(Vec3d vec3d){
         return this.pos(vec3d.getX(), vec3d.getY(), vec3d.getZ());
     }
 
@@ -195,6 +234,21 @@ public final class ParticleBuilder {
         this.velocityZ = velocityZ;
         return this;
     }
+
+    /**
+     * Sets the velocity of the particle being built.
+     * This is a vector-based alternative to {@link ParticleBuilder#velocity(double, double, double)} (
+     * double, double, double)}, allowing for even more concise code when a vector is available.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param vel A vector representing the velocity of the particle to be built.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder velocity(Vec3d vel){
+        return velocity(vel.x, vel.y, vel.z);
+    }
+
     /** set the scale of the particle
      * @param scale The scale
      * @throws IllegalStateException If not building yet
@@ -204,19 +258,217 @@ public final class ParticleBuilder {
         this.scale = scale;
         return this;
     }
+
     /**
-     * Sets the color of the particle.
-     * @param red The red value
-     * @param green The green value
-     * @param blue The blue value
-     * @throws IllegalStateException If not building yet
-     * */
-    public ParticleBuilder color(float red, float green, float blue){
+     * Sets the color of the particle being built. If unspecified, this defaults to the particle's default color,
+     * specified within its constructor. <i>If all colour components are 0 or 1, at least one must have the float suffix
+     * ({@code f} or {@code F}) or the integer overload will be used instead, causing the particle to appear black!</i>
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param r The red color component to set; will be clamped to between zero and one
+     * @param g The green color component to set; will be clamped to between zero and one
+     * @param b The blue color component to set; will be clamped to between zero and one
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder color(float r, float g, float b){
         if(!building) throw new IllegalStateException("Not building yet!");
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.red = MathHelper.clamp(r, 0, 1);
+        this.green = MathHelper.clamp(g, 0, 1);
+        this.blue = MathHelper.clamp(b, 0, 1);
         return this;
+    }
+
+    /**
+     * Sets the color of the particle being built.
+     * This is an 8-bit (0-255) integer version of
+     * {@link ParticleBuilder#color(float, float, float)}.
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param r The red color component to set; will be clamped to between 0 and 255
+     * @param g The green color component to set; will be clamped to between 0 and 255
+     * @param b The blue color component to set; will be clamped to between 0 and 255
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder color(int r, int g, int b){
+        return this.color(r/255f, g/255f, b/255f);
+    }
+
+    /**
+     * Sets the color of the particle being built. This is a 6-digit hex color version of
+     * {@link ParticleBuilder#color(float, float, float)}.
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param hex The colour to be set, as a packed 6-digit hex integer (e.g. 0xff0000).
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder color(int hex){
+        int r = (hex & 0xFF0000) >> 16;
+        int g = (hex & 0xFF00) >> 8;
+        int b = (hex & 0xFF);
+        return this.color(r, g, b);
+    }
+
+    /**
+     * Sets the fade color of the particle being built.
+     * If unspecified, this defaults to whatever the particle's base
+     * colour is. <i>If all colour components are 0 or 1, at least one must have the float suffix
+     * ({@code f} or {@code F}) or the integer overload will be used instead, causing the particle to appear black!</i>
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param r The red color component to set; will be clamped to between zero and one
+     * @param g The green color component to set; will be clamped to between zero and one
+     * @param b The blue color component to set; will be clamped to between zero and one
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder fade(float r, float g, float b){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.fadeRed = MathHelper.clamp(r, 0, 1);
+        this.fadeGreen = MathHelper.clamp(g, 0, 1);
+        this.fadeBlue = MathHelper.clamp(b, 0, 1);
+        return this;
+    }
+
+    /**
+     * Sets the fade color of the particle being built. This is an 8-bit (0-255) integer version of
+     * {@link ParticleBuilder#fade(float, float, float)}.
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param r The red colour component to set; will be clamped to between 0 and 255
+     * @param g The green colour component to set; will be clamped to between 0 and 255
+     * @param b The blue colour component to set; will be clamped to between 0 and 255
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder fade(int r, int g, int b){
+        return this.fade(r/255f, g/255f, b/255f); // Yes, 255 is correct and not 256, or else we can't have pure white
+    }
+
+    /**
+     * Sets the fade color of the particle being built. This is a 6-digit hex color version of
+     * {@link ParticleBuilder#fade(float, float, float)}.
+     * <p></p>
+     * <b>Affects:</b> All particle types except {@link WizardryParticles#ICE ICE}, {@link WizardryParticles#MAGIC_BUBBLE MAGIC_BUBBLE}
+     * and {@link WizardryParticles#MAGIC_FIRE MAGIC_FIRE}
+     * @param hex The colour to be set, as a packed 6-digit hex integer (e.g., 0xff0000).
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder fade(int hex){
+        int r = (hex & 0xFF0000) >> 16;
+        int g = (hex & 0xFF00) >> 8;
+        int b = (hex & 0xFF);
+        return this.fade(r, g, b);
+    }
+
+    /**
+     * Sets the seed of the particle being built. If unspecified, this defaults to the particle's default seed,
+     * specified within its constructor (this is normally chosen at random).
+     * <p></p>
+     * <i>Pro tip: to get a particle to stay the same while a continuous spell is in use (but change between casts),
+     * use {@code .seed(world.getTotalWorldTime() - ticksInUse)}.</i>
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param seed The seed to set
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder seed(long seed){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.seed = seed;
+        return this;
+    }
+    /**
+     * Sets the spin parameters of the particle being built.
+     * If unspecified, these both default to 0.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param radius The rotation radius to set
+     * @param speed The rotation speed to set, in revolutions per tick
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder spin(double radius, double speed){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.radius = radius;
+        this.rpt = speed;
+        return this;
+    }
+
+    /**
+     * Sets the collisions of the particle being built.
+     * If unspecified, this defaults to false.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param collide True to enable block collisions for the particle, false to disable
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder collide(boolean collide){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.collide = collide;
+        return this;
+    }
+
+    /**
+     * Sets the entity of the particle being built.
+     * This will cause the particle to move with the given entity, and will
+     * make the position specified
+     * using {@link ParticleBuilder#pos(double, double, double)} <i>relative to</i> that
+     * entity's position.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param entity The entity to set (passing in null will do nothing but will not cause any problems, so for the sake
+     * of conciseness it is not necessary to perform a null check on the passed-in argument)
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder entity(Entity entity){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.entity = entity;
+        return this;
+    }
+
+    /**
+     * Sets the rotation of the particle being built.
+     * If unspecified, the particle will use the default behavior and
+     * rotate to face the viewer.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param yaw The yaw angle to set in degrees, where 0 is south.
+     * @param pitch The pitch angle to set in degrees, where 0 is horizontal.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder face(float yaw, float pitch){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.yaw = yaw;
+        this.pitch = pitch;
+        return this;
+    }
+
+    /**
+     * Sets the rotation of the particle being built. This is an {@code EnumFacing}-based alternative to {@link
+     * ParticleBuilder#face(float, float)} which sets the yaw and pitch to the appropriate angles for the given facing.
+     * For example, if the given facing is {@code NORTH}, the particle will render parallel to the north face of blocks.
+     * If unspecified, the particle will use the default behavior and rotate to face the viewer.
+     * <p></p>
+     * <b>Affects:</b> All particle types
+     * @param direction The {@code EnumFacing} direction to set.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder face(Direction direction){
+        return face(direction.asRotation(), direction.getAxis().isVertical() ? direction.getDirection().offset() * 90 : 0);
+
     }
     /**
      * Set the shaded property of the particle.
@@ -226,20 +478,6 @@ public final class ParticleBuilder {
     public ParticleBuilder shaded(boolean value){
         if(!building) throw new IllegalStateException("Not building yet!");
         this.shaded = value;
-        return this;
-    }
-    /**
-     * Set the fade property of the particle.
-     * @param fadeRed The red value
-     * @param fadeGreen The green value
-     * @param fadeBlue The blue value
-     * @throws IllegalStateException If not building yet
-     * **/
-    public ParticleBuilder fade(float fadeRed, float fadeGreen, float fadeBlue){
-        if(!building) throw new IllegalStateException("Not building yet!");
-        this.fadeRed = fadeRed;
-        this.fadeGreen = fadeGreen;
-        this.fadeBlue = fadeBlue;
         return this;
     }
 
@@ -254,6 +492,103 @@ public final class ParticleBuilder {
         return this;
     }
 
+    // ============================================= Targeted-only methods =============================================
+
+    /**
+     * Sets the target of the particle being built. This will cause the particle to stretch to touch the given position.
+     * <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param x The target x-coordinate to set
+     * @param y The target y-coordinate to set
+     * @param z The target z-coordinate to set
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder target(double x, double y, double z){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.tx = x;
+        this.ty = y;
+        this.tz = z;
+        return this;
+    }
+
+    /**
+     * Sets the target of the particle being built. This is a vector-based alternative to
+     * {@link ParticleBuilder#target(double, double, double)}, allowing for even more concise code when a vector is
+     * available.
+     * <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param pos A vector representing the target position of the particle to be built.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder target(Vec3d pos){
+        return target(pos.x, pos.y, pos.z);
+    }
+
+    /**
+     * Sets the target point velocity of the particle being built. This will cause the position it stretches to touch to move
+     * at the given velocity. Has no effect unless {@link ParticleBuilder#target(double, double, double)} or one of its
+     * overloads is also set. <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param vx The target point x velocity to set
+     * @param vy The target point y velocity to set
+     * @param vz The target point z velocity to set
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder tvel(double vx, double vy, double vz){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.tvx = vx;
+        this.tvy = vy;
+        this.tvz = vz;
+        return this;
+    }
+
+    /**
+     * Sets the target point velocity of the particle being built. This is a vector-based alternative to
+     * {@link ParticleBuilder#tvel(double, double, double)}, allowing for even more concise code when a vector is
+     * available.
+     * <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param vel A vector representing the target point velocity of the particle to be built.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder tvel(Vec3d vel){
+        return tvel(vel.x, vel.y, vel.z);
+    }
+
+    /**
+     * Sets the target and target velocity of the particle being built. This method takes an origin entity and a
+     * position and estimates the position of the target point based on the given entity's rotational velocities and its
+     * distance from the given position.
+     * <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param length The length of the particle being built.
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder length(double length){
+        this.length = length;
+        return this;
+    }
+
+    /**
+     * Sets the target of the particle being built. This will cause the particle to stretch to touch the given entity.
+     * <p></p>
+     * <b>Affects:</b> Targeted particles, namely {@link WizardryParticles#BEAM BEAM}, {@link WizardryParticles#LIGHTNING LIGHTNING} and {@link WizardryParticles#VINE VINE}
+     * @param target The entity to set
+     * @return The particle builder instance, allowing other methods to be chained onto this one
+     * @throws IllegalStateException if the particle builder is not yet building.
+     */
+    public ParticleBuilder target(Entity target){
+        if(!building) throw new IllegalStateException("Not building yet!");
+        this.target = target;
+        return this;
+    }
+
+
     /**
      * Spawn the particle in the world.
      * Create a new particle properties {@link ParticleProperties} object and set the properties.
@@ -262,53 +597,87 @@ public final class ParticleBuilder {
      * @throws IllegalStateException If not building yet
      * */
     public void spawn(World world){
-        if(!building) throw new IllegalStateException("Not building yet!");
-        this.world = world;
+        if (!building) throw new IllegalStateException("Not building yet!");
 
-        // Create a new particle properties
-        ParticleProperties properties = new ParticleProperties();
-        properties.setPos(x, y, z);
-        properties.setMaxAge(lifetime);
-        properties.setVelocity(velocityX, velocityY, velocityZ);
-        properties.setColor(red, green, blue);
-        properties.setScale(scale);
-        properties.setShaded(shaded);
-        properties.setFade(fadeRed, fadeGreen, fadeBlue);
-        properties.setGravity(gravity);
+        // Error checking
+        if (x == 0 && y == 0 && z == 0 && entity == null)
+            Wizardry.LOGGER.warn("Spawning particle at (0, 0, 0) - are you" + " sure the position/entity has been set correctly?");
 
-        ParticleWizardry.WizardryFactory.setProperties(properties);
-        this.world.addParticle(particle, x, y, z, velocityX, velocityY, velocityZ);
+        if (!world.isClient) {
+            Wizardry.LOGGER.warn("ParticleBuilder.spawn(...) called on the server side! ParticleBuilder has prevented a " + "server crash, but calling it on the server will do nothing. Consider adding a world.isRemote check.");
+            reset();
+            return;
+        }
 
-        // Reset the builder
-        this.reset();
+        // TODO: Create the particle
+        //ParticleWizardry particleWizardry = createParticle(particle, world, x, y, z);
+        ParticleWizardry particleWizardry = null;
+        if (particleWizardry == null) {
+            reset();
+            return;
+        }
+
+
+        // Set the properties
+        if (!Double.isNaN(velocityX) && !Double.isNaN(velocityY) && !Double.isNaN(velocityZ)) particleWizardry.setVelocity(velocityX, velocityY, velocityZ);
+        if (red >= 0 && green >= 0 && blue >= 0) particleWizardry.setColor(red,green, blue);
+        if (fadeRed >= 0 && fadeGreen >= 0 && fadeBlue >= 0) particleWizardry.setFadeColour(fadeRed, fadeGreen, fadeBlue);
+        if (lifetime >= 0) particleWizardry.setMaxAge(lifetime);
+        if (radius > 0) particleWizardry.setSpin(radius, rpt);
+        if (!Float.isNaN(yaw) && !Float.isNaN(pitch)) particleWizardry.setFacing(yaw, pitch);
+        if (seed != 0) particleWizardry.setSeed(seed);
+        if (!Double.isNaN(tvx) && !Double.isNaN(tvy) && !Double.isNaN(tvz)) particleWizardry.setTargetVelocity(tvx, tvy, tvz);
+        if (length > 0) particleWizardry.setLength(length);
+
+        particleWizardry.scale(scale);
+        particleWizardry.setGravity(gravity);
+        particleWizardry.setShaded(shaded);
+        particleWizardry.setCollisions(collide);
+        particleWizardry.setEntity(entity);
+        particleWizardry.setTargetPosition(tx, ty, tz);
+        particleWizardry.setTargetEntity(target);
+
+        // TODO: Spawn the particle
+        //MinecraftClient.getInstance().particleManager.addParticle(particleWizardry);
+
+        reset();
     }
 
+    /*reset all the properties to the default values*/
     public void reset(){
-        this.particle = null;
-        this.world = null;
-        this.building = false;
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-        this.scale = 1;
-
-        //Default lifetime: 20
-        this.lifetime = 20;
-
-        // To set the default color
-        this.red = 1;
-        this.green = 1;
-        this.blue = 1;
-
-        this.velocityX = 0;
-        this.velocityY = 0;
-        this.velocityZ = 0;
-
-        this.shaded = false;
-        this.fadeRed = 0;
-        this.fadeGreen = 0;
-        this.fadeBlue = 0;
-        this.gravity = false;
+        building = false;
+        particle = null;
+        x = 0;
+        y = 0;
+        z = 0;
+        velocityX = Double.NaN;
+        velocityY = Double.NaN;
+        velocityZ = Double.NaN;
+        red = -1;
+        green = -1;
+        blue = -1;
+        fadeRed = -1;
+        fadeGreen = -1;
+        fadeBlue = -1;
+        radius = 0;
+        rpt = 0;
+        lifetime = -1;
+        gravity = false;
+        shaded = false;
+        collide = false;
+        scale = 1;
+        entity = null;
+        yaw = Float.NaN;
+        pitch = Float.NaN;
+        tx = Double.NaN;
+        ty = Double.NaN;
+        tz = Double.NaN;
+        tvx = Double.NaN;
+        tvy = Double.NaN;
+        tvz = Double.NaN;
+        target = null;
+        seed = 0;
+        length = -1;
     }
 
 
@@ -336,7 +705,7 @@ public final class ParticleBuilder {
             double z = entity.getX() + world.random.nextDouble() * 2 - 1;
             ParticleBuilder.create(WizardryParticles.SPARKLE).pos(x, y, z).velocity(0, 0.1, 0).color(1, 1, 0.3f).spawn(world);
         }
-        // TODO: Particle Buff
-        //ParticleBuilder.create(WizardryParticles.BUFF).entity(entity).clr(1, 1, 0.3f).spawn(world);
+
+        ParticleBuilder.create(WizardryParticles.BUFF).entity(entity).color(1, 1, 0.3f).spawn(world);
     }
 }

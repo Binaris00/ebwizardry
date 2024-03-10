@@ -22,6 +22,7 @@ public class WizardryClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         WizardryEntities.registerClient();
+
         WizardryParticles.registryParticlesClient();
 
         for(Item item : conjuredItems) {

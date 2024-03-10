@@ -79,7 +79,17 @@ public final class EntityUtil {
             default -> 10;
         };
     }
-
+    public static <T extends Entity> List<T> getEntitiesWithinRadius(double radius, double x, double y, double z, World world, Class<T> entityType) {
+        Box box = new Box(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+        List<T> entityList = world.getNonSpectatingEntities(entityType, box);
+        for (int i = 0; i < entityList.size(); i++) {
+            if (entityList.get(i).squaredDistanceTo(x, y, z) > radius) {
+                entityList.remove(i);
+                break;
+            }
+        }
+        return entityList;
+    }
     public static boolean canDamageBlocks(@Nullable Entity entity, World world) {
         if (entity == null) return WizardryConfig.dispenserBlockDamage;
         else if (entity instanceof PlayerEntity) return ((PlayerEntity) entity).canModifyBlocks() && WizardryConfig.playerBlockDamage;

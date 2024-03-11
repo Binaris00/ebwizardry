@@ -1,9 +1,10 @@
 package binaris.ebwizardry.util;
 
 import binaris.ebwizardry.Wizardry;
-import binaris.ebwizardry.client.particle.ParticleProperties;
-import binaris.ebwizardry.client.particle.ParticleWizardry;
+import binaris.ebwizardry.client.particle.*;
 import binaris.ebwizardry.registry.WizardryParticles;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.DefaultParticleType;
@@ -612,6 +613,20 @@ public final class ParticleBuilder {
         // TODO: Create the particle
         //ParticleWizardry particleWizardry = createParticle(particle, world, x, y, z);
         ParticleWizardry particleWizardry = null;
+        if(particle == WizardryParticles.DARK_MAGIC) particleWizardry = ParticleDarkMagic.DarkMagicFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.CLOUD) particleWizardry = ParticleCloud.CloudFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.LEAF) particleWizardry = ParticleLeaf.LeafFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.ICE) particleWizardry = ParticleIce.IceFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.MAGIC_FIRE) particleWizardry = ParticleMagicFire.MagicFireFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.SPARKLE) particleWizardry = ParticleSparkle.SparkleFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.SNOW) particleWizardry = ParticleSnow.SnowFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.BEAM) particleWizardry = ParticleBeam.BeamFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.BUFF) particleWizardry = ParticleBuff.BuffFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.FLASH) particleWizardry = ParticleFlash.FlashFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.LIGHTNING) particleWizardry = ParticleLightning.LightningFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.GUARDIAN_BEAM) particleWizardry = ParticleGuardianBeam.GuardianBeamFactory.createParticle((ClientWorld) world, x, y, z);
+        else if(particle == WizardryParticles.SPARK) particleWizardry = ParticleSpark.SparkFactory.createParticle((ClientWorld) world, x, y, z);
+
         if (particleWizardry == null) {
             reset();
             return;
@@ -638,7 +653,7 @@ public final class ParticleBuilder {
         particleWizardry.setTargetEntity(target);
 
         // TODO: Spawn the particle
-        //MinecraftClient.getInstance().particleManager.addParticle(particleWizardry);
+        MinecraftClient.getInstance().particleManager.addParticle(particleWizardry);
 
         reset();
     }
@@ -689,7 +704,7 @@ public final class ParticleBuilder {
             px = x + world.random.nextDouble() - 0.5;
             py = y + world.random.nextDouble() + 0.5;
             pz = z + world.random.nextDouble() - 0.5;
-            ParticleBuilder.create(WizardryParticles.LIGHTNING).pos(px, py, pz).spawn(world);
+            ParticleBuilder.create(WizardryParticles.SPARK).pos(px, py, pz).spawn(world);
 
             px = x + world.random.nextDouble() - 0.5;
             py = y + world.random.nextDouble() - 0.5;

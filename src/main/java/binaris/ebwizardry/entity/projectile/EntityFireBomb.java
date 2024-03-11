@@ -75,6 +75,8 @@ public class EntityFireBomb extends EntityBomb{
     @Override
     public void handleStatus(byte status) {
         if(status == 3){
+            ParticleBuilder.create(WizardryParticles.FLASH).pos(this.getPos()).scale(5 * blastMultiplier).color(1, 0.6f, 0).spawn(getWorld());
+
             for (int i = 0; i < 60 * blastMultiplier; i++) {
 
                 ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, prevX, prevY, prevZ, 2 * blastMultiplier, false)

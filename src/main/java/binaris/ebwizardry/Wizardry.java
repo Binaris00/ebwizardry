@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
@@ -28,12 +29,10 @@ public class Wizardry implements ModInitializer {
 	public static final RegistryKey<Registry<Spell>> REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier(Wizardry.MODID, "spell"));
 	public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 	public static final Random random = new Random();
-
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Electroblob's Wizardry!");
 
-		WizardryParticles.registryParticleTypes();
 		WizardryItems.register();
 		WizardryBlocks.register();
 		Spells.registry();

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ParticleLeaf extends ParticleWizardry{
     public ParticleLeaf(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
-        super(world, x, y, z, spriteProvider, true);
+        super(world, x, y, z, spriteProvider, false);
         this.setVelocity(0, -0.03, 0);
         this.setMaxAge(10 + random.nextInt(5));
         this.scale(1.8f);

@@ -10,8 +10,10 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class WizardryParticles {
-    public static DefaultParticleType BUFF = FabricParticleTypes.simple();
-    public static DefaultParticleType LIGHTNING = FabricParticleTypes.simple();
+    /** Helical animated 'buffing' particle.<p></p><b>Defaults:</b><br>Lifetime: 15 ticks
+     * <br>Velocity: (0, 0.27, 0)<br>Colour: white */
+    public static DefaultParticleType BUFF = register("buff", ParticleBuff.BuffFactory::new);
+    public static DefaultParticleType LIGHTNING = register("lightning", ParticleLightning.LightningFactory::new);
     /** Animated flame.<p></p><b>Defaults:</b><br>Lifetime: 12-16 ticks<br> */
     public static DefaultParticleType MAGIC_FIRE = register("magic_fire", ParticleMagicFire.MagicFireFactory::new);
     /** Animated sparkle particle.<p></p><b>Defaults:</b><<br>Lifetime: 48-60 ticks<br>Colour: white */
@@ -32,9 +34,16 @@ public class WizardryParticles {
     /** Large, thick cloud.<p></p><b>Defaults:</b><br>Lifetime: 48-60 ticks<br> Colour: dark grey */
     public static DefaultParticleType CLOUD = register("cloud", ParticleCloud.CloudFactory::new);
     public static DefaultParticleType MAGIC_BUBBLE = FabricParticleTypes.simple();
-    public static DefaultParticleType BEAM = FabricParticleTypes.simple();
-    public static DefaultParticleType SPARK = FabricParticleTypes.simple();
+    /** 3D-rendered light-beam particle.<p></p><b>Defaults:</b><br>Lifetime: 1 tick<br> Colour: white */
+    @Deprecated
+    public static DefaultParticleType BEAM = register("beam", ParticleBeam.BeamFactory::new);
+    public static DefaultParticleType SPARK = register("spark", ParticleSpark.SparkFactory::new);
+    /** Single pixel particle.<p></p><b>Defaults:</b><br>Lifetime: 16-80 ticks<br>Colour: white */
     public static DefaultParticleType DUST = register("dust", ParticleDust.DustFactory::new);
+    /** Rapid flash, like fireworks.<p></p><b>Defaults:</b><br>Lifetime: 6 ticks<br>Colour: white */
+    public static DefaultParticleType FLASH = register("flash", ParticleFlash.FlashFactory::new);
+    /** Particle that looks like the guardian's beam attack.<p></p><b>Defaults:</b><br>Lifetime: 1 tick */
+    public static DefaultParticleType GUARDIAN_BEAM = register("guardian_beam", ParticleGuardianBeam.GuardianBeamFactory::new);
 
     public static void registryParticlesClient() {
         ParticleFactoryRegistry factoryRegistry = ParticleFactoryRegistry.getInstance();

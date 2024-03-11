@@ -72,8 +72,7 @@ public class EntityDart extends EntityMagicArrow{
     @Override
     public void ticksInAir() {
         if(this.getWorld().isClient){
-            // FIXME: This color are originally from the leaf particle class, but it's not defined yet.
-            ParticleBuilder.create(WizardryParticles.LEAF, this).time(10 + random.nextInt(5)).color(0.1f + 0.3f * random.nextFloat(), 0.5f + 0.3f * random.nextFloat(), 0.1f).spawn(getWorld());
+            ParticleBuilder.create(WizardryParticles.LEAF, this).time(10 + random.nextInt(5)).spawn(getWorld());
         }
     }
 

@@ -47,8 +47,7 @@ public class FlameRay extends SpellRay{
 
     @Override
     protected void spawnParticle(World world, double x, double y, double z, double vx, double vy, double vz) {
-        // TODO: PARTICLE FACTORY COLLIDE TRUE
-        ParticleBuilder.create(WizardryParticles.MAGIC_FIRE).pos(x, y, z).velocity(vx, vy, vz).spawn(world);
-        ParticleBuilder.create(WizardryParticles.MAGIC_FIRE).pos(x, y, z).velocity(vx, vy, vz).spawn(world);
+        ParticleBuilder.create(WizardryParticles.MAGIC_FIRE).pos(x, y, z).velocity(vx, vy, vz).collide(true).spawn(world);
+        ParticleBuilder.create(WizardryParticles.MAGIC_FIRE).pos(x, y, z).velocity(vx, vy, vz).collide(true).spawn(world);
     }
 }

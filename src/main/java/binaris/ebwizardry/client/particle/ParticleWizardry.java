@@ -5,16 +5,24 @@ import binaris.ebwizardry.util.EntityUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import binaris.ebwizardry.util.ParticleBuilder;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -31,7 +39,7 @@ import java.util.Random;
  */
 @Environment(EnvType.CLIENT)
 public abstract class ParticleWizardry extends SpriteBillboardParticle {
-
+    public static final Map<DefaultParticleType, ParticleFactoryRegistry.PendingParticleFactory<DefaultParticleType>> FACTORIES = new LinkedHashMap<>();
     /** The sprite of the particle. */
     SpriteProvider spriteProvider;
 
@@ -81,18 +89,18 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
     /** Previous-tick velocity, used in collision detection. */
     private double prevVelX, prevVelY, prevVelZ;
     private boolean adjustQuadSize;
+    private final boolean updateTextureOnTick;
 
 
-    public ParticleWizardry(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
+    public ParticleWizardry(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider, boolean updateTextureOnTick) {
         super(world, x, y, z);
-        this.spriteProvider = spriteProvider; //Sets the sprite provider from above to the sprite provider in the constructor parameters
+        this.spriteProvider = spriteProvider;
         this.relativeX = this.x;
         this.relativeY = this.y;
         this.relativeZ = this.z;
-
+        this.updateTextureOnTick = updateTextureOnTick;
         this.setSpriteForAge(spriteProvider);
     }
-
 
     // ============================================== Parameter Setters ==============================================
 
@@ -126,14 +134,13 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
 
     /**
      * Sets the velocity of the particle.
-     * @param vx The x velocity
-     * @param vy The y velocity
-     * @param vz The z velocity
+     * @param velocityX The x velocity
+     * @param velocityY The y velocity
+     * @param velocityZ The z velocity
      */
-    public void setVelocity(double vx, double vy, double vz){
-        this.velocityX = vx;
-        this.velocityY = vy;
-        this.velocityY = vz;
+    @Override
+    public void setVelocity(double velocityX, double velocityY, double velocityZ) {
+        super.setVelocity(velocityX, velocityY, velocityZ);
     }
 
     /**
@@ -256,7 +263,7 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
     // ============================================== Method Overrides ==============================================
     @Override
     public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -362,7 +369,7 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
             }
 
             if (radius > 0) {
-                angle += speed;
+                angle += (float) speed;
                 x += radius * -MathHelper.cos(angle);
                 z += radius * MathHelper.sin(angle);
             }
@@ -416,6 +423,10 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
         this.prevVelX = velocityX;
         this.prevVelY = velocityY;
         this.prevVelZ = velocityZ;
+
+        if (updateTextureOnTick) {
+            this.setSpriteForAge(spriteProvider);
+        }
     }
 
     // Overridden and copied to fix the collision behavior
@@ -451,5 +462,22 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
         }
     }
 
-    public abstract ParticleWizardry getParticle(ClientWorld world, double x, double y, double z);
+    // ============================================== Registry ==============================================
+    /**
+     * Registers a particle type with the given modId and name.
+     * Use this method to register your own particles to use.
+     * @param modId The mod id
+     * @param name The name
+     * @param constructor The constructor
+     * @return The particle type
+     */
+    public static DefaultParticleType register(String modId, String name, ParticleFactoryRegistry.PendingParticleFactory<DefaultParticleType> constructor) {
+        var particle = Registry.register(Registries.PARTICLE_TYPE, new Identifier(modId, name), FabricParticleTypes.simple());
+        FACTORIES.put(particle, constructor);
+        return particle;
+    }
+
+    public interface WizardryFactory extends ParticleFactory<DefaultParticleType> {
+
+    }
 }

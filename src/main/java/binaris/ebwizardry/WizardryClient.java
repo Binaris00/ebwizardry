@@ -1,5 +1,6 @@
 package binaris.ebwizardry;
 
+import binaris.ebwizardry.client.particle.ParticleDarkMagic;
 import binaris.ebwizardry.item.IConjuredItem;
 import binaris.ebwizardry.registry.WizardryEntities;
 import binaris.ebwizardry.registry.WizardryItems;

@@ -7,45 +7,35 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import org.jetbrains.annotations.Nullable;
 
-public class ParticleLeaf extends ParticleWizardry{
-    public ParticleLeaf(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
+public class ParticleMagicFire extends ParticleWizardry {
+    public ParticleMagicFire(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
         super(world, x, y, z, spriteProvider, true);
-        this.setVelocity(0, -0.03, 0);
-        this.setMaxAge(10 + random.nextInt(5));
-        this.scale(1.8f);
-        this.gravityStrength = 0;
+        this.setColor(1, 1, 1);
+        this.alpha = 1;
+        this.maxAge = 12 + random.nextInt(4);
+        this.shaded = false;
         this.collidesWithWorld = true;
-        this.setColor(0.1f + 0.3f * random.nextFloat(), 0.5f + 0.3f * random.nextFloat(), 0.1f);
 
         // Set a random sprite from the spriteProvider
         this.setSprite(spriteProvider.getSprite(world.random));
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (this.age > this.maxAge / 2) {
-            this.setAlpha(1 - ((float) this.age - (float) (this.maxAge / 2)) / (float) this.maxAge);
-        }
-    }
-
     @Deprecated
-    public static class LeafFactory implements ParticleFactory<DefaultParticleType>{
+    public static class MagicFireFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
-        public LeafFactory(SpriteProvider spriteProvider) {
-            LeafFactory.spriteProvider = spriteProvider;
+        public MagicFireFactory(SpriteProvider sprite) {
+            spriteProvider = sprite;
         }
 
         @Nullable
         @Override
         public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new ParticleLeaf(world, x, y, z, spriteProvider);
+            return new ParticleMagicFire(world, x, y, z, spriteProvider);
         }
 
         public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleLeaf(world, x, y, z, spriteProvider);
+            return new ParticleMagicFire(world, x, y, z, spriteProvider);
         }
     }
 }

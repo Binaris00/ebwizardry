@@ -16,6 +16,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
+import java.util.function.BiFunction;
+
+import static binaris.ebwizardry.client.particle.ParticleWizardry.FACTORIES;
 
 
 /**
@@ -592,8 +595,13 @@ public final class ParticleBuilder {
 
     /**
      * Spawn the particle in the world.
-     * Create a new particle properties {@link ParticleProperties} object and set the properties.
-     * Call the ParticleWizardry factory to set this property and call the reset method.
+     *
+     * <p>Use {@link ParticleWizardry#FACTORIES} to get the particle factory,
+     * set the properties and then add the particle to the particle manager.
+     *
+     * <p>Warn if the particle is being spawned at (0, 0, 0)
+     * and the entity is null or ParticleBuilder is being used in server side,
+     * as this is likely to be a mistake.
      * @param world The world
      * @throws IllegalStateException If not building yet
      * */
@@ -610,24 +618,12 @@ public final class ParticleBuilder {
             return;
         }
 
-        // TODO: Create the particle
-        //ParticleWizardry particleWizardry = createParticle(particle, world, x, y, z);
-        ParticleWizardry particleWizardry = null;
-        if(particle == WizardryParticles.DARK_MAGIC) particleWizardry = ParticleDarkMagic.DarkMagicFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.CLOUD) particleWizardry = ParticleCloud.CloudFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.LEAF) particleWizardry = ParticleLeaf.LeafFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.ICE) particleWizardry = ParticleIce.IceFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.MAGIC_FIRE) particleWizardry = ParticleMagicFire.MagicFireFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.SPARKLE) particleWizardry = ParticleSparkle.SparkleFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.SNOW) particleWizardry = ParticleSnow.SnowFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.BEAM) particleWizardry = ParticleBeam.BeamFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.BUFF) particleWizardry = ParticleBuff.BuffFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.FLASH) particleWizardry = ParticleFlash.FlashFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.LIGHTNING) particleWizardry = ParticleLightning.LightningFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.GUARDIAN_BEAM) particleWizardry = ParticleGuardianBeam.GuardianBeamFactory.createParticle((ClientWorld) world, x, y, z);
-        else if(particle == WizardryParticles.SPARK) particleWizardry = ParticleSpark.SparkFactory.createParticle((ClientWorld) world, x, y, z);
+
+        BiFunction<ClientWorld, Vec3d, ParticleWizardry> factory = FACTORIES.get(particle);
+        ParticleWizardry particleWizardry = factory == null ? null : factory.apply((ClientWorld) world, new Vec3d(x, y, z));
 
         if (particleWizardry == null) {
+            Wizardry.LOGGER.warn("Failed to spawn particle of type " + particle + " - are you sure it exists?");
             reset();
             return;
         }
@@ -652,14 +648,13 @@ public final class ParticleBuilder {
         particleWizardry.setTargetPosition(tx, ty, tz);
         particleWizardry.setTargetEntity(target);
 
-        // TODO: Spawn the particle
         MinecraftClient.getInstance().particleManager.addParticle(particleWizardry);
 
         reset();
     }
 
-    /*reset all the properties to the default values*/
-    public void reset(){
+    /**reset all the properties to the default values**/
+    private void reset(){
         building = false;
         particle = null;
         x = 0;

@@ -1,6 +1,8 @@
 package binaris.ebwizardry.spell;
 
 import binaris.ebwizardry.registry.WizardryItems;
+import binaris.ebwizardry.registry.WizardryParticles;
+import binaris.ebwizardry.util.ParticleBuilder;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,8 +24,7 @@ public class Flamecatcher extends SpellConjuration{
 
     @Override
     protected void spawnParticles(World world, LivingEntity caster, SpellModifiers modifiers) {
-        // TODO: BUFF PARTICLE
-        //ParticleBuilder.create(WizardryParticles.BUFF).entity(caster).clr(0xff6d00).spawn(world);
+        ParticleBuilder.create(WizardryParticles.BUFF).entity(caster).color(0xff6d00).spawn(world);
 
         for (int i = 0; i < 10; i++) {
             double x = caster.getX() + world.random.nextDouble() * 2 - 1;

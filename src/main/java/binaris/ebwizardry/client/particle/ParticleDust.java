@@ -6,6 +6,7 @@ import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class ParticleDust extends ParticleWizardry {
@@ -23,7 +24,6 @@ public class ParticleDust extends ParticleWizardry {
         return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
     }
 
-    @Deprecated
     public static class DustFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
@@ -37,8 +37,8 @@ public class ParticleDust extends ParticleWizardry {
             return new ParticleDust(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleDust(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleDust(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

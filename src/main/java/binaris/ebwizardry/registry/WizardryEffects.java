@@ -25,8 +25,7 @@ public final class WizardryEffects {
         TRANSIENCE = registerEffect(new MagicStatusEffect(StatusEffectCategory.BENEFICIAL, 0) {
             @Override
             public void spawnCustomParticle(World world, double x, double y, double z) {
-                // TODO: Dust particle
-                // ParticleBuilder.create(WizardryParticles.DUST).pos(x, y, z).clr(0.8f, 0.8f, 1.0f).shaded(true).spawn(world);
+                ParticleBuilder.create(WizardryParticles.DUST).pos(x, y, z).color(0.8f, 0.8f, 1.0f).shaded(true).spawn(world);
             }
         }, "transience");
 
@@ -42,8 +41,7 @@ public final class WizardryEffects {
         STATIC_AURA = registerEffect(new MagicStatusEffect(StatusEffectCategory.BENEFICIAL, 0) {
             @Override
             public void spawnCustomParticle(World world, double x, double y, double z) {
-                // TODO: SPARK particle
-                ParticleBuilder.create(WizardryParticles.SPARKLE).pos(x, y, z).spawn(world);
+                ParticleBuilder.create(WizardryParticles.SPARK).pos(x, y, z).spawn(world);
             }
         }, "static_aura");
     }

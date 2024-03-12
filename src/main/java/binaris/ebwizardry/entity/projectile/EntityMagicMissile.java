@@ -45,8 +45,8 @@ public class EntityMagicMissile extends EntityMagicArrow{
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
         this.playSound(WizardrySounds.ENTITY_MAGIC_MISSILE_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-        // TODO: FLASH PARTICLE
-        //if(this.getWorld().isClient) ParticleBuilder.create(Type.FLASH).pos(posX, posY, posZ).clr(1, 1, 0.65f).spawn(world);
+
+        if(this.getWorld().isClient) ParticleBuilder.create(WizardryParticles.FLASH).pos(prevX, prevY, prevZ).color(1, 1, 0.65f).spawn(getWorld());
         super.onEntityHit(entityHitResult);
     }
 
@@ -54,8 +54,7 @@ public class EntityMagicMissile extends EntityMagicArrow{
     protected void onBlockHit(BlockHitResult blockHitResult) {
         // Gets a position slightly away from the block hit so the particle doesn't get cut in half by the block face
         Vec3d vec = blockHitResult.getPos();
-        // TODO: FLASH PARTICLE
-        // ParticleBuilder.create(Type.FLASH).ve3d(vec).clr(1, 1, 0.65f).fade(0.85f, 0.5f, 0.8f).spawn(world);
+        ParticleBuilder.create(WizardryParticles.FLASH).pos(vec).color(1, 1, 0.65f).fade(0.85f, 0.5f, 0.8f).spawn(getWorld());
         super.onBlockHit(blockHitResult);
     }
 

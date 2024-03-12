@@ -61,8 +61,7 @@ public class EntityIceShard extends EntityMagicArrow{
     protected void onBlockHit(BlockHitResult blockHitResult) {
         if(getWorld().isClient){
             Vec3d vec3d = blockHitResult.getPos();
-            // TODO: Particle Flash
-            // ParticleBuilder.create(Type.FLASH).pos(vec).clr(0.75f, 1, 1).spawn(world);
+            ParticleBuilder.create(WizardryParticles.FLASH).pos(vec3d).color(0.75f, 1, 1).spawn(getWorld());
 
             for(int i = 0; i < 8; i++){
                 ParticleBuilder.create(WizardryParticles.ICE, this.random, this.getX(), this.getY(), this.getZ(), 0.5, true)

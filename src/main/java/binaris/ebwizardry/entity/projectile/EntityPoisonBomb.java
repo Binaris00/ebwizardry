@@ -70,9 +70,7 @@ public class EntityPoisonBomb extends EntityBomb {
             this.discard();
         }
     }
-    // This is for spawning particles, this is the only way I could get it to work.
-    // I'm not sure if this is the best way to do it, but it works.
-    // TODO: This is a good way to spawn particles?
+
     @Override
     public void handleStatus(byte status) {
         if(status == 3){

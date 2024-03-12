@@ -4,8 +4,10 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Constants;
 import binaris.ebwizardry.item.SpellCastingItem;
 import binaris.ebwizardry.registry.WizardryItems;
+import binaris.ebwizardry.registry.WizardryParticles;
 import binaris.ebwizardry.util.BlockUtils;
 import binaris.ebwizardry.util.EntityUtil;
+import binaris.ebwizardry.util.ParticleBuilder;
 import binaris.ebwizardry.util.SpellModifiers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -107,9 +109,8 @@ public class Mine extends SpellRay{
 
     @Override
     protected void spawnParticle(World world, double x, double y, double z, double vx, double vy, double vz) {
-        // TODO: DUST PARTICLE
-        //ParticleBuilder.create(WizardryParticles.DUST).pos(x, y, z).time(20 + world.random.nextInt(5)).clr(0.9f, 0.95f, 1)
-        //        .shaded(false).spawn(world);
+        ParticleBuilder.create(WizardryParticles.DUST).pos(x, y, z).time(20 + world.random.nextInt(5)).color(0.9f, 0.95f, 1)
+                .shaded(false).spawn(world);
     }
 
     private ItemStack getSilkTouchDrop(BlockState state){

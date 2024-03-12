@@ -18,7 +18,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-// FIXME: Particle problems
 public class Freeze extends SpellRay{
     public Freeze() {
         super("freeze", UseAction.NONE, false);

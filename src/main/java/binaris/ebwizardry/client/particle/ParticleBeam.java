@@ -10,6 +10,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class ParticleBeam extends ParticleTargeted{
@@ -95,8 +96,8 @@ public class ParticleBeam extends ParticleTargeted{
             return new ParticleBeam(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleBeam(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleBeam(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

@@ -8,43 +8,48 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
-public class ParticleSparkle extends ParticleWizardry {
-    public ParticleSparkle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
-        super(world, x, y, z, spriteProvider, true);
-
-        this.setColor(1, 1, 1);
-        this.maxAge = 48 + this.random.nextInt(12);
-        this.scale(1.2f);
+public class ParticlePath extends ParticleWizardry{
+    public ParticlePath(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
+        super(world, x, y, z, spriteProvider, false);
+        this.scale = 0.1f * 1.25f;
         this.gravityStrength = 0;
-        this.collidesWithWorld = false;
         this.shaded = false;
+        this.collidesWithWorld = false;
+        this.setColor(1, 1, 1);
     }
 
     @Override
     public void tick() {
-        super.tick();
+        this.prevPosX = this.x;
+        this.prevPosY = this.y;
+        this.prevPosZ = this.z;
+
+        if (this.age++ >= this.maxAge) {
+            this.markDead();
+        }
+
+        this.move(this.velocityX, this.velocityY, this.velocityZ);
 
         if (this.age > this.maxAge / 2) {
-            this.setAlpha(1 - ((float) this.age - (float) (this.maxAge / 2)) / (float) this.maxAge);
+            this.setAlpha(1.0F - 2 * (((float) this.age - (float) (this.maxAge / 2)) / (float) this.maxAge));
         }
     }
 
-    public static class SparkleFactory implements ParticleFactory<DefaultParticleType> {
+    public static class PathFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
-        public SparkleFactory(SpriteProvider sprite) {
+        public PathFactory(SpriteProvider sprite) {
             spriteProvider = sprite;
         }
 
         @Nullable
         @Override
         public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new ParticleSparkle(world, x, y, z, spriteProvider);
+            return new ParticlePath(world, x, y, z, spriteProvider);
         }
 
         public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
-            return new ParticleSparkle(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
+            return new ParticlePath(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
-
 }

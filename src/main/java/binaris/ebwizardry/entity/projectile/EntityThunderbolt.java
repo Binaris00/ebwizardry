@@ -15,7 +15,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-// TODO: This spell has problems with the particles
 public class EntityThunderbolt extends EntityMagicProjectile{
     public EntityThunderbolt(World world) {
         super(WizardryEntities.ENTITY_THUNDERBOLT, world);
@@ -78,8 +77,7 @@ public class EntityThunderbolt extends EntityMagicProjectile{
 
         // Update
         if(status == 3){
-            // TODO: Change to SPARK particle
-            ParticleBuilder.create(WizardryParticles.LIGHTNING, random, prevX, prevY + getHeight()/2, prevZ, 0.1, false).spawn(getWorld());
+            ParticleBuilder.create(WizardryParticles.SPARK, random, prevX, prevY + getHeight()/2, prevZ, 0.1, false).spawn(getWorld());
             for(int i = 0; i < 4; i++) {
                 getWorld().addParticle(ParticleTypes.LARGE_SMOKE, prevX + random.nextFloat() * 0.2 - 0.1,
                         prevY + getHeight() / 2 + random.nextFloat() * 0.2 - 0.1,

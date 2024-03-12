@@ -45,9 +45,8 @@ public class EntityLightningArrow extends EntityMagicArrow{
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
         for(int i = 0; i < 8; i++){
-            // FIXME: SPARK PARTICLE
             if(getWorld().isClient) {
-                ParticleBuilder.create(WizardryParticles.LIGHTNING, this.random, this.prevX, this.prevY + this.getHeight() / 2, this.prevY, 1, false).spawn(this.getWorld());
+                ParticleBuilder.create(WizardryParticles.SPARK, this.random, this.prevX, this.prevY + this.getHeight() / 2, this.prevY, 1, false).spawn(this.getWorld());
             }
         }
         this.playSound(WizardrySounds.ENTITY_LIGHTNING_ARROW_HIT, 1.0F, 1.0F);
@@ -56,10 +55,9 @@ public class EntityLightningArrow extends EntityMagicArrow{
 
     @Override
     public void tick() {
-        // FIXME: SPARK PARTICLE
         if(!this.inGround){
             if(this.age > 1) {
-                ParticleBuilder.create(WizardryParticles.LIGHTNING).pos(this.prevX, this.prevY, this.prevZ).spawn(this.getWorld());
+                ParticleBuilder.create(WizardryParticles.SPARK).pos(this.prevX, this.prevY, this.prevZ).spawn(this.getWorld());
             }
         }
         super.tick();

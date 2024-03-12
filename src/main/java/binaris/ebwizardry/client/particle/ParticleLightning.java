@@ -10,6 +10,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class ParticleLightning extends ParticleTargeted{
@@ -134,7 +135,6 @@ public class ParticleLightning extends ParticleTargeted{
         buffer.vertex(stack.peek().getPositionMatrix(), x2 - width, y2 - width, z2).color(r, g, b, a).next();
     }
 
-    @Deprecated
     public static class LightningFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
@@ -148,8 +148,8 @@ public class ParticleLightning extends ParticleTargeted{
             return new ParticleLightning(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleLightning(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleLightning(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

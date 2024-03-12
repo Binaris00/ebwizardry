@@ -39,8 +39,7 @@ public class EntitySpark extends EntityMagicProjectile{
                 double x = this.prevX + random.nextDouble() - 0.5;
                 double y = this.prevY + this.getHeight() / 2 + random.nextDouble() - 0.5;
                 double z = this.prevZ + random.nextDouble() - 0.5;
-                // FIXME: SPARK PARTICLE
-                ParticleBuilder.create(WizardryParticles.LIGHTNING).pos(x, y, z).spawn(getWorld());
+                ParticleBuilder.create(WizardryParticles.SPARK).pos(x, y, z).spawn(getWorld());
             }
         }
 

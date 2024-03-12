@@ -56,8 +56,7 @@ public class EntityFlamecatcherArrow extends EntityMagicArrow{
             livingEntity.setOnFireFor(Spells.FLAMECATCHER.getIntProperty(Spell.BURN_DURATION));
             this.playSound(WizardrySounds.ENTITY_FLAMECATCHER_ARROW_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
             if(this.getWorld().isClient) {
-                // TODO: Flash particle
-                // ParticleBuilder.create(Type.FLASH).pos(getX(), getY(), getZ()).clr(0xff6d00).spawn(level);
+                ParticleBuilder.create(WizardryParticles.FLASH).pos(getX(), getY(), getZ()).color(0xff6d00).spawn(getWorld());
             }
         }
 
@@ -68,8 +67,7 @@ public class EntityFlamecatcherArrow extends EntityMagicArrow{
     protected void onBlockHit(BlockHitResult blockHitResult) {
         if(this.getWorld().isClient) {
             Vec3d vec = blockHitResult.getPos().add(new Vec3d(blockHitResult.getSide().getUnitVector()).multiply(0.15));
-            // TODO: Flash particle
-            // ParticleBuilder.create(Type.FLASH).pos(vec).clr(0xff6d00).fade(0.85f, 0.5f, 0.8f).spawn(level);
+            ParticleBuilder.create(WizardryParticles.FLASH).pos(vec).color(0xff6d00).fade(0.85f, 0.5f, 0.8f).spawn(getWorld());
         }
 
         super.onBlockHit(blockHitResult);

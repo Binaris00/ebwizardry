@@ -6,6 +6,7 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class ParticleCloud extends ParticleWizardry{
@@ -28,7 +29,6 @@ public class ParticleCloud extends ParticleWizardry{
         this.setAlpha(MathHelper.clamp(Math.min(this.age / fadeTime, (this.maxAge - this.age) / fadeTime), 0, 1));
     }
 
-    @Deprecated
     public static class CloudFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
@@ -42,8 +42,8 @@ public class ParticleCloud extends ParticleWizardry{
             return new ParticleCloud(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleCloud(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleCloud(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

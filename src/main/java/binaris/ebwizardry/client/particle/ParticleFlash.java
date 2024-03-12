@@ -42,7 +42,6 @@ public class ParticleFlash extends ParticleWizardry{
         buffer.vertex(f5 + rotationX * f4 - rotationXY * f4, f6 - rotationZ * f4, f7 + rotationYZ * f4 - rotationXZ * f4).texture(0.25F, 0.375F).color(this.red, this.green, this.blue, this.alpha).light(j, k).next();
     }
 
-    @Deprecated
     public static class FlashFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
@@ -56,8 +55,8 @@ public class ParticleFlash extends ParticleWizardry{
             return new ParticleFlash(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleFlash(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleFlash(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

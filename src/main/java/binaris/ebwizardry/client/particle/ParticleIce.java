@@ -5,6 +5,7 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public class ParticleIce extends ParticleWizardry{
@@ -21,7 +22,6 @@ public class ParticleIce extends ParticleWizardry{
         this.setSprite(spriteProvider.getSprite(world.random));
     }
 
-    @Deprecated
     public static class IceFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
@@ -35,8 +35,8 @@ public class ParticleIce extends ParticleWizardry{
             return new ParticleIce(world, x, y, z, spriteProvider);
         }
 
-        public static ParticleWizardry createParticle(ClientWorld world, double x, double y, double z) {
-            return new ParticleIce(world, x, y, z, spriteProvider);
+        public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
+            return new ParticleIce(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

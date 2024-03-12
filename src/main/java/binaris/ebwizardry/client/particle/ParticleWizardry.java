@@ -5,7 +5,6 @@ import binaris.ebwizardry.util.EntityUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import binaris.ebwizardry.util.ParticleBuilder;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.render.Camera;
@@ -20,10 +19,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * Abstract superclass for all of wizardry's particles.
@@ -39,7 +36,7 @@ import java.util.Random;
  */
 @Environment(EnvType.CLIENT)
 public abstract class ParticleWizardry extends SpriteBillboardParticle {
-    public static final Map<DefaultParticleType, ParticleFactoryRegistry.PendingParticleFactory<DefaultParticleType>> FACTORIES = new LinkedHashMap<>();
+    public static final Map<DefaultParticleType, BiFunction<ClientWorld, Vec3d, ParticleWizardry>> FACTORIES = new LinkedHashMap<>();
     /** The sprite of the particle. */
     SpriteProvider spriteProvider;
 
@@ -88,7 +85,7 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
 
     /** Previous-tick velocity, used in collision detection. */
     private double prevVelX, prevVelY, prevVelZ;
-    private boolean adjustQuadSize;
+    boolean adjustQuadSize;
     private final boolean updateTextureOnTick;
 
 
@@ -233,8 +230,7 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
 
     /**
      * Sets the target point velocity for this particle. This will cause the position it stretches to touch to move
-     * at the given velocity. Has no effect unless {@link ParticleWizardry#setTargetVelocity(double, double, double)}
-     * is also used.
+     * at the given velocity.
      * @param vx The x velocity of the target point.
      * @param vy The y velocity of the target point.
      * @param vz The z velocity of the target point.
@@ -463,21 +459,11 @@ public abstract class ParticleWizardry extends SpriteBillboardParticle {
     }
 
     // ============================================== Registry ==============================================
-    /**
-     * Registers a particle type with the given modId and name.
-     * Use this method to register your own particles to use.
-     * @param modId The mod id
-     * @param name The name
-     * @param constructor The constructor
-     * @return The particle type
-     */
-    public static DefaultParticleType register(String modId, String name, ParticleFactoryRegistry.PendingParticleFactory<DefaultParticleType> constructor) {
-        var particle = Registry.register(Registries.PARTICLE_TYPE, new Identifier(modId, name), FabricParticleTypes.simple());
-        FACTORIES.put(particle, constructor);
+
+    public static DefaultParticleType registerFactory(String modId, String name,BiFunction<ClientWorld, Vec3d, ParticleWizardry> factory){
+        DefaultParticleType particle = Registry.register(Registries.PARTICLE_TYPE, new Identifier(modId, name), FabricParticleTypes.simple());
+        FACTORIES.put(particle, factory);
+
         return particle;
-    }
-
-    public interface WizardryFactory extends ParticleFactory<DefaultParticleType> {
-
     }
 }

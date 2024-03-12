@@ -2,43 +2,39 @@ package binaris.ebwizardry.client.particle;
 
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
-public class ParticleDarkMagic extends ParticleWizardry{
-    public ParticleDarkMagic(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
+public class ParticleLightningPulse extends ParticleWizardry{
+    public ParticleLightningPulse(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider) {
         super(world, x, y, z, spriteProvider, true);
+        this.scale = 32f;
         this.setColor(1, 1, 1);
-        this.setVelocity(0, 0.07000000298023224D, 0);
-        this.scale(1.25F);
-        this.setMaxAge((int) (8.0D / (Math.random() * 0.8D + 0.2D)));
-        this.collidesWithWorld = true;
+        this.shaded = false;
+        this.collidesWithWorld = false;
+        this.setMaxAge(7);
+        this.pitch = 90;
+        this.yaw = 0;
     }
 
-    @Override
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
-    }
-
-    public static class DarkMagicFactory implements ParticleFactory<DefaultParticleType> {
+    public static class LightningPulseFactory implements ParticleFactory<DefaultParticleType> {
         static SpriteProvider spriteProvider;
 
-        public DarkMagicFactory(SpriteProvider sprite) {
+        public LightningPulseFactory(SpriteProvider sprite) {
             spriteProvider = sprite;
         }
 
         @Nullable
         @Override
         public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new ParticleDarkMagic(world, x, y, z, spriteProvider);
+            return new ParticleLightningPulse(world, x, y, z, spriteProvider);
         }
 
         public static ParticleWizardry createParticle(ClientWorld clientWorld, Vec3d vec3d) {
-            return new ParticleDarkMagic(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
+            return new ParticleLightningPulse(clientWorld, vec3d.x, vec3d.y, vec3d.z, spriteProvider);
         }
     }
 }

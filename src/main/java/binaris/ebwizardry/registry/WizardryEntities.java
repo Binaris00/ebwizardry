@@ -138,6 +138,18 @@ public final class WizardryEntities {
             FabricEntityTypeBuilder.<EntityConjuredArrow>create(SpawnGroup.MISC, EntityConjuredArrow::new)
                     .build());
 
+    public static final EntityType<EntityIceBall> ICE_BALL = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "ice_ball"),
+            FabricEntityTypeBuilder.<EntityIceBall>create(SpawnGroup.MISC, EntityIceBall::new)
+                    .build());
+
+    public static final EntityType<EntityForceArrow> FORCE_ARROW = Registry.register(
+            Registries.ENTITY_TYPE,
+            new Identifier(Wizardry.MODID, "force_arrow"),
+            FabricEntityTypeBuilder.<EntityForceArrow>create(SpawnGroup.MISC, EntityForceArrow::new)
+                    .build());
+
     public static void registerClient(){
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SPARK_BOMB, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_FIRE_BOMB, FlyingItemEntityRenderer::new);
@@ -156,12 +168,16 @@ public final class WizardryEntities {
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ZOMBIE_MINION, ZombieEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_BLAZE_MINION, BlazeEntityRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_SKELETON_MINION, SkeletonEntityRenderer::new);
+
+        // TODO: ForceArrow Entity Renderer
+        EntityRendererRegistry.register(WizardryEntities.FORCE_ARROW, MagicArrowRenderer<EntityForceArrow>::new);
         EntityRendererRegistry.register(WizardryEntities.ENTITY_ICE_WRAITH, (ctx -> new BlazeEntityRenderer(ctx){
             @Override
             public Identifier getTexture(BlazeEntity blazeEntity) {
                 return new Identifier(Wizardry.MODID, "textures/entity/ice_wraith.png");
             }
         }));
+        EntityRendererRegistry.register(WizardryEntities.ICE_BALL, MagicProjectileRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.CONJURED_ARROW, ConjureArrowRenderer::new);
         EntityRendererRegistry.register(WizardryEntities.FLAMECATCHER_ARROW, MagicArrowRenderer<EntityFlamecatcherArrow>::new);
         FabricDefaultAttributeRegistry.register(ENTITY_SKELETON_MINION, EntitySkeletonMinion.createAbstractSkeletonAttributes());

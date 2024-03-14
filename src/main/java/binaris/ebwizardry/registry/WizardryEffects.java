@@ -19,6 +19,7 @@ public final class WizardryEffects {
     public static StatusEffect ICE_SHROUD;
     public static StatusEffect STATIC_AURA;
     public static StatusEffect MIND_CONTROL;
+    public static StatusEffect WARD;
     public static void registerEffects() {
         FROST = registerEffect(new Frost(), "frost");
         FIRE_SKIN = registerEffect(new FireSkin(), "fire_skin");
@@ -44,6 +45,12 @@ public final class WizardryEffects {
                 ParticleBuilder.create(WizardryParticles.SPARK).pos(x, y, z).spawn(world);
             }
         }, "static_aura");
+
+        WARD = registerEffect(new MagicStatusEffect(StatusEffectCategory.BENEFICIAL, 0xc991d0) {
+            @Override
+            public void spawnCustomParticle(World world, double x, double y, double z) {
+            }
+        }, "ward");
     }
 
     private static StatusEffect registerEffect(StatusEffect effect, String name) {

@@ -80,7 +80,7 @@ public class EntityFireBomb extends EntityBomb{
             for (int i = 0; i < 60 * blastMultiplier; i++) {
 
                 ParticleBuilder.create(WizardryParticles.MAGIC_FIRE, random, prevX, prevY, prevZ, 2 * blastMultiplier, false)
-                        .time(10 + random.nextInt(4)).scale(2 + random.nextFloat()).spawn(getWorld());
+                        .time(10 + random.nextInt(4)).scale(1 + random.nextFloat()).spawn(getWorld());
 
                 ParticleBuilder.create(WizardryParticles.DARK_MAGIC, random, prevX, prevY, prevZ, 2 * blastMultiplier, false)
                         .color(1.0f, 0.2f + random.nextFloat() * 0.4f, 0.0f).spawn(getWorld());

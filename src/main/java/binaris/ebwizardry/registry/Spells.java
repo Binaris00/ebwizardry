@@ -70,6 +70,12 @@ public abstract class Spells {
     public static Spell SNARE;
     public static Spell LEAP;
     public static Spell MINE;
+    public static Spell CONJURE_BLOCK;
+    public static Spell WARD;
+    public static Spell EVADE;
+    public static Spell ICE_BALL;
+    public static Spell LIGHTNING_RAY;
+    public static Spell FORCE_ARROW;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -112,8 +118,6 @@ public abstract class Spells {
 
         // TODO: MIND TRICK
 
-        //TODO: Snare spell
-
         DART = registrySpell("dart", new SpellArrow<>("dart", EntityDart::new).createProperties(Tier.NOVICE, Element.EARTH, SpellType.PROJECTILE, 5, 0, 10)
                 .addProperties(Spell.RANGE, 15)
                 .addProperties(Spell.DAMAGE, 4)
@@ -129,23 +133,40 @@ public abstract class Spells {
         LEAP = registrySpell("leap", new Leap().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 10, 0, 20)
                 .addProperties(Leap.HORIZONTAL_SPEED, 0.3)
                 .addProperties(Leap.VERTICAL_SPEED, 0.65));
-        // TODO: Light spell
 
         MINE = registrySpell("mine", new Mine().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 5, 0, 5)
                 .addProperties(Spell.RANGE, 8));
 
+        // TODO: Light spell
+
+        // TODO: Telekinesis spell
+
+        CONJURE_BLOCK = registrySpell("conjure_block", new ConjureBlock().createProperties(Tier.NOVICE, Element.EARTH, SpellType.UTILITY, 5, 0, 10)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(ConjureBlock.BLOCK_LIFETIME, 900));
+
+        // TODO: Muffle spell
+
         HEAL = registrySpell("heal", new Heal().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 5, 0, 20)
                 .addProperties(Spell.HEALTH, 4));
 
-        FLAME_RAY = registrySpell("flame_ray", new FlameRay().createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.ATTACK, 5, 0, 0)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.DAMAGE, 3)
-                .addProperties(Spell.BURN_DURATION, 10));
+        WARD = registrySpell("ward", new SpellBuff("ward", 0.75f, 0.6f, 0.8f, () -> WizardryEffects.WARD).soundValues(0.7f, 1.2f, 0.4f)
+                .createProperties(Tier.NOVICE, Element.HEALING, SpellType.BUFF, 5, 0, 30)
+                .addProperties(SpellBuff.getDurationKey("ward"), 600)
+                .addProperties(SpellBuff.getStrengthKey("ward"), 0));
+
+        EVADE = registrySpell("evade", new Evade().createProperties(Tier.NOVICE, Element.HEALING, SpellType.UTILITY, 5, 0, 5)
+                .addProperties(Evade.EVADE_VELOCITY, 1));
 
         FIRE_BALL = registrySpell("fire_ball", new SpellProjectile<>("fire_ball", EntityMagicFireball::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 10, 0, 15)
                 .addProperties(Spell.RANGE, 20)
                 .addProperties(Spell.DAMAGE, 5)
                 .addProperties(Spell.BURN_DURATION, 5));
+
+        FLAME_RAY = registrySpell("flame_ray", new FlameRay().createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.ATTACK, 5, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3)
+                .addProperties(Spell.BURN_DURATION, 10));
 
         FIRE_BOMB = registrySpell("fire_bomb", new SpellProjectile<>("fire_bomb", EntityFireBomb::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 15, 0, 25)
                 // Temporal properties for testing
@@ -155,12 +176,22 @@ public abstract class Spells {
                 .addProperties(Spell.BLAST_RADIUS, 3)
                 .addProperties(Spell.BURN_DURATION, 7));
 
-        // TODO: Fire Sigill spell
+        // TODO: Fire Sigil spell
 
         FIRE_BOLT = registrySpell("fire_bolt", new SpellProjectile<>("fire_bolt", EntityFireBolt::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 10, 0, 10)
                 .addProperties(Spell.RANGE, 15)
                 .addProperties(Spell.DAMAGE, 5)
                 .addProperties(Spell.BURN_DURATION, 5));
+
+        // TODO: Pocket Furnace
+
+        FROST_RAY = registrySpell("frost_ray", new FrostRay().createProperties(Tier.APPRENTICE, Element.ICE, SpellType.ATTACK, 5, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 0));
+        SUMMON_SNOW_GOLEM = registrySpell("summon_snow_golem", new SummonSnowGolem().createProperties(Tier.NOVICE, Element.ICE, SpellType.MINION, 15, 0, 20)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2));
 
         ICE_SHARD = registrySpell("ice_shard", new SpellArrow<>("ice_shard", EntityIceShard::new).createProperties(Tier.APPRENTICE, Element.ICE, SpellType.PROJECTILE, 10, 0, 10)
                 .addProperties(Spell.RANGE, 15)
@@ -178,22 +209,78 @@ public abstract class Spells {
                 .addProperties(Spell.SPLASH_EFFECT_STRENGTH, 0)
                 .addProperties(EntityIceCharge.ICE_SHARDS, 10));
 
-        HOMING_SPARK = registrySpell("homing_spark", new SpellProjectile<>("homing_spark", EntitySpark::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 10, 0, 20)
-                .addProperties(Spell.RANGE, 25)
-                .addProperties(Spell.DAMAGE, 6)
-                .addProperties(Spell.SEEKING_STRENGTH, 5));
+        // TODO: ICE STATUE
 
-        LIGHTNING_ARROW = registrySpell("lightning_arrow", new SpellArrow<>("lightning_arrow", EntityLightningArrow::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 20)
-                .addProperties(Spell.RANGE, 25)
-                .addProperties(Spell.DAMAGE, 7));
+        // TODO: FROST SIGIL
+
+        ICE_BALL = registrySpell("ice_ball", new SpellProjectile<>("ice_ball", EntityIceBall::new).createProperties(Tier.APPRENTICE, Element.ICE, SpellType.PROJECTILE, 10, 0, 15)
+                .addProperties(Spell.RANGE, 20)
+                .addProperties(Spell.DAMAGE, 5)
+                .addProperties(Spell.SPLASH_DAMAGE, 3)
+                .addProperties(Spell.EFFECT_DURATION, 100)
+                .addProperties(Spell.EFFECT_STRENGTH, 0));
+
+        LIGHTNING_RAY = registrySpell("lightning_ray", new LightningRay().createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.ATTACK, 5, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 3));
+
 
         SPARK_BOMB = registrySpell("spark_bomb" , new SpellProjectile<>("spark_bomb", EntitySparkBomb::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 25)
-                // Temporal properties for testing
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.MAX_SECONDARY_TARGETS, 4)
                 .addProperties(Spell.DIRECT_DAMAGE, 6)
                 .addProperties(Spell.EFFECT_RADIUS, 5)
                 .addProperties(Spell.SPLASH_DAMAGE, 4));
+
+        HOMING_SPARK = registrySpell("homing_spark", new SpellProjectile<>("homing_spark", EntitySpark::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 10, 0, 20)
+                .addProperties(Spell.RANGE, 25)
+                .addProperties(Spell.DAMAGE, 6)
+                .addProperties(Spell.SEEKING_STRENGTH, 5));
+
+        // TODO: LIGHTNING SIGIL
+
+        LIGHTNING_ARROW = registrySpell("lightning_arrow", new SpellArrow<>("lightning_arrow", EntityLightningArrow::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 20)
+                .addProperties(Spell.RANGE, 25)
+                .addProperties(Spell.DAMAGE, 7));
+
+        // TODO: CHARGE
+
+
+        LIFE_DRAIN = registrySpell("life_drain", new LifeDrain().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 0)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 2)
+                .addProperties(LifeDrain.HEAL_FACTOR, 0.35F));
+
+        SUMMON_SKELETON = registrySpell("summon_skeleton", new SummonSkeleton().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.MINION, 15, 0, 50))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+
+        // TODO: METAMORPHOSIS SPELL
+
+        WITHER = registrySpell("wither", new Wither().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 1)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
+
+        // TODO: INTIMIDATE SPELL
+
+        // TODO: BANISH
+
+        // TODO: REVERSAL SPELL
+
+        POISON = registrySpell("poison", new Poison().createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.ATTACK, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.DAMAGE, 1)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
+
+        // TODO: GROWTH AURA SPELL
+
+        // TODO: BUBBLE SPELL
+
+        // TODO: WHIRLWIND SPELL
 
         POISON_BOMB = registrySpell("poison_bomb", new SpellProjectile<>("poison_bomb", EntityPoisonBomb::new).createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.PROJECTILE, 15, 0, 25)
                 // Temporal properties for testing
@@ -206,16 +293,18 @@ public abstract class Spells {
                 .addProperties(Spell.SPLASH_EFFECT_DURATION, 100)
                 .addProperties(Spell.SPLASH_EFFECT_STRENGTH, 1));
 
-        ICE_LANCE = registrySpell("ice_lance", new SpellArrow<>("ice_lance", EntityIceLance::new).createProperties(Tier.ADVANCED, Element.ICE, SpellType.PROJECTILE, 20, 5, 20)
-                .addProperties(Spell.RANGE, 15)
-                .addProperties(Spell.DAMAGE, 15)
-                .addProperties(Spell.EFFECT_DURATION, 300)
-                .addProperties(Spell.EFFECT_STRENGTH, 0));
+        // TODO: SUMMON SPIRIT WOLF
 
-        FIRE_RESISTANCE = registrySpell("fire_resistance", new SpellBuff("fire_resistance", 1, 0.5f, 0, () -> StatusEffects.FIRE_RESISTANCE).soundValues(0.7f, 1.2f, 0.4f)
-                .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.DEFENCE, 20, 15, 80)
-                .addProperties(SpellBuff.getDurationKey("fire_resistance"), 600)
-                .addProperties(SpellBuff.getStrengthKey("fire_resistance"), 0));
+        // TODO SIXTH SENSE SPELL
+
+        DARK_VISION = registrySpell("dark_vision", new SpellBuff("dark_vision", 0, 0.4f, 0.7f, () -> StatusEffects.NIGHT_VISION).soundValues(0.7f, 1.2f, 0.4f)
+                .createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.BUFF, 20, 0, 40)
+                .addProperties(SpellBuff.getDurationKey("night_vision"), 900)
+                .addProperties(SpellBuff.getStrengthKey("night_vision"), 0));
+
+        // TODO: GRAPPLE
+
+        // TODO: BLINK SPELL
 
         AGILITY = registrySpell("agility", new SpellBuff("agility", 0.4f, 1.0f, 0.8f, () -> StatusEffects.SPEED, () -> StatusEffects.JUMP_BOOST).soundValues(0.7f, 1.2f, 0.4f)
                 .createProperties(Tier.APPRENTICE, Element.SORCERY, SpellType.BUFF, 20, 0, 40)
@@ -223,17 +312,119 @@ public abstract class Spells {
                 .addProperties(SpellBuff.getStrengthKey("speed"), 1)
                 .addProperties(SpellBuff.getDurationKey("jump_boost"), 600)
                 .addProperties(SpellBuff.getStrengthKey("jump_boost"), 1));
+
+        CONJURE_SWORD = registrySpell("conjure_sword", new SpellConjuration("conjure_sword", WizardryItems.SPECTRAL_SWORD).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
+
+        CONJURE_PICKAXE = registrySpell("conjure_pickaxe", new SpellConjuration("conjure_pickaxe", WizardryItems.SPECTRAL_PICKAXE).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
+
+        CONJURE_BOW = registrySpell("conjure_bow", new SpellConjuration("conjure_bow", WizardryItems.SPECTRAL_BOW).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
+
+        FORCE_ARROW = registrySpell("force_arrow", new ForceArrow().createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.PROJECTILE, 10, 0, 20)
+                .addProperties(Spell.RANGE, 15)
+                .addProperties(Spell.DAMAGE, 5));
+
+        // TODO: CLAIRVOYANCE SPELL
+
+        // TODO: POCKET WORKBENCH SPELL
+
+        // TODO: IMBUE WEAPON SPELL
+
+        // TODO: DIVINATION SPELL
+
+        // TODO: SHIELD SPELL
+
+        // TODO: REPLENISH HUNGER SPELL
+
+        CURE_EFFECTS = registrySpell("cure_effects", new CureEffects().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 25, 10, 40));
+
+        HEAL_ALLY = registrySpell("heal_ally", new HealAlly().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.HEALTH, 5));
+
+        // TODO: INVIGORATING PRESENCE SPELL
+
+        // TODO: OAKFLESH
+
+        // TODO: EMPOWERING PRESENCE
+
+        SUMMON_BLAZE = registrySpell("summon_blaze", new SpellMinion<>("summon_blaze", BlazeMinionEntity::new).soundValues(1, 1.1f, 0.2f)
+                .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.MINION, 40, 10, 200))
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+
+        // TODO: RING OF FIRE
+
+        // TODO: DETONATE
+
+        FIRE_RESISTANCE = registrySpell("fire_resistance", new SpellBuff("fire_resistance", 1, 0.5f, 0, () -> StatusEffects.FIRE_RESISTANCE).soundValues(0.7f, 1.2f, 0.4f)
+                .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.DEFENCE, 20, 15, 80)
+                .addProperties(SpellBuff.getDurationKey("fire_resistance"), 600)
+                .addProperties(SpellBuff.getStrengthKey("fire_resistance"), 0));
+
         FIRE_SKIN = registrySpell("fire_skin", new SpellBuff("fireskin", 1, 0.5f, 0, () -> WizardryEffects.FIRE_SKIN)
                 .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.DEFENCE, 40, 0, 250)
                 .addProperties(SpellBuff.getDurationKey("fire_skin"), 600)
                 .addProperties(SpellBuff.getStrengthKey("fire_skin"), 0)
                 .addProperties(Spell.BURN_DURATION, 5));
+
+        FLAMING_AXE = registrySpell("flaming_axe", new FlamingAxe().createProperties(Tier.ADVANCED, Element.FIRE, SpellType.UTILITY, 45, 10, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
+                .addProperties(SpellConjuration.DAMAGE, 8)
+                .addProperties(SpellConjuration.BURN_DURATION, 8));
+
+        // TODO: GREATER FIREBALL
+
+        // TODO FLAMING WEAPON
+
+        // TODO: DISINTEGRATION SPELL
+
+        // TODO: COMBUSTION RUNE
+
+        // TODO: BLIZZARD SPELL
+
+        SUMMON_ICE_WRAITH = registrySpell("summon_ice_wraith", new SpellMinion<>("summon_ice_wraith", IceWraithEntity::new)).soundValues(1, 1.1f, 0.2f)
+                .createProperties(Tier.ADVANCED, Element.ICE, SpellType.MINION, 40, 10, 200)
+                .addProperties(SpellMinion.MINION_LIFETIME, 600)
+                .addProperties(SpellMinion.MINION_COUNT, 1)
+                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
+
         ICE_SHROUD = registrySpell("ice_shroud", new SpellBuff("ice_shroud", 0.3f, 0.5f, 1, () -> WizardryEffects.ICE_SHROUD).soundValues(1, 1.6f, 0.4f)
                 .createProperties(Tier.ADVANCED, Element.ICE, SpellType.DEFENCE, 40, 0, 250)
                 .addProperties(SpellBuff.getDurationKey("ice_shroud"), 600)
                 .addProperties(SpellBuff.getStrengthKey("ice_shroud"), 0)
                 .addProperties(Spell.EFFECT_DURATION, 100)
                 .addProperties(Spell.EFFECT_STRENGTH, 0));
+
+        // TODO: ICE_CHARGE
+
+        FROST_AXE = registrySpell("frost_axe", new FrostAxe().createProperties(Tier.ADVANCED, Element.ICE, SpellType.UTILITY, 45, 10, 50)
+                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
+                .addProperties(SpellConjuration.DAMAGE, 8)
+                .addProperties(SpellConjuration.EFFECT_DURATION, 160)
+                .addProperties(SpellConjuration.EFFECT_STRENGTH, 1));
+
+        ICE_LANCE = registrySpell("ice_lance", new SpellArrow<>("ice_lance", EntityIceLance::new).createProperties(Tier.ADVANCED, Element.ICE, SpellType.PROJECTILE, 20, 5, 20)
+                .addProperties(Spell.RANGE, 15)
+                .addProperties(Spell.DAMAGE, 15)
+                .addProperties(Spell.EFFECT_DURATION, 300)
+                .addProperties(Spell.EFFECT_STRENGTH, 0));
+
+        // TODO: FREEZING WEAPON
+
+
+
+
+
+
+
+
+
+
+
         STATIC_AURA = registrySpell("static_aura", new SpellBuff("static_aura", 0, 0.5f, 0.7f, () -> WizardryEffects.STATIC_AURA).soundValues(1, 1.6f, 0.4f)
                 .createProperties(Tier.ADVANCED, Element.LIGHTNING, SpellType.DEFENCE, 40, 0, 250)
                 .addProperties(SpellBuff.getDurationKey("static_aura"), 600)
@@ -253,53 +444,6 @@ public abstract class Spells {
                 .addProperties(SpellBuff.getStrengthKey("absorption"), 1)
                 .addProperties(SpellBuff.getDurationKey("regeneration"), 300)
                 .addProperties(SpellBuff.getStrengthKey("regeneration"), 1);
-        DARK_VISION = registrySpell("dark_vision", new SpellBuff("dark_vision", 0, 0.4f, 0.7f, () -> StatusEffects.NIGHT_VISION).soundValues(0.7f, 1.2f, 0.4f)
-                .createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.BUFF, 20, 0, 40)
-                .addProperties(SpellBuff.getDurationKey("night_vision"), 900)
-                .addProperties(SpellBuff.getStrengthKey("night_vision"), 0));
-        SUMMON_BLAZE = registrySpell("summon_blaze", new SpellMinion<>("summon_blaze", BlazeMinionEntity::new).soundValues(1, 1.1f, 0.2f)
-                .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.MINION, 40, 10, 200))
-                .addProperties(SpellMinion.MINION_LIFETIME, 600)
-                .addProperties(SpellMinion.MINION_COUNT, 1)
-                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
-        SUMMON_ICE_WRAITH = registrySpell("summon_ice_wraith", new SpellMinion<>("summon_ice_wraith", IceWraithEntity::new)).soundValues(1, 1.1f, 0.2f)
-                .createProperties(Tier.ADVANCED, Element.ICE, SpellType.MINION, 40, 10, 200)
-                .addProperties(SpellMinion.MINION_LIFETIME, 600)
-                .addProperties(SpellMinion.MINION_COUNT, 1)
-                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
-        FROST_RAY = registrySpell("frost_ray", new FrostRay().createProperties(Tier.APPRENTICE, Element.ICE, SpellType.ATTACK, 5, 0, 0)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.DAMAGE, 3)
-                .addProperties(Spell.EFFECT_DURATION, 200)
-                .addProperties(Spell.EFFECT_STRENGTH, 0));
-        SUMMON_SNOW_GOLEM = registrySpell("summon_snow_golem", new SummonSnowGolem().createProperties(Tier.NOVICE, Element.ICE, SpellType.MINION, 15, 0, 20)
-                .addProperties(SpellMinion.SUMMON_RADIUS, 2));
-        LIFE_DRAIN = registrySpell("life_drain", new LifeDrain().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 0)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.DAMAGE, 2)
-                .addProperties(LifeDrain.HEAL_FACTOR, 0.35F));
-        SUMMON_SKELETON = registrySpell("summon_skeleton", new SummonSkeleton().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.MINION, 15, 0, 50))
-                .addProperties(SpellMinion.MINION_LIFETIME, 600)
-                .addProperties(SpellMinion.MINION_COUNT, 1)
-                .addProperties(SpellMinion.SUMMON_RADIUS, 2);
-        WITHER = registrySpell("wither", new Wither().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 10, 0, 20)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.DAMAGE, 1)
-                .addProperties(Spell.EFFECT_DURATION, 200)
-                .addProperties(Spell.EFFECT_STRENGTH, 1));
-        POISON = registrySpell("poison", new Poison().createProperties(Tier.APPRENTICE, Element.EARTH, SpellType.ATTACK, 10, 0, 20)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.DAMAGE, 1)
-                .addProperties(Spell.EFFECT_DURATION, 200)
-                .addProperties(Spell.EFFECT_STRENGTH, 1));
-        HEAL_ALLY = registrySpell("heal_ally", new HealAlly().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 10, 0, 20)
-                .addProperties(Spell.RANGE, 10)
-                .addProperties(Spell.HEALTH, 5));
-        CURE_EFFECTS = registrySpell("cure_effects", new CureEffects().createProperties(Tier.APPRENTICE, Element.HEALING, SpellType.DEFENCE, 25, 10, 40));
-        FLAMING_AXE = registrySpell("flaming_axe", new FlamingAxe().createProperties(Tier.ADVANCED, Element.FIRE, SpellType.UTILITY, 45, 10, 50)
-                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
-                .addProperties(SpellConjuration.DAMAGE, 8)
-                .addProperties(SpellConjuration.BURN_DURATION, 8));
 
         FLAMECATCHER = registrySpell("flamecatcher", new Flamecatcher().createProperties(Tier.MASTER, Element.FIRE, SpellType.UTILITY, 100, 20, 150)
                 .addProperties(SpellConjuration.ITEM_LIFETIME, 900)
@@ -307,21 +451,6 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.DAMAGE, 16)
                 .addProperties(Spell.BURN_DURATION, 15));
-
-        FROST_AXE = registrySpell("frost_axe", new FrostAxe().createProperties(Tier.ADVANCED, Element.ICE, SpellType.UTILITY, 45, 10, 50)
-                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
-                .addProperties(SpellConjuration.DAMAGE, 8)
-                .addProperties(SpellConjuration.EFFECT_DURATION, 160)
-                .addProperties(SpellConjuration.EFFECT_STRENGTH, 1));
-
-        CONJURE_SWORD = registrySpell("conjure_sword", new SpellConjuration("conjure_sword", WizardryItems.SPECTRAL_SWORD).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
-                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
-
-        CONJURE_PICKAXE = registrySpell("conjure_pickaxe", new SpellConjuration("conjure_pickaxe", WizardryItems.SPECTRAL_PICKAXE).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
-                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
-
-        CONJURE_BOW = registrySpell("conjure_bow", new SpellConjuration("conjure_bow", WizardryItems.SPECTRAL_BOW).createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 25, 0, 50)
-                .addProperties(SpellConjuration.ITEM_LIFETIME, 1200));
     }
 
 

@@ -199,7 +199,6 @@ public class SpellBuff extends Spell{
             double z = caster.prevZ + world.random.nextDouble() * 2 - 1;
             ParticleBuilder.create(WizardryParticles.SPARKLE).pos(x, y, z).velocity(0, 0.1, 0).color(r, g, b).spawn(world);
         }
-        // TODO: BUFF PARTICLES
-        //ParticleBuilder.create(Type.BUFF).entity(caster).clr(r, g, b).spawn(world);
+        ParticleBuilder.create(WizardryParticles.BUFF).entity(caster).color(r, g, b).spawn(world);
     }
 }

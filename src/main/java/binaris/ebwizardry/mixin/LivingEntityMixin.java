@@ -3,12 +3,14 @@ package binaris.ebwizardry.mixin;
 import binaris.ebwizardry.effects.ICustomPotionParticles;
 import binaris.ebwizardry.registry.WizardryEffects;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -41,6 +43,18 @@ public abstract class LivingEntityMixin {
                     ((ICustomPotionParticles) effect).spawnCustomParticle(livingEntity.getWorld(), x, y, z);
                 }
             }
+        }
+    }
+
+    @Inject(at = @At("RETURN"), method = "modifyAppliedDamage", cancellable = true)
+    public void EBWIZARDRY$LivingEntityModifyApplyDamage(DamageSource source, float amount, CallbackInfoReturnable<Float> cir){
+        if(livingEntity.hasStatusEffect(WizardryEffects.WARD)){
+            // reduces if indirect magic damage
+            if(source == livingEntity.getDamageSources().magic() || source == livingEntity.getDamageSources().indirectMagic(source.getSource(), source.getAttacker())){
+                amount *= Math.max(0, 1 - 0.2f * (1 + livingEntity.getStatusEffect(WizardryEffects.WARD).getAmplifier()));
+                cir.setReturnValue(amount);
+            }
+
         }
     }
 }

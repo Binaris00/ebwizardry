@@ -10,6 +10,8 @@
   "entity.ebwizardry.blaze_minion": "Blaze Minion",
   "entity.ebwizardry.ice_wraith": "Ice Wraith",
 
+  "screen.ebwizardry.artificial_crafting": "Artificial Crafting Table",
+
 
   "spell.translations": "================ SPELL TRANSLATIONS ================",
   "spell.disabled": "%1$s has been disabled in the config",

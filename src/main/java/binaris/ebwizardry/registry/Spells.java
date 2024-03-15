@@ -76,6 +76,11 @@ public abstract class Spells {
     public static Spell ICE_BALL;
     public static Spell LIGHTNING_RAY;
     public static Spell FORCE_ARROW;
+    public static Spell POCKET_WORKBENCH;
+    public static Spell POCKET_FURNACE;
+    public static Spell BANISH;
+    public static Spell DETONATE;
+    public static Spell WITHER_SKULL;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -183,7 +188,8 @@ public abstract class Spells {
                 .addProperties(Spell.DAMAGE, 5)
                 .addProperties(Spell.BURN_DURATION, 5));
 
-        // TODO: Pocket Furnace
+        POCKET_FURNACE = registrySpell("pocket_furnace", new PocketFurnace().createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.UTILITY, 25, 10, 50)
+                .addProperties(PocketFurnace.ITEMS_SMELTED, 5));
 
         FROST_RAY = registrySpell("frost_ray", new FrostRay().createProperties(Tier.APPRENTICE, Element.ICE, SpellType.ATTACK, 5, 0, 0)
                 .addProperties(Spell.RANGE, 10)
@@ -266,7 +272,10 @@ public abstract class Spells {
 
         // TODO: INTIMIDATE SPELL
 
-        // TODO: BANISH
+        BANISH = registrySpell("banish", new Banish().createProperties(Tier.APPRENTICE, Element.NECROMANCY, SpellType.ATTACK, 15, 0, 40)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Banish.MAXIMUM_TELEPORT_DISTANCE, 16)
+                .addProperties(Banish.MINIMUM_TELEPORT_DISTANCE, 8));
 
         // TODO: REVERSAL SPELL
 
@@ -328,7 +337,7 @@ public abstract class Spells {
 
         // TODO: CLAIRVOYANCE SPELL
 
-        // TODO: POCKET WORKBENCH SPELL
+        POCKET_WORKBENCH = registrySpell("pocket_workbench", new PocketWorkbench().createProperties(Tier.APPRENTICE, Element.MAGIC, SpellType.UTILITY, 30, 0, 40));
 
         // TODO: IMBUE WEAPON SPELL
 
@@ -358,7 +367,10 @@ public abstract class Spells {
 
         // TODO: RING OF FIRE
 
-        // TODO: DETONATE
+        DETONATE = registrySpell("detonate", new Detonate().createProperties(Tier.ADVANCED, Element.FIRE, SpellType.ATTACK, 45, 10, 50)
+                .addProperties(Spell.RANGE, 16)
+                .addProperties(Detonate.MAX_DAMAGE, 12)
+                .addProperties(Spell.BLAST_RADIUS, 3));
 
         FIRE_RESISTANCE = registrySpell("fire_resistance", new SpellBuff("fire_resistance", 1, 0.5f, 0, () -> StatusEffects.FIRE_RESISTANCE).soundValues(0.7f, 1.2f, 0.4f)
                 .createProperties(Tier.ADVANCED, Element.FIRE, SpellType.DEFENCE, 20, 15, 80)
@@ -398,8 +410,6 @@ public abstract class Spells {
                 .addProperties(SpellBuff.getStrengthKey("ice_shroud"), 0)
                 .addProperties(Spell.EFFECT_DURATION, 100)
                 .addProperties(Spell.EFFECT_STRENGTH, 0));
-
-        // TODO: ICE_CHARGE
 
         FROST_AXE = registrySpell("frost_axe", new FrostAxe().createProperties(Tier.ADVANCED, Element.ICE, SpellType.UTILITY, 45, 10, 50)
                 .addProperties(SpellConjuration.ITEM_LIFETIME, 1200)
@@ -451,6 +461,11 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 10)
                 .addProperties(Spell.DAMAGE, 16)
                 .addProperties(Spell.BURN_DURATION, 15));
+
+        WITHER_SKULL = registrySpell("wither_skull", new WitherSkull().createProperties(Tier.ADVANCED, Element.NECROMANCY, SpellType.ATTACK, 20, 5, 30)
+                .addProperties(Spell.RANGE, 20)
+                .addProperties(Spell.DAMAGE, 10)
+                .addProperties(WitherSkull.ACCELERATION, 0.1));
     }
 
 

@@ -36,9 +36,6 @@ public final class EntityUtil {
      * as living entities - this depends on the situation. <i>The given entity can safely be cast to EntityLivingBase
      * if this method returns true.</i>
      */
-    // In my opinion, it's a bad design choice to have armour stands extend EntityLivingBase directly - it would be
-    // better to make a parent class which is extended by both armour stands and EntityLivingBase and contains only
-    // the code required by both.
     public static boolean isLiving(Entity entity){
         return entity instanceof LivingEntity && !(entity instanceof ArmorStandEntity);
     }

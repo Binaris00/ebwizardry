@@ -32,6 +32,8 @@ public class Wizardry implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Electroblob's Wizardry!");
 
+
+		WizardryScreens.registering();
 		WizardryItems.register();
 		WizardryBlocks.register();
 		Spells.registry();

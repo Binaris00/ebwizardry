@@ -1,12 +1,8 @@
 package binaris.ebwizardry.util;
 
-import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.entity.ICustomHitbox;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -56,7 +52,7 @@ public final class RayTracer {
      * @see RayTracer#standardBlockRayTrace(World, EntityLivingBase, double, boolean)
      */
     @Nullable
-    public static HitResult rayTrace(World world, PlayerEntity caster, Vec3d origin, Vec3d endpoint, float aimAssist,
+    public static HitResult rayTrace(World world, Entity caster, Vec3d origin, Vec3d endpoint, float aimAssist,
                                      boolean hitLiquids, Class<? extends Entity> entityType, Predicate<? super Entity> filter){
         HitResult result = world.raycast(new RaycastContext(origin, endpoint, RaycastContext.ShapeType.COLLIDER, hitLiquids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, caster));
 
@@ -110,6 +106,26 @@ public final class RayTracer {
         }
 
         return result;
+    }
+
+    @Nullable
+    public static HitResult standardBlockRayTrace(World world, LivingEntity entity, double range, boolean hitLiquids, boolean ignoreUncollidables, boolean returnLastUncollidable) {
+
+        Vec3d origin = entity.getCameraPosVec(1);
+        Vec3d endpoint = origin.add(entity.getRotationVector().multiply(range));
+        return world.raycast(new RaycastContext(origin, endpoint, RaycastContext.ShapeType.COLLIDER, hitLiquids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, entity));
+    }
+
+    @Nullable
+    public static HitResult standardBlockRayTrace(World world, LivingEntity entity, double range, boolean hitLiquids) {
+        return standardBlockRayTrace(world, entity, range, hitLiquids, false, false);
+    }
+
+    @Nullable
+    public static HitResult standardEntityRayTrace(World world, Entity entity, double range, boolean hitLiquids) {
+        Vec3d origin = entity.getCameraPosVec(1);
+        Vec3d endpoint = origin.add(entity.getRotationVector().multiply(range));
+        return rayTrace(world, entity, origin, endpoint, 0, hitLiquids, Entity.class, ignoreEntityFilter(entity));
     }
 
     public static Predicate<Entity> ignoreEntityFilter(Entity entity) {

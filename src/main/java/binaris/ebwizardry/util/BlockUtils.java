@@ -170,6 +170,9 @@ public final class BlockUtils {
         return true;
     }
 
+    public static BlockPos vec3dToBlockPos(Vec3d vec3d) {
+        return new BlockPos((int) vec3d.x, (int) vec3d.y, (int) vec3d.z);
+    }
     @FunctionalInterface
     public interface SurfaceCriteria {
 

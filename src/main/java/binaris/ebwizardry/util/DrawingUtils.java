@@ -28,4 +28,11 @@ public final class DrawingUtils {
 
         return (r << 16) + (g << 8) + b;
     }
+
+    public static float smoothScaleFactor(int lifetime, int ticksExisted, float partialTicks, int startLength, int endLength) {
+        float age = ticksExisted + partialTicks;
+        float s = MathHelper.clamp(age < startLength || lifetime < 0 ? age / startLength : (lifetime - age) / endLength, 0, 1);
+        s = (float) Math.pow(s, 0.4);
+        return s;
+    }
 }

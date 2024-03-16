@@ -4,6 +4,10 @@ import binaris.ebwizardry.Wizardry;
 import binaris.ebwizardry.constant.Element;
 import binaris.ebwizardry.constant.SpellType;
 import binaris.ebwizardry.constant.Tier;
+import binaris.ebwizardry.entity.construct.EntityBlizzard;
+import binaris.ebwizardry.entity.construct.EntityFireSigil;
+import binaris.ebwizardry.entity.construct.EntityFrostSigil;
+import binaris.ebwizardry.entity.construct.EntityLightningSigil;
 import binaris.ebwizardry.entity.living.BlazeMinionEntity;
 import binaris.ebwizardry.entity.living.IceWraithEntity;
 import binaris.ebwizardry.entity.living.ZombieMinionEntity;
@@ -81,6 +85,11 @@ public abstract class Spells {
     public static Spell BANISH;
     public static Spell DETONATE;
     public static Spell WITHER_SKULL;
+    public static Spell FIRE_SIGIL;
+    public static Spell FROST_SIGIL;
+    public static Spell LIGHTNING_SIGIL;
+    public static Spell BLIZZARD;
+    public static Spell ICE_SPIKES;
 
     public static void registry(){
         NONE = registrySpell("none", new None().createProperties(Tier.NOVICE, Element.MAGIC, SpellType.UTILITY, 0, 0, 0));
@@ -181,8 +190,11 @@ public abstract class Spells {
                 .addProperties(Spell.BLAST_RADIUS, 3)
                 .addProperties(Spell.BURN_DURATION, 7));
 
-        // TODO: Fire Sigil spell
-
+        FIRE_SIGIL = registrySpell("fire_sigil", new SpellConstructRanged<>("fire_sigil", EntityFireSigil::new, true).floor(true).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.CONSTRUCT, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.EFFECT_RADIUS, 1)
+                .addProperties(Spell.DAMAGE, 6)
+                .addProperties(Spell.BURN_DURATION, 10));
         FIRE_BOLT = registrySpell("fire_bolt", new SpellProjectile<>("fire_bolt", EntityFireBolt::new).createProperties(Tier.APPRENTICE, Element.FIRE, SpellType.PROJECTILE, 10, 0, 10)
                 .addProperties(Spell.RANGE, 15)
                 .addProperties(Spell.DAMAGE, 5)
@@ -217,7 +229,12 @@ public abstract class Spells {
 
         // TODO: ICE STATUE
 
-        // TODO: FROST SIGIL
+        FROST_SIGIL = registrySpell("frost_sigil", new SpellConstructRanged<>("frost_sigil", EntityFrostSigil::new, true).floor(true).createProperties(Tier.APPRENTICE, Element.ICE, SpellType.CONSTRUCT, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.EFFECT_RADIUS, 1)
+                .addProperties(Spell.DAMAGE, 8)
+                .addProperties(Spell.EFFECT_DURATION, 200)
+                .addProperties(Spell.EFFECT_STRENGTH, 1));
 
         ICE_BALL = registrySpell("ice_ball", new SpellProjectile<>("ice_ball", EntityIceBall::new).createProperties(Tier.APPRENTICE, Element.ICE, SpellType.PROJECTILE, 10, 0, 15)
                 .addProperties(Spell.RANGE, 20)
@@ -243,7 +260,13 @@ public abstract class Spells {
                 .addProperties(Spell.DAMAGE, 6)
                 .addProperties(Spell.SEEKING_STRENGTH, 5));
 
-        // TODO: LIGHTNING SIGIL
+        LIGHTNING_SIGIL = registrySpell("lightning_sigil", new SpellConstructRanged<>("lightning_sigil", EntityLightningSigil::new, true).floor(true).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.CONSTRUCT, 10, 0, 20)
+                .addProperties(Spell.RANGE, 10)
+                .addProperties(Spell.EFFECT_RADIUS, 1)
+                .addProperties(Spell.DIRECT_DAMAGE, 6)
+                .addProperties(EntityLightningSigil.SECONDARY_RANGE, 1)
+                .addProperties(EntityLightningSigil.SECONDARY_MAX_TARGETS, 3)
+                .addProperties(Spell.SPLASH_DAMAGE, 4));
 
         LIGHTNING_ARROW = registrySpell("lightning_arrow", new SpellArrow<>("lightning_arrow", EntityLightningArrow::new).createProperties(Tier.APPRENTICE, Element.LIGHTNING, SpellType.PROJECTILE, 15, 0, 20)
                 .addProperties(Spell.RANGE, 25)
@@ -396,7 +419,10 @@ public abstract class Spells {
 
         // TODO: COMBUSTION RUNE
 
-        // TODO: BLIZZARD SPELL
+        BLIZZARD = registrySpell("blizzard", new SpellConstructRanged<>("blizzard", EntityBlizzard::new, true).floor(false).createProperties(Tier.ADVANCED, Element.ICE, SpellType.CONSTRUCT, 40, 10, 100)
+                .addProperties(Spell.RANGE, 20)
+                .addProperties(Spell.EFFECT_RADIUS, 3)
+                .addProperties(Spell.DURATION, 600));
 
         SUMMON_ICE_WRAITH = registrySpell("summon_ice_wraith", new SpellMinion<>("summon_ice_wraith", IceWraithEntity::new)).soundValues(1, 1.1f, 0.2f)
                 .createProperties(Tier.ADVANCED, Element.ICE, SpellType.MINION, 40, 10, 200)
@@ -466,6 +492,14 @@ public abstract class Spells {
                 .addProperties(Spell.RANGE, 20)
                 .addProperties(Spell.DAMAGE, 10)
                 .addProperties(WitherSkull.ACCELERATION, 0.1));
+
+        ICE_SPIKES = registrySpell("ice_spikes", new IceSpikes().createProperties(Tier.ADVANCED, Element.ICE, SpellType.ATTACK, 30, 0, 75)
+                .addProperties(Spell.RANGE, 20)
+                .addProperties(Spell.DAMAGE, 5)
+                .addProperties(Spell.EFFECT_RADIUS, 2.5)
+                .addProperties(Spell.EFFECT_DURATION, 100)
+                .addProperties(Spell.EFFECT_STRENGTH, 0)
+                .addProperties(IceSpikes.ICE_SPIKE_COUNT, 18));
     }
 
 

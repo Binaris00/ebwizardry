@@ -29,5 +29,14 @@ public final class GeometryUtils {
         return new int[]{vec.getX(), vec.getY(), vec.getZ()}[axis.ordinal()];
     }
 
+    public static float getPitch(Direction facing) {
+        return facing == Direction.UP ? 90 : facing == Direction.DOWN ? -90 : 0;
+    }
+
+    public static Vec3d replaceComponent(Vec3d vec, Direction.Axis axis, double newValue) {
+        double[] components = {vec.x, vec.y, vec.z};
+        components[axis.ordinal()] = newValue;
+        return new Vec3d(components[0], components[1], components[2]);
+    }
 
 }

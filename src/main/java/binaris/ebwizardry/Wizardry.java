@@ -31,12 +31,11 @@ public class Wizardry implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Electroblob's Wizardry!");
-
+		Spells.registry();
 
 		WizardryScreens.registering();
 		WizardryItems.register();
 		WizardryBlocks.register();
-		Spells.registry();
 		WizardryEffects.registerEffects();
 		WizardryGroups.use();
 		WizardrySounds.register();

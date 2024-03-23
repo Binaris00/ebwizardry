@@ -6,7 +6,6 @@ import binaris.ebwizardry.constant.Tier;
 import binaris.ebwizardry.spell.Spell;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -16,7 +15,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-
+// FIXME: Not a error, but JSONObject print a lot of warnings because use raw types,
+//  maybe remove this in any new version
+@SuppressWarnings("unchecked")
 public class SpellProperties {
 
     /** Set of enum constants representing contexts in which a spell can be enabled/disabled. */
@@ -45,6 +46,9 @@ public class SpellProperties {
 
     /** A map storing the base values for this spell. */
     private final Map<String, Object> properties;
+    /** A map storing custom values for this spell.
+     * E.g., range, damage, entities, etc. */
+    private final Map<String, Object> base_properties;
 
     /** The tier this spell belongs to. */
     private final Tier tier;
@@ -81,6 +85,7 @@ public class SpellProperties {
         this.cooldown = cooldown;
         this.enabledContexts = new EnumMap<>(Context.class);
         this.properties = new HashMap<>();
+        this.base_properties = new HashMap<>();
 
         // Create the directory if it doesn't already exist
         File path = new File("config/ebwizardry/spells/");
@@ -93,17 +98,24 @@ public class SpellProperties {
         try {
             if (!file.exists()) {
                 file.createNewFile();
-                JsonObject json = new JsonObject();
-                json.addProperty("tier", tier.name());
-                json.addProperty("element", element.name());
-                json.addProperty("type", type.name());
-                json.addProperty("cost", cost);
-                json.addProperty("chargeup", chargeup);
-                json.addProperty("cooldown", cooldown);
+                JSONObject json = new JSONObject();
 
+                // Create a map of enabled contexts with all contexts enabled by default
                 for (Context context : Context.values()) {
-                    json.addProperty(context.name(), true);
+                    enabledContexts.put(context, true);
                 }
+                json.put("enabled", enabledContexts);
+
+                // Put the normal values into the JSON
+                HashMap<String, Object> properties = new HashMap<>();
+                properties.put("tier", tier.name());
+                properties.put("element", element.name());
+                properties.put("type", type.name());
+                properties.put("cost", cost);
+                properties.put("chargeup", chargeup);
+                properties.put("cooldown", cooldown);
+
+                json.put("properties", properties);
 
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting()
@@ -122,17 +134,26 @@ public class SpellProperties {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(new FileReader(file));
 
+            // Read the enabled contexts
+            JSONObject enabled = (JSONObject) json.get("enabled");
             for (Context context : Context.values()) {
-                enabledContexts.put(context, (boolean) json.get(context.name()));
+                enabledContexts.put(context, (Boolean) enabled.get(context.name));
             }
 
-            this.properties.put("tier", json.get("tier"));
-            this.properties.put("element", json.get("element"));
-            this.properties.put("type", json.get("type"));
-            this.properties.put("cost", json.get("cost"));
-            this.properties.put("chargeup", json.get("chargeup"));
-            this.properties.put("cooldown", json.get("cooldown"));
+            // Read the normal values
+            HashMap<String, Object> properties = (HashMap<String, Object>) json.get("properties");
+            this.properties.put("tier", properties.get("tier"));
+            this.properties.put("element", properties.get("element"));
+            this.properties.put("type", properties.get("type"));
+            this.properties.put("cost", properties.get("cost"));
+            this.properties.put("chargeup", properties.get("chargeup"));
+            this.properties.put("cooldown", properties.get("cooldown"));
 
+            // Read the base values
+            if(json.containsKey("base_properties")){
+                JSONObject base = (JSONObject) json.get("base_properties");
+                base.forEach((key, value) -> base_properties.put((String) key, value));
+            }
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
@@ -147,10 +168,10 @@ public class SpellProperties {
      * @throws IllegalArgumentException if no base value was defined with the given key.
      */
     public Object getProperties(String key){
-        if(!properties.containsKey(key)){
+        if(!base_properties.containsKey(key)){
             throw new IllegalArgumentException("Base value with key '" + key + "' is not defined.");
         }
-        return properties.get(key);
+        return base_properties.get(key);
     }
 
     /**
@@ -159,7 +180,7 @@ public class SpellProperties {
      * @return True if a base value was defined with the given identifier, false otherwise.
      */
     public boolean hasProperties(String key){
-            return properties.containsKey(key);
+            return base_properties.containsKey(key);
     }
 
 
@@ -169,20 +190,21 @@ public class SpellProperties {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(new FileReader(file));
 
-            // If the key already exists, don't do anything
-            if(!json.containsKey(key)){
-                json.put(key, value);
-
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting()
-                        .create();
-                FileWriter writer = new FileWriter(file);
-                writer.write(gson.toJson(json));
-                writer.close();
+            // if not exists, create a list in the json file for custom values
+            if(!json.containsKey("base_properties")){
+                json.put("base_properties", new HashMap<String, Object>());
             }
 
-            // Add the key to the map from the json file
-            properties.put(key, json.get(key));
+            HashMap<String, Object> base_properties = (HashMap<String, Object>) json.get("base_properties");
+            base_properties.put(key, value);
+            json.put("base_properties", base_properties);
+
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
+            FileWriter writer = new FileWriter(file);
+            writer.write(gson.toJson(json));
+            writer.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException("Failed to add custom property '" + key + "' to spell " + spell.getSpellName());
         }
